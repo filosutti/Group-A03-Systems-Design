@@ -2,14 +2,14 @@ import math
 import numpy as np
 import matplotlib.pyplot as plt
 
-from function file name import functioni
-from function file name import functioni
-from function file name import functioni
-from function file name import functioni
-from function file name import functioni
-from function file name import functioni
-from function file name import functioni
-from function file name import functioni
+from function_file_name import tpw1
+from function_file_name import tpw2
+from function_file_name import tpw3
+from function_file_name import tpw4
+from function_file_name import tpw5
+from function_file_name import tpw6
+from function_file_name import tpw7
+from function_file_name import tpw8
 
 wps = 0 #wing loading
 tpw1lst = []
