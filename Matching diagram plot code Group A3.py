@@ -2,14 +2,14 @@ import math
 import numpy as np
 import matplotlib.pyplot as plt
 
-from function_file_name import tpw1
-from function_file_name import tpw2
-from function_file_name import tpw3
-from function_file_name import tpw4
-from function_file_name import tpw5
-from function_file_name import tpw6
-from function_file_name import tpw7
-from function_file_name import tpw8
+from tpw1 import tpw1_function 
+from function_file_name import tpw2_function
+from function_file_name import tpw3_function
+from function_file_name import tpw4_function
+from function_file_name import tpw5_function
+from function_file_name import tpw6_function
+from function_file_name import tpw7_function
+from function_file_name import tpw8_function
 
 wps = 0 #wing loading
 tpw1lst = []
@@ -23,7 +23,7 @@ tpw8lst = []
 wpslst = []
 
 while(wps < 9000):
-    tpw1lst.append(tpw1(wps))
+    tpw1lst.append(tpw1_function(wps))
     tpw2lst.append(tpw2(wps))
     tpw3lst.append(tpw3(wps))
     tpw4lst.append(tpw4(wps))

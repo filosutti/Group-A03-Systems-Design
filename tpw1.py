@@ -1,12 +1,11 @@
-#Import
 import math
 import numpy as np
 
 #assumptions
 massratioL = 0.925
 gamma = 1.4
-m = 0.77       #mach number
-h_cruise = 10675 #metres
+m = 0.77           #mach number
+h_cruise = 10675   #metres
 t_cruise = 214.53  #kelvin
 p_cruise = 21485.9  #pascals
 rho_cruise = 0.3489 #kg/m3 
@@ -39,7 +38,8 @@ MF = MTOM - OEM - Mp
 ef = 44000000 
 R_div = 250  #?
 #wing
-AR = 9
+AR = 9   #assumed
+e = 1/(np.pi*AR*ψ + 1/φ)  #oswald eff factor
 L = g
 cf = 0.0027
 SwetpS = 6
@@ -50,7 +50,7 @@ V_stall_requirement = 1
 V_appro = 1.23 * V_stall_requirement
 Cd0 = cf*SwetpS
 Cd = 2*Cd0
-nj = (Vcr_TAS/(TSFC/1000000))/ef
+
 
 #PW1519G
 ThrustPerEngine = 88 #kN
@@ -58,26 +58,13 @@ TSFC = 11.3 #g/(kNs)
 njf = 0.46
 BPR = 12
 
-#Stats
+#------------------------------------
 
+Total_temperature = t_cruise * (1 + (gamma - 1)/2*m*m)
 
+#using eq (7.37)
 
-#Code
-
-
-#Minimum speed formula
-
-
-#Landing field Length formula
-
-
-#Cruise speed formula
-
-
-#Climb rate formula 
-
-
-#Climb gradient requirements formulas
-
-
-#Take-off field length formula
+α = p_h_ROC/101325*(1-(0.43+0.014*BPR)*np.sqrt(m))  #thrust lapse rate
+def tpw1_function(wps):
+    tpw = mass_frac_ROC/α * (np.sqrt(c*c/wps/mass_frac_ROC*rho_h_ROC/2*np.sqrt(Cd0*np.pi * AR * e)) + np.sqrt(Cd0/np.pi/AR/e))
+    return tpw
