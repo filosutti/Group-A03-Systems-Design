@@ -4,7 +4,9 @@ import numpy as np
 
 #assumptions
 massratioL = 0.925
-
+gamma = 1.4
+m = 0.77       #mach number
+h_cruise = 10675 #metres
 
 
 #Constants
