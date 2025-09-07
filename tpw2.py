@@ -2,7 +2,7 @@
 import math
 import numpy as np
 
-def tpw3_function(wps):
+def tpw2_function(wps):
     awd
 return
 
