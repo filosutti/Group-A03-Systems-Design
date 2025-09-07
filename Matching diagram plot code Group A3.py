@@ -3,13 +3,13 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 from tpw1 import tpw1_function 
-from function_file_name import tpw2_function
-from function_file_name import tpw3_function
-from function_file_name import tpw4_function
-from function_file_name import tpw5_function
-from function_file_name import tpw6_function
-from function_file_name import tpw7_function
-from function_file_name import tpw8_function
+from function_file_name import tpw2_function #Include which part of the mathching diagram this is
+from function_file_name import tpw3_function #Include which part of the mathching diagram this is
+from function_file_name import tpw4_function #Include which part of the mathching diagram this is
+from function_file_name import tpw5_function #Include which part of the mathching diagram this is
+from function_file_name import tpw6_function #Include which part of the mathching diagram this is
+from function_file_name import tpw7_function #Include which part of the mathching diagram this is
+from function_file_name import tpw8_function #Include which part of the mathching diagram this is
 
 wps = 0 #wing loading
 tpw1lst = []
