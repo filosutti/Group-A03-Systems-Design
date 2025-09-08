@@ -11,7 +11,7 @@ from function_file_name import tpw6_function #Include which graph of the mathchi
 from function_file_name import tpw7_function #Include which graph of the mathching diagram this is
 from function_file_name import tpw8_function #Include which graph of the mathching diagram this is
 
-wps = 0 #initialise wing loading
+wps = 100 #initialise wing loading
 tpw1lst = []
 cruisespeedlst = []
 LandingFieldLST = []
