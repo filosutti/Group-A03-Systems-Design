@@ -4,18 +4,18 @@ import matplotlib.pyplot as plt
 
 from tpw1_ROC import tpw1_function #Rate of climb function
 from LFL_tpw import LandFieldTPW #Include which graph of the mathching diagram this is
-from function_file_name import tpw3_function #Include which graph of the mathching diagram this is
-from cruise_speed_function import cruise_speed_function #Cruise speed
+from cruise_speed_function import cruise_speed_function #Cruise speed 
+from minspeed import minSpeed #Include which graph of the mathching diagram this is
 from function_file_name import tpw5_function #Include which graph of the mathching diagram this is
 from function_file_name import tpw6_function #Include which graph of the mathching diagram this is
 from function_file_name import tpw7_function #Include which graph of the mathching diagram this is
 from function_file_name import tpw8_function #Include which graph of the mathching diagram this is
 
-wps = 0 #wing loading
+wps = 0 #initialise wing loading
 tpw1lst = []
 cruisespeedlst = []
 LandingFieldLST = []
-tpw4lst = []
+minspeedLST = []
 tpw5lst = []
 tpw6lst = []
 tpw7lst = []
@@ -24,9 +24,9 @@ wpslst = []
 
 while(wps < 9000):
     tpw1lst.append(tpw1_function(wps))
-    cruisespeedlst.append(cruisespeedlst(wps))
+    cruisespeedlst.append(cruise_speed_function(wps))
     LandingFieldLST.append(LandFieldTPW(wps))
-    tpw4lst.append(tpw4(wps))
+    minspeedLST.append(minSpeed(wps))
     tpw5lst.append(tpw5(wps))
     tpw6lst.append(tpw6(wps))
     tpw7lst.append(tpw7(wps))
@@ -37,7 +37,7 @@ while(wps < 9000):
 plt.plot(wpslst, tpw1lst, label = 'tpw1lst')
 plt.plot(wpslst, cruisespeedlst, label = 'Cruise Speed Requirement')
 plt.plot(wpslst, LandingFieldLST, label = 'Landing Field Requirement')
-plt.plot(wpslst, tpw4lst, label = 'tpw4lst')
+plt.plot(wpslst, minspeedLST, label = 'Minimum Speed Requirement')
 plt.plot(wpslst, tpw5lst, label = 'tpw5lst')
 plt.plot(wpslst, tpw6lst, label = 'tpw6lst')
 plt.plot(wpslst, tpw7lst, label = 'tpw7lst')
@@ -45,8 +45,8 @@ plt.plot(wpslst, tpw8lst, label = 'tpw8lst')
 
 
 #Design point selection
-selected_wps = 
-selected_tpw = 
+selected_wps = None
+selected_tpw = None
 plt.plot(selected_wps, selected_tpw, 'ro')
 
 plt.xlabel('W/S - N/m2')
