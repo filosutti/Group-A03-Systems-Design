@@ -23,8 +23,8 @@ e=e0+0.0026*flap_deflection
 cd00=cf*SwetpS
 cd0=cd00+lgd0+0.0013*flap_deflection
 
-def twcs119(ws):
-    V=(2*ws*R*T/(P*2.3))**0.5
+def twcs119(wps):
+    V=(2*wps*R*T/(P*2.3))**0.5
     M=V/((gamma*R*T)**0.5)
     Tt=T*(1+(gamma-1)*0.5*(M**2))
     pt=P*((1+(gamma-1)*0.5*M**2)**(gamma/(gamma-1)))
@@ -34,7 +34,7 @@ def twcs119(ws):
     t_w=(MR/at)*(c/100+2*(cd0/(np.pi*AR*e))**(0.5))
     return(t_w)
 
-print(twcs119(500))
+
 
 
 
