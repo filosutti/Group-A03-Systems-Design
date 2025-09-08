@@ -2,7 +2,7 @@ import math
 import numpy as np
 import matplotlib.pyplot as plt
 
-from tpw1 import tpw1_function 
+from tpw1 import tpw1_function #Rate of climb functions
 from function_file_name import tpw2_function #Include which graph of the mathching diagram this is
 from function_file_name import tpw3_function #Include which graph of the mathching diagram this is
 from function_file_name import tpw4_function #Include which graph of the mathching diagram this is
