@@ -1,13 +1,11 @@
-#Import
 import math
 import numpy as np
 
-#----------------------------------------------------------------------------------------------------------------
 #assumptions
 massratioL = 0.925
 gamma = 1.4
-m = 0.77       #mach number
-h_cruise = 10675 #metres
+m = 0.77           #mach number
+h_cruise = 10675   #metres
 t_cruise = 214.53  #kelvin
 p_cruise = 21485.9  #pascals
 rho_cruise = 0.3489 #kg/m3 
@@ -21,11 +19,9 @@ rho_h_ROC = 0.5629  #kg/m3
 mass_frac_ROC = 0.95  #mass fraction for ROC, taken from similar aircraft data from prev year adsee spreadsheet
 c = 12  #m/s
 
-#--------------------------------------------------------
 #Constants
 g = 9.81
 
-#--------------------------------------------------------
 #Requirements
 PLreq = 9302 #Payload (kg)
 TOreq = 1296 #Takeoff (m)
@@ -34,8 +30,6 @@ CRreq = 0.77 #Cruise (Mach)
 Vcr_TAS = 228.332
 Vcr_EAS = 127.104
 R_des = 2019
-
-#--------------------------------------------------------
 #Class I weight estimation
 MTOM = 38939.25
 OEM = 22694.2
@@ -43,17 +37,9 @@ Mp = 9302
 MF = MTOM - OEM - Mp 
 ef = 44000000 
 R_div = 250  #?
-
-#--------------------------------------------------------
-#PW1519G
-ThrustPerEngine = 88 #kN
-TSFC = 14 #g/(kNs)
-njf = 0.371
-BPR = 12
-
-#--------------------------------------------------------
 #wing
-AR = 9
+AR = 9   #assumed
+e = 1/(np.pi*AR*ψ + 1/φ)  #oswald eff factor
 L = g
 cf = 0.0027
 SwetpS = 6
@@ -64,17 +50,24 @@ V_stall_requirement = 1
 V_appro = 1.23 * V_stall_requirement
 Cd0 = cf*SwetpS
 Cd = 2*Cd0
-nj = (Vcr_TAS/(TSFC/1000000))/ef
-e = 1/(np.pi*AR*ψ + 1/φ)
-mass_frac_cruise = 0.90
 
 
+#PW1519G
+ThrustPerEngine = 88 #kN
+TSFC = 11.3 #g/(kNs)
+njf = 0.46
+BPR = 12
 
-def cruise_speed_function(wps):
-    α = p_cruise/101325*(1-(0.43+0.014*BPR)*np.sqrt(m))  #thrust lapse rate
-    tpw = (mass_frac_cruise / α)*(((Cd0*0.5*rho_cruise*Vcr_TAS**2) / (0.95*wps))+((0.95*wps)/(np.pi*AR*e*0.5*rho_cruise*Vcr_TAS**2)))
-    return tpw
+#Configuration assumptions:
+delta_takeoff = 15 #degrees, maximum flap deflection for take off
+delta_landing_gear = 0.0175
+#wing-mounted engines are assumed
 
+#------------------------------------
 
-print((np.sqrt(np.pi*AR*e*Cd0)/(Cd)))
-      
+e_final = e + 0.0026*delta_takeoff  #equation 7.62
+Cd0_final = Cd0 + 0.0013*delta_takeoff + delta_landing_gear   #equation 7.63 and 7.64
+
+def CS25_121a_function(wps):
+    αt = (1 + (gamma-1)/2*m*m)^(gamma/(gamma-1))*(1 - (0.43 + 0.014*BPR)*np.sqrt(m)) #equation 7.37
+    tpw = 2/αt*()

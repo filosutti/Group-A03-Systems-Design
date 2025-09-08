@@ -20,8 +20,6 @@ p_h_ROC = 38780.84  #pascals
 rho_h_ROC = 0.5629  #kg/m3
 mass_frac_ROC = 0.95  #mass fraction for ROC, taken from similar aircraft data from prev year adsee spreadsheet
 c = 12  #m/s
-mass_frac_cruise = 0.90
-
 
 #--------------------------------------------------------
 #Constants
@@ -31,7 +29,6 @@ g = 9.81
 #Requirements
 PLreq = 9302 #Payload (kg)
 TOreq = 1296 #Takeoff (m)
-LDreq = 1210 #Landing (m)
 CRreq = 0.77 #Cruise (Mach)
 Vcr_TAS = 228.332
 Vcr_EAS = 127.104
@@ -41,16 +38,18 @@ R_des = 2019
 #Class I weight estimation
 MTOM = 38939.25
 OEM = 22694.2
-Mp = 9302
-MF = MTOM - OEM - Mp 
+Mass_payload = 9302
+
+Mass_fuel = MTOM - OEM - Mass_payload 
+
 ef = 44000000 
 R_div = 250  #?
 
 #--------------------------------------------------------
 #PW1519G
 ThrustPerEngine = 88 #kN
-TSFC = 14 #g/(kNs)
-njf = 0.371
+TSFC = 11.3 #g/(kNs)
+njf = 0.46
 BPR = 12
 
 #--------------------------------------------------------
@@ -61,44 +60,30 @@ cf = 0.0027
 SwetpS = 6
 CLmax_cruise = 1.5
 CLmax_Takeoff = 1.9
-CLmax_Landing = 2.3
+
 V_stall_requirement = 1
 V_appro = 1.23 * V_stall_requirement
 Cd0 = cf*SwetpS
 Cd = 2*Cd0
 nj = (Vcr_TAS/(TSFC/1000000))/ef
-#--------------------------------------------------------
-#Stats
+
 
 
 #----------------------------------------------------------------------------------------------------------------
 #Code
 
+def LandFieldTPW(wps):
+    beta = 0.84
+    rho0 = 1.225226 #[kg/m^3]
+    C_LFL = 0.45 #[s^2/m]
+    LandingFieldLength = 1210
+    CLmax_Landing = 2.3
 
-#--------------------------------------------------------
-#Minimum speed formula
-
-
-
-#--------------------------------------------------------
-#Landing field Length formula
-
-
-
-#--------------------------------------------------------
-#Cruise speed formula
-
-
-
-#--------------------------------------------------------
-#Climb rate formula 
+    #----------------------------------------------------------------------------------------------------------------
+    #Landing Field Length formulae
+    
+    Landing_Field_TPW = (1/beta) * (LandingFieldLength/C_LFL) * (0.5 * rho0 * CLmax_Landing)
+    
+    return Landing_Field_TPW
 
 
-
-#--------------------------------------------------------
-#Climb gradient requirements formulas
-
-
-
-#--------------------------------------------------------
-#Take-off field length formula

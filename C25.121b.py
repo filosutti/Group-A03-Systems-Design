@@ -29,6 +29,7 @@ LDreq = 1210 #Landing (m)
 CRreq = 0.77 #Cruise (Mach)
 Vcr_TAS = 228.332
 Vcr_EAS = 127.104
+VT = 262 #Takeoff Speed (m/s)
 R_des = 2019
 #Class I weight estimation
 MTOM = 38939.25
@@ -65,6 +66,6 @@ Total_temperature = t_cruise * (1 + (gamma - 1)/2*m*m)
 #using eq (7.37)
 
 def tpw1_function(wps):
-    α = p_h_ROC/101325*(1-(0.43+0.014*BPR)*np.sqrt(m))  #thrust lapse rate
-    tpw = mass_frac_ROC/α * (np.sqrt(c*c/wps/mass_frac_ROC*rho_h_ROC/2*np.sqrt(Cd0*np.pi * AR * e)) + np.sqrt(Cd0/np.pi/AR/e))
+    α = 1.48*(1-(0.43+0.014*BPR)*np.sqrt(m))  #thrust lapse rate
+    tpw = 2/α * (c/VT+2*sqrt(Cd0/(np.pi*AR*e))
     return tpw
