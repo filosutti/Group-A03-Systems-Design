@@ -8,7 +8,7 @@ from cruise_speed_function import cruise_speed_function #Cruise speed
 from minspeed import minSpeed 
 from CS25119 import CS25_119 
 from CS25_121a import CS25_121a_function 
-from CS121 import tpw7_function 
+from CS25 import tpw7_function 
 from function_file_name import tpw8_function 
 
 #VARIABLES & CONSTANTS
