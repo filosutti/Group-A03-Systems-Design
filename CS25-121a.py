@@ -3,7 +3,6 @@ import numpy as np
 
 #assumptions
 massratioL = 0.925
-gamma = 1.4
 m = 0.77           #mach number
 h_cruise = 10675   #metres
 t_cruise = 214.53  #kelvin
@@ -58,18 +57,21 @@ TSFC = 11.3 #g/(kNs)
 njf = 0.46
 BPR = 12
 
-#Configuration assumptions:
-delta_takeoff = 15 #degrees, maximum flap deflection for take off
-delta_landing_gear = 0.0175
-#wing-mounted engines are assumed
-lambda_takeoff = 12.96
+
 
 #------------------------------------
 
-e_final = e + 0.0026*delta_takeoff  #equation 7.62
-Cd0_final = Cd0 + 0.0013*delta_takeoff + delta_landing_gear   #equation 7.63 and 7.64
 
 def CS25_121a_function(wps):
+
+
+    gamma = 1.4
+    delta_takeoff = 15 #degrees, maximum flap deflection for take off
+    delta_landing_gear = 0.0175
+    e_final = e + 0.0026*delta_takeoff  #equation 7.62
+    Cd0_final = Cd0 + 0.0013*delta_takeoff + delta_landing_gear   #equation 7.63 and 7.64
+    
+    
     αt = (1 + (gamma-1)/2*m*m)^(gamma/(gamma-1))*(1 - (0.43 + 0.014*BPR)*np.sqrt(m)) #equation 7.37
     tpw = 2/αt*(2*np.sqrt(Cd0_final/np.pi/AR/e_final)+c/np.sqrt(wps*2/CLmax_Takeoff/1.225))
     return tpw
