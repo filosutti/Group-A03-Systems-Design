@@ -7,9 +7,9 @@ massratioL = 0.925
 gamma = 1.4
 m = 0.77       #mach number
 h_cruise = 10675 #metres
-t_cruise = 214.53  #kelvin
-p_cruise = 21485.9  #pascals
-rho_cruise = 0.3489 #kg/m3 
+t_cruise = 218.76  #kelvin
+p_cruise = 23809.88  #pascals
+rho_cruise = 0.37923 #kg/m3 
 ψ = 0.0075  # lift-dependent parasite drag parameter taken from adsee manual
 φ = 0.97    #span efficiency factor assumed as above
 
