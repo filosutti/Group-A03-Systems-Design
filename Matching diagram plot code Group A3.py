@@ -6,7 +6,7 @@ from tpw1_ROC import tpw1_function #Rate of climb function
 from LFL_tpw import LandFieldTPW #Include which graph of the mathching diagram this is
 from cruise_speed_function import cruise_speed_function #Cruise speed 
 from minspeed import minSpeed #Include which graph of the mathching diagram this is
-from function_file_name import tpw5_function #Include which graph of the mathching diagram this is
+from funcion_file_name import tpw5_function #Include which graph of the mathching diagram this is
 from function_file_name import tpw6_function #Include which graph of the mathching diagram this is
 from function_file_name import tpw7_function #Include which graph of the mathching diagram this is
 from function_file_name import tpw8_function #Include which graph of the mathching diagram this is
