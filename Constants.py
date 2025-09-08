@@ -40,7 +40,6 @@ ef = 44000000
 R_div = 250  #?
 #wing
 AR = 9
-L = g
 cf = 0.0027
 SwetpS = 6
 CLmax_cruise = 1.5
