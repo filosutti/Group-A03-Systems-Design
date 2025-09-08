@@ -17,7 +17,7 @@ def TOF_req(WpS):
     e_TO = e + 0.0026*15
 
     #alpha_t
-    alpha_t = ptr*(1-(0.43 + 0.014*BPR)*np.sqrt(0.77) - 3(Ttr - 1.07)/(2.27))
+    alpha_t = ptr*(1-(0.43 + 0.014*BPR)*np.sqrt(0.77) - 3*(Ttr - 1.07)/(2.27))
     #take off field length
     Tpw6 = (1/alpha_t)*(1.15)*(np.sqrt((WpS)/(kt*1.225*TOreq*g*np.pi*AR*e_TO))+ 4*10.7/TOreq)
     return Tpw6
