@@ -7,7 +7,7 @@ from LFL_tpw import LandFieldTPW #Include which graph of the mathching diagram t
 from cruise_speed_function import cruise_speed_function #Cruise speed 
 from minspeed import minSpeed #Include which graph of the mathching diagram this is
 from CS25119 import CS25_119 #Include which graph of the mathching diagram this is
-from  import tpw6_function #Include which graph of the mathching diagram this is
+from CS25_121a import CS25_121a_function #Include which graph of the mathching diagram this is
 from function_file_name import tpw7_function #Include which graph of the mathching diagram this is
 from function_file_name import tpw8_function #Include which graph of the mathching diagram this is
 
@@ -87,12 +87,12 @@ nj = (Vcr_TAS/(TSFC/1000000))/ef
 
 
 wps = 100 #initialise wing loading
-tpw1lst = []
 cruisespeedlst = []
 LandingFieldLST = []
 minspeedLST = []
 CS25_119_LST = []
 CS25_121A_LST = []
+tpw1lst = []
 tpw7lst = []
 tpw8lst = []
 
@@ -115,9 +115,9 @@ plt.plot(wpslst, cruisespeedlst, label = 'Cruise Speed Requirement')
 plt.plot(wpslst, LandingFieldLST, label = 'Landing Field Requirement')
 plt.plot(wpslst, minspeedLST, label = 'Minimum Speed Requirement')
 plt.plot(wpslst, CS25_119_LST, label = 'CS25-119 Requirement')
-plt.plot(wpslst, tpw6lst, label = 'tpw6lst')
-plt.plot(wpslst, tpw7lst, label = 'tpw7lst')
-plt.plot(wpslst, tpw8lst, label = 'tpw8lst')
+plt.plot(wpslst, CS25_121A_LST, label = 'CS25-121a Requirement')
+plt.plot(wpslst, tpw7lst, label = 'CS25-121b Requirement')
+plt.plot(wpslst, tpw8lst, label = 'CS25-121c Requirement')
 
 
 #Design point selection
