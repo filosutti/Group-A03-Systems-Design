@@ -104,7 +104,7 @@ wpslst = []
 while(wps < 9000):
     cruisespeedlst.append(cruise_speed_function(wps))
     LandingFieldLST.append(LandFieldTPW(wps))
-    minspeedLST.append(minSpeed(wps, massfraction, V_appro))
+    minspeedLST.append(minSpeed(wps, V_appro))
     CS25_119_LST.append(CS25_119(wps))
     CS25_121A_LST.append(CS25_121a_function(wps))
     CS25_121B_LST.append(CS121b_function(wps))
