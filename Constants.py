@@ -38,6 +38,13 @@ Mp = 9302
 MF = MTOM - OEM - Mp 
 ef = 44000000 
 R_div = 250  #?
+
+#PW1519G
+ThrustPerEngine = 88 #kN
+TSFC = 11.3 #g/(kNs)
+njf = 0.46
+BPR = 12
+
 #wing
 AR = 9
 L = g
@@ -52,11 +59,6 @@ Cd0 = cf*SwetpS
 Cd = 2*Cd0
 nj = (Vcr_TAS/(TSFC/1000000))/ef
 
-#PW1519G
-ThrustPerEngine = 88 #kN
-TSFC = 11.3 #g/(kNs)
-njf = 0.46
-BPR = 12
 
 #Stats
 
