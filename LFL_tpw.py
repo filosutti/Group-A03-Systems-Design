@@ -73,7 +73,7 @@ nj = (Vcr_TAS/(TSFC/1000000))/ef
 #Code
 
 def LandFieldTPW(wps):
-    beta = 0.85
+    beta = 0.84
     rho0 = 1.225226 #[kg/m^3]
     C_LFL = 0.45 #[s^2/m]
     LandingFieldLength = 1210
