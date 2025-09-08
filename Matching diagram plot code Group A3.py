@@ -2,10 +2,10 @@ import math
 import numpy as np
 import matplotlib.pyplot as plt
 
-from tpw1 import tpw1_function #Rate of climb functions
+from tpw1(ROC) import tpw1_function #Rate of climb function
 from function_file_name import tpw2_function #Include which graph of the mathching diagram this is
 from function_file_name import tpw3_function #Include which graph of the mathching diagram this is
-from function_file_name import tpw4_function #Include which graph of the mathching diagram this is
+from cruise_speed_function import cruise_speed_function #Cruise speed
 from function_file_name import tpw5_function #Include which graph of the mathching diagram this is
 from function_file_name import tpw6_function #Include which graph of the mathching diagram this is
 from function_file_name import tpw7_function #Include which graph of the mathching diagram this is
@@ -13,7 +13,7 @@ from function_file_name import tpw8_function #Include which graph of the mathchi
 
 wps = 0 #wing loading
 tpw1lst = []
-tpw2lst = []
+cruisespeedlst = []
 tpw3lst = []
 tpw4lst = []
 tpw5lst = []
@@ -24,7 +24,7 @@ wpslst = []
 
 while(wps < 9000):
     tpw1lst.append(tpw1_function(wps))
-    tpw2lst.append(tpw2(wps))
+    cruisespeedlst.append(cruisespeedlst(wps))
     tpw3lst.append(tpw3(wps))
     tpw4lst.append(tpw4(wps))
     tpw5lst.append(tpw5(wps))
