@@ -9,8 +9,6 @@ CLmax_Takeoff = 1.9
 delta_takeoff = 15 #degrees, maximum flap deflection for take off
 delta_landing = 35
 delta_landing_gear = 0.0175
-e_final = e + 0.0026*delta_landing #equation 7.62
-Cd0_final = Cd0 + 0.0013*delta_landing  #equation 7.63 and 7.64
 mach = 0.77
 mass_fraction = 0.73
 
@@ -62,7 +60,8 @@ V_stall_requirement = 1
 V_appro = 1.23 * V_stall_requirement
 Cd0 = cf*SwetpS
 Cd = 2*Cd0
-
+e_final = e + 0.0026*delta_landing #equation 7.62
+Cd0_final = Cd0 + 0.0013*delta_landing  #equation 7.63 and 7.64
 
 #PW1519G
 ThrustPerEngine = 88 #kN
