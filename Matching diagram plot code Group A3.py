@@ -2,7 +2,7 @@ import math
 import numpy as np
 import matplotlib.pyplot as plt
 
-from tpw1_ROC, import tpw1_function #Rate of climb function
+from tpw1_ROC import tpw1_function #Rate of climb function
 from LFL_tpw import LandFieldTPW #Include which graph of the mathching diagram this is
 from function_file_name import tpw3_function #Include which graph of the mathching diagram this is
 from cruise_speed_function import cruise_speed_function #Cruise speed
