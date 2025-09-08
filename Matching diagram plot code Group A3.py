@@ -3,13 +3,13 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 from tpw1_ROC import tpw1_function #Rate of climb function
-from LFL_tpw import LandFieldTPW #Include which graph of the mathching diagram this is
+from LFL_tpw import LandFieldTPW 
 from cruise_speed_function import cruise_speed_function #Cruise speed 
-from minspeed import minSpeed #Include which graph of the mathching diagram this is
-from CS25119 import CS25_119 #Include which graph of the mathching diagram this is
-from CS25_121a import CS25_121a_function #Include which graph of the mathching diagram this is
-from function_file_name import tpw7_function #Include which graph of the mathching diagram this is
-from function_file_name import tpw8_function #Include which graph of the mathching diagram this is
+from minspeed import minSpeed 
+from CS25119 import CS25_119 
+from CS25_121a import CS25_121a_function 
+from CS121 import tpw7_function 
+from function_file_name import tpw8_function 
 
 #VARIABLES & CONSTANTS
 #------------------------------------------------------------------------------------------------------------------------------

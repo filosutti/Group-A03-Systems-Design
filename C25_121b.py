@@ -65,7 +65,7 @@ Total_temperature = t_cruise * (1 + (gamma - 1)/2*m*m)
 
 
 
-def tpw1_function(wps):
+def CS121b_function(wps):
 
     AR = 9
     BPR = 12
