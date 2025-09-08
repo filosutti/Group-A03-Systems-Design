@@ -1,19 +1,6 @@
 import math
 import numpy as np
 
-AR = 9
-BPR = 12
-c = 12
-gamma = 1.4
-CLmax_Takeoff = 1.9
-cf = 0.0027
-SwetpS = 6
-Cd0 = cf*SwetpS
-ψ = 0.0075  # lift-dependent parasite drag parameter taken from adsee manual
-φ = 0.97    #span efficiency factor assumed as above
-e = 1/(np.pi*AR*ψ + 1/φ)  #oswald eff factor
-
-
 #assumptions
 massratioL = 0.925
 gamma = 1.4
@@ -42,7 +29,6 @@ LDreq = 1210 #Landing (m)
 CRreq = 0.77 #Cruise (Mach)
 Vcr_TAS = 228.332
 Vcr_EAS = 127.104
-VT = 262 #Takeoff Speed (m/s)
 R_des = 2019
 #Class I weight estimation
 MTOM = 38939.25
@@ -76,12 +62,13 @@ BPR = 12
 
 Total_temperature = t_cruise * (1 + (gamma - 1)/2*m*m)
 
+delta_takeoff = 15
+delta_landing_gear = 0.00175
 
+e_final = e + 0.0026*delta_takeoff
+Cd0_final = Cd0 + 0.0013*delta_takeoff + delta_landing_gear
 
-def CS121b_function(wps):
-
-    
+def tpw1_function(wps):
     α = 101325*(1+0.4*wps/1.225/CLmax_Takeoff/gamma/8.31/288.15)**3.5 * (1-(0.43+0.014*BPR)*(2*wps/1.225/CLmax_Takeoff/1.4/8.31/288.15)**0.25)  #thrust lapse rate
-    tpw = 2/α*(c/math.sqrt(wps*2/1.225/CLmax_Takeoff)+2*math.sqrt(Cd0/np.pi/AR/e))
-    
+    tpw = 2/α*(c/sqrt(wps*2/1.225/CLmax_Takeoff)+2*sqrt(Cd0_final/np.pi/AR/e_final))
     return tpw
