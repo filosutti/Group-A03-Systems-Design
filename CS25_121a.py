@@ -42,6 +42,9 @@ CLmax_cruise = 1.5
 CLmax_Landing = 2.3
 V_stall_requirement = 1
 V_appro = 1.23 * V_stall_requirement
+cf = 0.0027
+SwetpS = 6
+Cd0 = cf*SwetpS
 Cd = 2*Cd0
 
 
