@@ -40,7 +40,6 @@ R_div = 250  #?
 #wing
 AR = 9   #assumed
 e = 1/(np.pi*AR*ψ + 1/φ)  #oswald eff factor
-L = g
 cf = 0.0027
 SwetpS = 6
 CLmax_cruise = 1.5
