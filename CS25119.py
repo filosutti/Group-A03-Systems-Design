@@ -23,7 +23,7 @@ e=e0+0.0026*flap_deflection
 cd00=cf*SwetpS
 cd0=cd00+lgd0+0.0013*flap_deflection
 
-def twcs119(ws):
+def CS25_119(ws):
     V=(2*ws*R*T/(P*2.3))**0.5
     M=V/((gamma*R*T)**0.5)
     Tt=T*(1+(gamma-1)*0.5*(M**2))
