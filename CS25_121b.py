@@ -1,6 +1,19 @@
 import math
 import numpy as np
 
+AR = 9
+BPR = 12
+c = 12
+gamma = 1.4
+CLmax_Takeoff = 1.9
+cf = 0.0027
+SwetpS = 6
+Cd0 = cf*SwetpS
+ψ = 0.0075  # lift-dependent parasite drag parameter taken from adsee manual
+φ = 0.97    #span efficiency factor assumed as above
+e = 1/(np.pi*AR*ψ + 1/φ)  #oswald eff factor
+
+
 #assumptions
 massratioL = 0.925
 gamma = 1.4
@@ -66,19 +79,6 @@ Total_temperature = t_cruise * (1 + (gamma - 1)/2*m*m)
 
 
 def CS121b_function(wps):
-
-    AR = 9
-    BPR = 12
-    c = 12
-    gamma = 1.4
-    CLmax_Takeoff = 1.9
-    cf = 0.0027
-    SwetpS = 6
-    Cd0 = cf*SwetpS
-    ψ = 0.0075  # lift-dependent parasite drag parameter taken from adsee manual
-    φ = 0.97    #span efficiency factor assumed as above
-    e = 1/(np.pi*AR*ψ + 1/φ)  #oswald eff factor
-
 
     α = 101325*(1+0.4*wps/1.225/CLmax_Takeoff/gamma/8.31/288.15)**3.5 * (1-(0.43+0.014*BPR)*(2*wps/1.225/CLmax_Takeoff/1.4/8.31/288.15)**0.25)  #thrust lapse rate
     tpw = 2/α*(c/math.sqrt(wps*2/1.225/CLmax_Takeoff)+2*math.sqrt(Cd0/np.pi/AR/e))

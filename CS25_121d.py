@@ -1,6 +1,20 @@
 import math
 import numpy as np
 
+
+AR = 9
+BPR = 12
+gamma = 1.4
+CLmax_Takeoff = 1.9
+delta_takeoff = 15 #degrees, maximum flap deflection for take off
+delta_landing = 35
+delta_landing_gear = 0.0175
+e_final = e + 0.0026*delta_landing #equation 7.62
+Cd0_final = Cd0 + 0.0013*delta_landing  #equation 7.63 and 7.64
+mach = 0.77
+mass_fraction = 0.73
+
+
 #assumptions
 massratioL = 0.925
 h_cruise = 10675   #metres
@@ -62,18 +76,6 @@ njf = 0.46
 
 def CS25_121d_function(wps):
 
-    AR = 9
-    BPR = 12
-    gamma = 1.4
-    CLmax_Takeoff = 1.9
-    delta_takeoff = 15 #degrees, maximum flap deflection for take off
-    delta_landing = 35
-    delta_landing_gear = 0.0175
-    e_final = e + 0.0026*delta_landing #equation 7.62
-    Cd0_final = Cd0 + 0.0013*delta_landing  #equation 7.63 and 7.64
-    mach = 0.77
-    mass_fraction = 0.73
-    
     αt = 101325*(1+0.4*wps/1.225/CLmax_Takeoff/gamma/8.31/288.15)**3.5 * (1-(0.43+0.014*BPR)*(2*wps/1.225/CLmax_Takeoff/1.4/8.31/288.15)**0.25)  #thrust lapse rate equation 7.37
     tpw = 2*mass_fraction/αt*(2*np.sqrt(Cd0_final/np.pi/AR/e_final)+c/np.sqrt(wps*2/CLmax_Takeoff/1.225))
     
