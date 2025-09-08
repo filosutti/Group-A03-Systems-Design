@@ -7,7 +7,7 @@ from LFL_tpw import LandFieldTPW #Include which graph of the mathching diagram t
 from cruise_speed_function import cruise_speed_function #Cruise speed 
 from minspeed import minSpeed #Include which graph of the mathching diagram this is
 from CS25119 import CS25_119 #Include which graph of the mathching diagram this is
-from function_file_name import tpw6_function #Include which graph of the mathching diagram this is
+from  import tpw6_function #Include which graph of the mathching diagram this is
 from function_file_name import tpw7_function #Include which graph of the mathching diagram this is
 from function_file_name import tpw8_function #Include which graph of the mathching diagram this is
 
