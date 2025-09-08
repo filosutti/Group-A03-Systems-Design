@@ -8,8 +8,11 @@ from cruise_speed_function import cruise_speed_function #Cruise speed
 from minspeed import minSpeed 
 from CS25119 import CS25_119 
 from CS25_121a import CS25_121a_function 
-from CS25 import tpw7_function 
+from CS25_121b import CS121b_function 
 from function_file_name import tpw8_function 
+from function_file_name import tpw8_function 
+from function_file_name import tpw8_function 
+
 
 #VARIABLES & CONSTANTS
 #------------------------------------------------------------------------------------------------------------------------------
@@ -92,32 +95,31 @@ LandingFieldLST = []
 minspeedLST = []
 CS25_119_LST = []
 CS25_121A_LST = []
-tpw1lst = []
+CS25_121B_LST = []
 tpw7lst = []
 tpw8lst = []
 
 wpslst = []
 
 while(wps < 9000):
-    tpw1lst.append(tpw1_function(wps))
     cruisespeedlst.append(cruise_speed_function(wps))
     LandingFieldLST.append(LandFieldTPW(wps))
     minspeedLST.append(minSpeed(wps, massfraction, V_appro))
     CS25_119_LST.append(CS25_119(wps))
     CS25_121A_LST.append(CS25_121a_function(wps))
-    tpw7lst.append(tpw7(wps))
+    CS25_121B_LST.append(CS121b_function(wps))
     tpw8lst.append(tpw8(wps))
     wpslst.append(wps)
     wps = wps + 100
 
-plt.plot(wpslst, tpw1lst, label = 'tpw1lst')
 plt.plot(wpslst, cruisespeedlst, label = 'Cruise Speed Requirement')
 plt.plot(wpslst, LandingFieldLST, label = 'Landing Field Requirement')
 plt.plot(wpslst, minspeedLST, label = 'Minimum Speed Requirement')
 plt.plot(wpslst, CS25_119_LST, label = 'CS25-119 Requirement')
 plt.plot(wpslst, CS25_121A_LST, label = 'CS25-121a Requirement')
-plt.plot(wpslst, tpw7lst, label = 'CS25-121b Requirement')
+plt.plot(wpslst, CS25_121B_LST, label = 'CS25-121b Requirement')
 plt.plot(wpslst, tpw8lst, label = 'CS25-121c Requirement')
+plt.plot(wpslst, tpw9lst, label = 'CS25-121d Requirement')
 
 
 #Design point selection
