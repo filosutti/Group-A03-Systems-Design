@@ -78,7 +78,7 @@ SwetpS = 6
 CLmax_cruise = 1.5
 CLmax_Takeoff = 1.9
 CLmax_Landing = 2.3
-V_stall_requirement = 1
+V_stall_requirement = 57
 V_appro = 1.23 * V_stall_requirement
 Cd0 = cf*SwetpS
 Cd = 2*Cd0
@@ -89,7 +89,7 @@ nj = (Vcr_TAS/(TSFC/1000000))/ef
 #------------------------------------------------------------------------------------------------------------------------------
 
 
-wps = 0 #initialise wing loading
+wps = 200 #initialise wing loading
 ROC_LST = []
 cruisespeedlst = []
 LandingFieldLST = []
@@ -100,10 +100,15 @@ CS25_121B_LST = []
 CS25_121C_LST = []
 CS25_121D_LST = []
 TO_LST = []
-
+lfllst = []
 wpslst = []
 
-while(wps < 9000):
+i = 0.1
+while(i<9):
+    lfllst.append(i)
+    i = i+0.1
+
+while(wps < 9200):
 
     try:
         cruisespeedlst.append(cruise_speed_function(wps))
@@ -151,8 +156,8 @@ while(wps < 9000):
 
 
 plt.plot(wpslst, cruisespeedlst, label = 'Cruise Speed Requirement')
-plt.plot(LandingFieldLST, wpslst, label = 'Landing Field Requirement')
-plt.plot(wpslst, minspeedLST, label = 'Minimum Speed Requirement')
+plt.plot(LandingFieldLST, lfllst, label = 'Landing Field Requirement')
+plt.plot(minspeedLST, lfllst, label = 'Minimum Speed Requirement')
 plt.plot(wpslst, CS25_119_LST, label = 'CS25-119 Requirement')
 plt.plot(wpslst, CS25_121A_LST, label = 'CS25-121a Requirement')
 plt.plot(wpslst, CS25_121B_LST, label = 'CS25-121b Requirement')
