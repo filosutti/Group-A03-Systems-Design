@@ -3,7 +3,6 @@ import numpy as np
 
 #assumptions
 massratioL = 0.925
-m = 0.77           #mach number
 h_cruise = 10675   #metres
 t_cruise = 214.53  #kelvin
 p_cruise = 21485.9  #pascals
@@ -37,13 +36,12 @@ MF = MTOM - OEM - Mp
 ef = 44000000 
 R_div = 250  #?
 #wing
-AR = 9   #assumed
+   #assumed
 e = 1/(np.pi*AR*ψ + 1/φ)  #oswald eff factor
 L = g
 cf = 0.0027
 SwetpS = 6
 CLmax_cruise = 1.5
-CLmax_Takeoff = 1.9
 CLmax_Landing = 2.3
 V_stall_requirement = 1
 V_appro = 1.23 * V_stall_requirement
@@ -55,7 +53,6 @@ Cd = 2*Cd0
 ThrustPerEngine = 88 #kN
 TSFC = 11.3 #g/(kNs)
 njf = 0.46
-BPR = 12
 
 
 
@@ -64,14 +61,17 @@ BPR = 12
 
 def CS25_121a_function(wps):
 
-
+    AR = 9
+    BPR = 12
     gamma = 1.4
+    CLmax_Takeoff = 1.9
     delta_takeoff = 15 #degrees, maximum flap deflection for take off
     delta_landing_gear = 0.0175
     e_final = e + 0.0026*delta_takeoff  #equation 7.62
     Cd0_final = Cd0 + 0.0013*delta_takeoff + delta_landing_gear   #equation 7.63 and 7.64
+    mach = 0.77
     
-    
-    αt = (1 + (gamma-1)/2*m*m)^(gamma/(gamma-1))*(1 - (0.43 + 0.014*BPR)*np.sqrt(m)) #equation 7.37
+    αt = (1 + (gamma-1)/2*mach*mach)^(gamma/(gamma-1))*(1 - (0.43 + 0.014*BPR)*np.sqrt(mach)) #equation 7.37
     tpw = 2/αt*(2*np.sqrt(Cd0_final/np.pi/AR/e_final)+c/np.sqrt(wps*2/CLmax_Takeoff/1.225))
+    
     return tpw
