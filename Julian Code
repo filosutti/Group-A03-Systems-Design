@@ -28,8 +28,8 @@ SwetpS = 6.0
 CLmax_cruise = 1.5
 CLmax_Takeoff = 1.9
 CLmax_ngine = 88 #kN
-TSFC = 15   #g/(kNs)
-njf = 0.46
+TSFC = 14 #g/(kNs)
+
 BPR = 12
 
 #Stats
@@ -39,7 +39,7 @@ BPR = 12
 nj = (Vcr_TAS / (TSFC/1000000)) / ef
 print(nj)
 Cd0 = cf * SwetpS
-
+print('Cd0 = ' + str(Cd0))
 e = 1/(np.pi * AR * 0.0075 + 1/0.97)
 print(e)
 Cd = 2*Cd0
@@ -59,4 +59,3 @@ MF = MFpMTOM*MTOM
 OEM = OEMpMTOM*MTOM
 print(MTOM)
 print(OEM)
-print
