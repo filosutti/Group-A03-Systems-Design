@@ -8,10 +8,10 @@ from cruise_speed_function import cruise_speed_function #Cruise speed
 from minspeed import minSpeed 
 from CS25119 import CS25_119 
 from CS25_121a import CS25_121a_function 
-from CS25_121b import CS121b_function 
-from function_file_name import tpw8_function 
-from function_file_name import tpw8_function 
-from function_file_name import tpw8_function 
+from CS25_121b import CS25121B_func 
+from CS25_121c import CS25_121c_function
+from CS25_121d import CS25_121d_function
+from TO_req import TOF_req
 
 
 #VARIABLES & CONSTANTS
@@ -90,14 +90,16 @@ nj = (Vcr_TAS/(TSFC/1000000))/ef
 
 
 wps = 100 #initialise wing loading
+ROC_LST = []
 cruisespeedlst = []
 LandingFieldLST = []
 minspeedLST = []
 CS25_119_LST = []
 CS25_121A_LST = []
 CS25_121B_LST = []
-tpw7lst = []
-tpw8lst = []
+CS25_121C_LST = []
+CS25_121D_LST = []
+TO_LST = []
 
 wpslst = []
 
@@ -107,8 +109,12 @@ while(wps < 9000):
     minspeedLST.append(minSpeed(wps, V_appro))
     CS25_119_LST.append(CS25_119(wps))
     CS25_121A_LST.append(CS25_121a_function(wps))
-    CS25_121B_LST.append(CS121b_function(wps))
-    tpw8lst.append(tpw8(wps))
+    CS25_121B_LST.append(CS25121B_func(wps))
+    CS25_121C_LST.append(CS25_121c_function(wps))
+    CS25_121D_LST.append(CS25_121d_function(wps))
+    TO_LST.append(TOF_req(wps))
+    ROC_LST.append(tpw1_function(wps))
+    
     wpslst.append(wps)
     wps = wps + 100
 
@@ -118,8 +124,10 @@ plt.plot(wpslst, minspeedLST, label = 'Minimum Speed Requirement')
 plt.plot(wpslst, CS25_119_LST, label = 'CS25-119 Requirement')
 plt.plot(wpslst, CS25_121A_LST, label = 'CS25-121a Requirement')
 plt.plot(wpslst, CS25_121B_LST, label = 'CS25-121b Requirement')
-plt.plot(wpslst, tpw8lst, label = 'CS25-121c Requirement')
-plt.plot(wpslst, tpw9lst, label = 'CS25-121d Requirement')
+plt.plot(wpslst, CS25_121C_LST, label = 'CS25-121c Requirement')
+plt.plot(wpslst, CS25_121D_LST, label = 'CS25-121d Requirement')
+plt.plot(wpslst, TO_LST, label = 'TakeOff Requirement')
+plt.plot(wpslst, ROC_LST, label = 'Climb Rate Requirement')
 
 
 #Design point selection
