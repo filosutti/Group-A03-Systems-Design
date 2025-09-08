@@ -92,7 +92,7 @@ cruisespeedlst = []
 LandingFieldLST = []
 minspeedLST = []
 CS25_119_LST = []
-tpw6lst = []
+CS25_121A_LST = []
 tpw7lst = []
 tpw8lst = []
 
@@ -104,7 +104,7 @@ while(wps < 9000):
     LandingFieldLST.append(LandFieldTPW(wps))
     minspeedLST.append(minSpeed(wps, massfraction, V_appro))
     CS25_119_LST.append(CS25_119(wps))
-    tpw6lst.append(tpw6(wps))
+    CS25_121A_LST.append(CS25_121a_function(wps))
     tpw7lst.append(tpw7(wps))
     tpw8lst.append(tpw8(wps))
     wpslst.append(wps)
