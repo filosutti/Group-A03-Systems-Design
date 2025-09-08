@@ -1,15 +1,13 @@
-#Import
 import math
 import numpy as np
 
-#--------------------------------------------------
 #assumptions
 massratioL = 0.925
 gamma = 1.4
-Mach = 0.77       #mach number
-h_cruise = 10675 #metres
-T_cruise = 218.76  #kelvin
-P_cruise = 21485.9  #pascals
+m = 0.77           #mach number
+h_cruise = 10675   #metres
+t_cruise = 214.53  #kelvin
+p_cruise = 21485.9  #pascals
 rho_cruise = 0.3489 #kg/m3 
 ψ = 0.0075  # lift-dependent parasite drag parameter taken from adsee manual
 φ = 0.97    #span efficiency factor assumed as above
@@ -21,11 +19,9 @@ rho_h_ROC = 0.5629  #kg/m3
 mass_frac_ROC = 0.95  #mass fraction for ROC, taken from similar aircraft data from prev year adsee spreadsheet
 c = 12  #m/s
 
-#--------------------------------------------------
 #Constants
 g = 9.81
 
-#--------------------------------------------------
 #Requirements
 PLreq = 9302 #Payload (kg)
 TOreq = 1296 #Takeoff (m)
@@ -34,8 +30,6 @@ CRreq = 0.77 #Cruise (Mach)
 Vcr_TAS = 228.332
 Vcr_EAS = 127.104
 R_des = 2019
-
-#--------------------------------------------------
 #Class I weight estimation
 MTOM = 38939.25
 OEM = 22694.2
@@ -43,18 +37,9 @@ Mp = 9302
 MF = MTOM - OEM - Mp 
 ef = 44000000 
 R_div = 250  #?
-
-#--------------------------------------------------
-#PW1519G
-ThrustPerEngine = 88 #kN
-TSFC = 11.3 #g/(kNs)
-njf = 0.46
-BPR = 12
-
-#--------------------------------------------------
 #wing
-AR = 9
-L = g
+AR = 9   #assumed
+e = 1/(np.pi*AR*ψ + 1/φ)  #oswald eff factor
 cf = 0.0027
 SwetpS = 6
 CLmax_cruise = 1.5
@@ -64,17 +49,21 @@ V_stall_requirement = 1
 V_appro = 1.23 * V_stall_requirement
 Cd0 = cf*SwetpS
 Cd = 2*Cd0
-nj = (Vcr_TAS/(TSFC/1000000))/ef
-
-#----------------------------------------------------------------------------------------------
-#Code
-
-#--------------------------------------------------
-#Temperature, Pressure, Density
 
 
+#PW1519G
+ThrustPerEngine = 88 #kN
+TSFC = 11.3 #g/(kNs)
+njf = 0.46
+BPR = 12
 
+#------------------------------------
 
+Total_temperature = t_cruise * (1 + (gamma - 1)/2*m*m)
 
+#using eq (7.37)
 
-#Landing field Length formula
+def tpw1_function(wps):
+    α = p_h_ROC/101325*(1-(0.43+0.014*BPR)*np.sqrt(m))  #thrust lapse rate
+    tpw = mass_frac_ROC/α * (np.sqrt(c*c/wps/mass_frac_ROC*rho_h_ROC/2*np.sqrt(Cd0*np.pi * AR * e)) + np.sqrt(Cd0/np.pi/AR/e))
+    return tpw
