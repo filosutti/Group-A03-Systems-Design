@@ -80,6 +80,7 @@ Total_temperature = t_cruise * (1 + (gamma - 1)/2*m*m)
 
 def CS121b_function(wps):
 
+    
     α = 101325*(1+0.4*wps/1.225/CLmax_Takeoff/gamma/8.31/288.15)**3.5 * (1-(0.43+0.014*BPR)*(2*wps/1.225/CLmax_Takeoff/1.4/8.31/288.15)**0.25)  #thrust lapse rate
     tpw = 2/α*(c/math.sqrt(wps*2/1.225/CLmax_Takeoff)+2*math.sqrt(Cd0/np.pi/AR/e))
     
