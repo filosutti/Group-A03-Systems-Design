@@ -58,26 +58,5 @@ TSFC = 11.3 #g/(kNs)
 njf = 0.46
 BPR = 12
 
-#Stats
 
 
-
-#Code
-
-
-#Minimum speed formula
-
-
-#Landing field Length formula
-
-
-#Cruise speed formula
-
-
-#Climb rate formula 
-
-
-#Climb gradient requirements formulas
-
-
-#Take-off field length formula
