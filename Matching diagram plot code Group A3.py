@@ -11,7 +11,7 @@ from CS25_121a import CS25_121a_function
 from CS25_121b import CS121b_function 
 from CS25_121c import tpw8_function 
 from function_file_name import tpw8_function 
-from Take off import tpw8_function 
+from TO_req import TOF_req
 
 
 #VARIABLES & CONSTANTS
@@ -97,7 +97,7 @@ CS25_119_LST = []
 CS25_121A_LST = []
 CS25_121B_LST = []
 tpw7lst = []
-tpw8lst = []
+TO_LST = []
 
 wpslst = []
 
@@ -109,7 +109,7 @@ while(wps < 9000):
     CS25_121A_LST.append(CS25_121a_function(wps))
     CS25_121B_LST.append(CS121b_function(wps))
     tpw8lst.append(tpw8(wps))
-    tpw8lst.append(tpw8(wps))
+    TO_LST.append(TOF_req(wps))
     
     wpslst.append(wps)
     wps = wps + 100
@@ -122,6 +122,7 @@ plt.plot(wpslst, CS25_121A_LST, label = 'CS25-121a Requirement')
 plt.plot(wpslst, CS25_121B_LST, label = 'CS25-121b Requirement')
 plt.plot(wpslst, tpw8lst, label = 'CS25-121c Requirement')
 plt.plot(wpslst, tpw9lst, label = 'CS25-121d Requirement')
+plt.plot(wpslst, TO_LST, label = 'TakeOff Requirement')
 
 
 #Design point selection
