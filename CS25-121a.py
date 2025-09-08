@@ -62,6 +62,7 @@ BPR = 12
 delta_takeoff = 15 #degrees, maximum flap deflection for take off
 delta_landing_gear = 0.0175
 #wing-mounted engines are assumed
+lambda_takeoff = 12.96
 
 #------------------------------------
 
@@ -70,4 +71,5 @@ Cd0_final = Cd0 + 0.0013*delta_takeoff + delta_landing_gear   #equation 7.63 and
 
 def CS25_121a_function(wps):
     αt = (1 + (gamma-1)/2*m*m)^(gamma/(gamma-1))*(1 - (0.43 + 0.014*BPR)*np.sqrt(m)) #equation 7.37
-    tpw = 2/αt*()
+    tpw = 1/αt*(1.15*np.sqrt(2*wps/lambda_takeoff/0.85/1.225/g/np.pi/AR/e_final)+2*4*10.7/lambda_takeoff)
+    return tpw

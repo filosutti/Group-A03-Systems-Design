@@ -66,6 +66,6 @@ Total_temperature = t_cruise * (1 + (gamma - 1)/2*m*m)
 #using eq (7.37)
 
 def tpw1_function(wps):
-    α = 1.48*(1-(0.43+0.014*BPR)*np.sqrt(m))  #thrust lapse rate
-    tpw = 2/α * (c/VT+2*sqrt(Cd0/(np.pi*AR*e))
+    α = 101325*(1+0.4*wps/1.225/CLmax_Takeoff/gamma/8.31/288.15)**3.5 * (1-(0.43+0.014*BPR)*(2*wps/1.225/CLmax_Takeoff/1.4/8.31/288.15)**0.25)  #thrust lapse rate
+    tpw = 2/α*(c/sqrt(wps*2/1.225/CLmax_Takeoff)+2*sqrt(Cd0/np.pi/AR/e))
     return tpw
