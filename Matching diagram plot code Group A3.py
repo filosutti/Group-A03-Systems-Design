@@ -89,7 +89,7 @@ nj = (Vcr_TAS/(TSFC/1000000))/ef
 #------------------------------------------------------------------------------------------------------------------------------
 
 
-wps = 100 #initialise wing loading
+wps = 0 #initialise wing loading
 ROC_LST = []
 cruisespeedlst = []
 LandingFieldLST = []
@@ -104,22 +104,54 @@ TO_LST = []
 wpslst = []
 
 while(wps < 9000):
-    cruisespeedlst.append(cruise_speed_function(wps))
-    LandingFieldLST.append(LandFieldTPW(wps))
-    minspeedLST.append(minSpeed(wps, V_appro))
-    CS25_119_LST.append(CS25_119(wps))
-    CS25_121A_LST.append(CS25_121a_function(wps))
-    CS25_121B_LST.append(CS25121B_func(wps))
-    CS25_121C_LST.append(CS25_121c_function(wps))
-    CS25_121D_LST.append(CS25_121d_function(wps))
-    TO_LST.append(TOF_req(wps))
-    ROC_LST.append(tpw1_function(wps))
-    
+
+    try:
+        cruisespeedlst.append(cruise_speed_function(wps))
+    except ZeroDivisionError:
+        cruisespeedlst.append(0)
+    try:
+        LandingFieldLST.append(LandFieldTPW(wps))
+    except ZeroDivisionError:
+        LandingFieldLST.append(0)
+    try:
+        minspeedLST.append(minSpeed(wps, V_appro))
+    except ZeroDivisionError:
+        minspeedLST.append(0)
+    try:
+        CS25_119_LST.append(CS25_119(wps))
+    except ZeroDivisionError:
+        CS25_119_LST.append(0)
+    try:
+        CS25_121A_LST.append(CS25_121a_function(wps))
+    except ZeroDivisionError:
+        CS25_121A_LST.append(0)
+    try:
+        CS25_121B_LST.append(CS25121B_func(wps))
+    except ZeroDivisionError:
+        CS25_121B_LST.append(0)
+    try:
+        CS25_121C_LST.append(CS25_121c_function(wps))
+    except ZeroDivisionError:
+        CS25_121C_LST.append(0)
+    try:
+        CS25_121D_LST.append(CS25_121d_function(wps))
+    except ZeroDivisionError:
+        CS25_121D_LST.append(0)
+    try:
+        TO_LST.append(TOF_req(wps))
+    except ZeroDivisionError:
+        TO_LST.append(0)
+    try:
+        ROC_LST.append(tpw1_function(wps))
+    except ZeroDivisionError:
+        ROC_LST.append(0)
     wpslst.append(wps)
     wps = wps + 100
 
+
+
 plt.plot(wpslst, cruisespeedlst, label = 'Cruise Speed Requirement')
-plt.plot(wpslst, LandingFieldLST, label = 'Landing Field Requirement')
+plt.plot(LandingFieldLST, wpslst, label = 'Landing Field Requirement')
 plt.plot(wpslst, minspeedLST, label = 'Minimum Speed Requirement')
 plt.plot(wpslst, CS25_119_LST, label = 'CS25-119 Requirement')
 plt.plot(wpslst, CS25_121A_LST, label = 'CS25-121a Requirement')
