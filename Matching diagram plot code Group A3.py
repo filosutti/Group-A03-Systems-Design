@@ -133,7 +133,7 @@ plt.plot(wpslst, ROC_LST, label = 'Climb Rate Requirement')
 #Design point selection
 selected_wps = None
 selected_tpw = None
-plt.plot(selected_wps, selected_tpw, 'ro')
+#plt.plot(selected_wps, selected_tpw, 'ro')
 
 plt.xlabel('W/S - N/m2')
 plt.ylabel('T/W - N/N')
