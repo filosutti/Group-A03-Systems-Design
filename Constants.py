@@ -54,7 +54,6 @@ BPR = 12
 #--------------------------------------------------------
 #wing
 AR = 9
-L = g
 cf = 0.0027
 SwetpS = 6
 CLmax_cruise = 1.5
@@ -65,7 +64,7 @@ V_appro = 1.23 * V_stall_requirement
 Cd0 = cf*SwetpS
 Cd = 2*Cd0
 nj = (Vcr_TAS/(TSFC/1000000))/ef
-
+e = 1/(np.pi*AR*ψ + 1/φ)  #oswald eff factor
 
 #--------------------------------------------------------
 #Stats

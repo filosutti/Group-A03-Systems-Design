@@ -40,6 +40,7 @@ R_div = 250  #?
 #wing
 AR = 9   #assumed
 e = 1/(np.pi*AR*ψ + 1/φ)  #oswald eff factor
+L = g
 cf = 0.0027
 SwetpS = 6
 CLmax_cruise = 1.5
@@ -57,13 +58,16 @@ TSFC = 11.3 #g/(kNs)
 njf = 0.46
 BPR = 12
 
+#Configuration assumptions:
+delta_takeoff = 15 #degrees, maximum flap deflection for take off
+delta_landing_gear = 0.0175
+#wing-mounted engines are assumed
+
 #------------------------------------
 
-Total_temperature = t_cruise * (1 + (gamma - 1)/2*m*m)
+e_final = e + 0.0026*delta_takeoff  #equation 7.62
+Cd0_final = Cd0 + 0.0013*delta_takeoff + delta_landing_gear   #equation 7.63 and 7.64
 
-#using eq (7.37)
-
-def tpw1_function(wps):
-    α = p_h_ROC/101325*(1-(0.43+0.014*BPR)*np.sqrt(m))  #thrust lapse rate
-    tpw = mass_frac_ROC/α * (np.sqrt(c*c/wps/mass_frac_ROC*rho_h_ROC/2*np.sqrt(Cd0*np.pi * AR * e)) + np.sqrt(Cd0/np.pi/AR/e))
-    return tpw
+def CS25_121a_function(wps):
+    αt = (1 + (gamma-1)/2*m*m)^(gamma/(gamma-1))*(1 - (0.43 + 0.014*BPR)*np.sqrt(m)) #equation 7.37
+    tpw = 2/αt*()
