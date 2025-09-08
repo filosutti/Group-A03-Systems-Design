@@ -9,9 +9,9 @@ from minspeed import minSpeed
 from CS25119 import CS25_119 
 from CS25_121a import CS25_121a_function 
 from CS25_121b import CS121b_function 
+from CS25_121c import tpw8_function 
 from function_file_name import tpw8_function 
-from function_file_name import tpw8_function 
-from function_file_name import tpw8_function 
+from Take off import tpw8_function 
 
 
 #VARIABLES & CONSTANTS
@@ -109,6 +109,8 @@ while(wps < 9000):
     CS25_121A_LST.append(CS25_121a_function(wps))
     CS25_121B_LST.append(CS121b_function(wps))
     tpw8lst.append(tpw8(wps))
+    tpw8lst.append(tpw8(wps))
+    
     wpslst.append(wps)
     wps = wps + 100
 
