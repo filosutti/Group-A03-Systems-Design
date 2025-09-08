@@ -41,8 +41,8 @@ R_div = 250  #?
 
 #PW1519G
 ThrustPerEngine = 88 #kN
-TSFC = 11.3 #g/(kNs)
-njf = 0.46
+TSFC = 14 #g/(kNs)
+njf = 0.371
 BPR = 12
 
 #wing
