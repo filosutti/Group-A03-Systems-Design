@@ -20,6 +20,8 @@ p_h_ROC = 38780.84  #pascals
 rho_h_ROC = 0.5629  #kg/m3
 mass_frac_ROC = 0.95  #mass fraction for ROC, taken from similar aircraft data from prev year adsee spreadsheet
 c = 12  #m/s
+mass_frac_cruise = 0.90
+
 
 #--------------------------------------------------------
 #Constants
@@ -54,6 +56,7 @@ BPR = 12
 #--------------------------------------------------------
 #wing
 AR = 9
+L = g
 cf = 0.0027
 SwetpS = 6
 CLmax_cruise = 1.5
@@ -64,40 +67,3 @@ V_appro = 1.23 * V_stall_requirement
 Cd0 = cf*SwetpS
 Cd = 2*Cd0
 nj = (Vcr_TAS/(TSFC/1000000))/ef
-e = 1/(np.pi*AR*ψ + 1/φ)  #oswald eff factor
-
-#--------------------------------------------------------
-#Stats
-
-
-#----------------------------------------------------------------------------------------------------------------
-#Code
-
-
-#--------------------------------------------------------
-#Minimum speed formula
-
-
-
-#--------------------------------------------------------
-#Landing field Length formula
-
-
-
-#--------------------------------------------------------
-#Cruise speed formula
-
-
-
-#--------------------------------------------------------
-#Climb rate formula 
-
-
-
-#--------------------------------------------------------
-#Climb gradient requirements formulas
-
-
-
-#--------------------------------------------------------
-#Take-off field length formula
