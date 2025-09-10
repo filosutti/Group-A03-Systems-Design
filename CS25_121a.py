@@ -42,8 +42,8 @@ Vcr_TAS = 228.332
 Vcr_EAS = 127.104
 R_des = 2019
 #Class I weight estimation
-MTOM = 38939.25
-OEM = 22694.2
+MTOM = 32142.392908426657
+OEM = 19285.4357
 Mp = 9302
 MF = MTOM - OEM - Mp 
 ef = 44000000 
