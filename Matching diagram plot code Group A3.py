@@ -167,8 +167,13 @@ plt.plot(wpslst, TO_LST, label = 'TakeOff Requirement')
 plt.plot(wpslst, ROC_LST, label = 'Climb Rate Requirement')
 
 #--------------------------------------------------------------------------------
-#Design points for reference aircrafts
+#DESIGN POINT
+x_design =      #<<ENTER W/S for design point
+y_design =      #<<ENTER T/W for design point
+plt.scatter(x_design, y_design, color='red', marker='o', s=40)
+plt.text(x_design + 30, y_design + 0.01, 'Fokker 70', color='red')
 
+#Design points for reference aircrafts
 # Fokker 70
 x_f70 = 4187.873262
 y_f70 = 0.312590861
@@ -185,7 +190,7 @@ plt.text(x_ARJ21 + 30, y_ARJ21 + 0.01, 'ARJ21-700 STD', color='red')
 x_E170 = 5207.178218
 y_E170 = 0.328944241
 plt.scatter(x_E170, y_E170, color='red', marker='*', s=50)
-plt.text(x_E170 - 150, y_E170 - 0.022, 'Embraer E 170', color='red')
+plt.text(x_E170 - 160, y_E170 - 0.01, 'Embraer E 170', color='red')
 
 # CRJ 700
 x_CRJ700 = 4727.002691
