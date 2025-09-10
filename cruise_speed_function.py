@@ -37,8 +37,8 @@ R_des = 2019
 
 #--------------------------------------------------------
 #Class I weight estimation
-MTOM = 38939.25
-OEM = 22694.2
+MTOM = 32142.3929
+OEM = 19285.4357
 Mp = 9302
 MF = MTOM - OEM - Mp 
 ef = 44000000 
@@ -66,14 +66,13 @@ Cd0 = cf*SwetpS
 Cd = 2*Cd0
 nj = (Vcr_TAS/(TSFC/1000000))/ef
 e = 1/(np.pi*AR*ψ + 1/φ)
-
 mass_frac_cruise = 0.90
 
 
 
 def cruise_speed_function(wps):
     α = p_cruise/101325*(1-(0.43+0.014*BPR)*np.sqrt(m))  #thrust lapse rate
-    tpw = (mass_frac_cruise / α)(((Cd0*0,5*rho_cruise*Vcr_TAS) / (0.95*wps))+((0.95*wps)/(np.pi*AR*e*0,5*rho_cruise*Vcr_TAS)))
+    tpw = (mass_frac_cruise / α)*(((Cd0*0.5*rho_cruise*Vcr_TAS**2) / (0.95*wps))+((0.95*wps)/(np.pi*AR*e*0.5*rho_cruise*Vcr_TAS**2)))
     return tpw
 
-CL = (mass_frac_cruise*MTOM)/(rho_cruise*Vcr_TAS**2*)
+      

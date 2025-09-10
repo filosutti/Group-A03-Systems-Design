@@ -36,8 +36,8 @@ R_des = 2019
 
 #--------------------------------------------------------
 #Class I weight estimation
-MTOM = 38939.25
-OEM = 22694.2
+MTOM = 32142.392908426657
+OEM = 19285.4357
 Mass_payload = 9302
 
 Mass_fuel = MTOM - OEM - Mass_payload 
