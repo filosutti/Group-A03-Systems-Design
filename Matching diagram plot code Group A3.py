@@ -168,8 +168,8 @@ plt.plot(wpslst, ROC_LST, label = 'Climb Rate Requirement')
 
 #--------------------------------------------------------------------------------
 #DESIGN POINT
-x_design =   1   #<<ENTER W/S for design point
-y_design =   1   #<<ENTER T/W for design point
+x_design = 4448   #<<ENTER W/S for design point
+y_design = 0.538  #<<ENTER T/W for design point
 plt.scatter(x_design, y_design, color='red', marker='o', s=40)
 plt.text(x_design + 30, y_design + 0.01, 'Fokker 70', color='red')
 
