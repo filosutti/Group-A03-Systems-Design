@@ -175,54 +175,54 @@ plt.text(x_design + 30, y_design + 0.01, 'Fokker 70', color='red')
 
 #Design points for reference aircrafts
 
-## Fokker 70
-#x_f70 = 4187.873262
-#y_f70 = 0.312590861
-#plt.scatter(x_f70, y_f70, color='red', marker='*', s=50)
-#plt.text(x_f70 + 30, y_f70 + 0.01, 'Fokker 70', color='red')
-#
-## ARJ21-700 STD
-#x_ARJ21 = 4975.018783
-#y_ARJ21 = 0.381923208
-#plt.scatter(x_ARJ21, y_ARJ21, color='red', marker='*', s=50)
-#plt.text(x_ARJ21 + 30, y_ARJ21 + 0.01, 'ARJ21-700 STD', color='red')
-#
-## Embraer E 170
-#x_E170 = 5207.178218
-#y_E170 = 0.328944241
-#plt.scatter(x_E170, y_E170, color='red', marker='*', s=50)
-#plt.text(x_E170 - 160, y_E170 - 0.01, 'Embraer E 170', color='red')
-#
-## CRJ 700
-#x_CRJ700 = 4727.002691
-#y_CRJ700 = 0.367366812
-#plt.scatter(x_CRJ700, y_CRJ700, color='red', marker='*', s=50)
-#plt.text(x_CRJ700 + 30, y_CRJ700 + 0.01, 'CRJ 700', color='red')
-#
-## CRJ 900
-#x_CRJ900 = 5288.56962
-#y_CRJ900 = 0.343069322
-#plt.scatter(x_CRJ900, y_CRJ900, color='red', marker='*', s=50)
-#plt.text(x_CRJ900 + 30, y_CRJ900 + 0.01, 'CRJ 900', color='red')
-#
-## Avro RJ70
-#x_RJ70 = 4835.327426
-#y_RJ70 = 0.332824278
-#plt.scatter(x_RJ70, y_RJ70, color='red', marker='*', s=50)
-#plt.text(x_RJ70 + 30, y_RJ70 + 0.01, 'Avro RJ70', color='red')
-#
-## Avro RJ85
-#x_RJ85 = 5353.493402
-#y_RJ85 = 0.300610132
-#plt.scatter(x_RJ85, y_RJ85, color='red', marker='*', s=50)
-#plt.text(x_RJ85 + 30, y_RJ85 - 0.028, 'Avro RJ85', color='red')
-#
-## One-Eleven 475
-#x_111475 = 4577.317328
-#y_111475 = 0.254499928
-#plt.scatter(x_111475, y_111475, color='red', marker='*', s=50)
-#plt.text(x_111475 + 30, y_111475 + 0.01, 'One-Eleven 475', color='red')
-#
+# Fokker 70
+x_f70 = 4187.873262
+y_f70 = 0.312590861
+plt.scatter(x_f70, y_f70, color='red', marker='*', s=50)
+plt.text(x_f70 + 30, y_f70 + 0.01, 'Fokker 70', color='red')
+
+# ARJ21-700 STD
+x_ARJ21 = 4975.018783
+y_ARJ21 = 0.381923208
+plt.scatter(x_ARJ21, y_ARJ21, color='red', marker='*', s=50)
+plt.text(x_ARJ21 + 30, y_ARJ21 + 0.01, 'ARJ21-700 STD', color='red')
+
+# Embraer E 170
+x_E170 = 5207.178218
+y_E170 = 0.328944241
+plt.scatter(x_E170, y_E170, color='red', marker='*', s=50)
+plt.text(x_E170 - 160, y_E170 - 0.01, 'Embraer E 170', color='red')
+
+# CRJ 700
+x_CRJ700 = 4727.002691
+y_CRJ700 = 0.367366812
+plt.scatter(x_CRJ700, y_CRJ700, color='red', marker='*', s=50)
+plt.text(x_CRJ700 + 30, y_CRJ700 + 0.01, 'CRJ 700', color='red')
+
+# CRJ 900
+x_CRJ900 = 5288.56962
+y_CRJ900 = 0.343069322
+plt.scatter(x_CRJ900, y_CRJ900, color='red', marker='*', s=50)
+plt.text(x_CRJ900 + 30, y_CRJ900 + 0.01, 'CRJ 900', color='red')
+
+# Avro RJ70
+x_RJ70 = 4835.327426
+y_RJ70 = 0.332824278
+plt.scatter(x_RJ70, y_RJ70, color='red', marker='*', s=50)
+plt.text(x_RJ70 + 30, y_RJ70 + 0.01, 'Avro RJ70', color='red')
+
+# Avro RJ85
+x_RJ85 = 5353.493402
+y_RJ85 = 0.300610132
+plt.scatter(x_RJ85, y_RJ85, color='red', marker='*', s=50)
+plt.text(x_RJ85 + 30, y_RJ85 - 0.028, 'Avro RJ85', color='red')
+
+# One-Eleven 475
+x_111475 = 4577.317328
+y_111475 = 0.254499928
+plt.scatter(x_111475, y_111475, color='red', marker='*', s=50)
+plt.text(x_111475 + 30, y_111475 + 0.01, 'One-Eleven 475', color='red')
+
 #--------------------------------------------------------------------------------
 
 
