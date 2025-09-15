@@ -1,0 +1,12 @@
+import numpy as np
+AR = 9
+S = 70.89 #m^2
+TR = 0.316
+swangle = 24.022 #degrees
+b = np.sqrt(AR*S)
+print('b = ', b)
+
+c_r = 2*S/((1+TR)*b)
+c_t = TR*c_r
+print('c_r = ', c_r)
+print('c_t = ', c_t)
