@@ -10,7 +10,7 @@ C_t = 1.35
 c_l_alpha = 5.6 # TBD
 c_d0 = 0.2      # TBD
 tau = 0.5       # fixed
-V=228.31
+V = 228.31        #cruise speed TAS
 P_req = np.radians(4)          # target roll rate 4°/s converted to rad/s
 P_req_safety = 1.5 * P_req    # apply safety factor
 
