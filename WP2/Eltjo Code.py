@@ -12,7 +12,7 @@ c_d0 = 0.2      # drag coefficient increment (TBD)
 tau = 0.5       # control effectiveness factor
 V = 228.31      # cruise speed TAS [m/s]
 
-P_req = np.radians(15)        # target roll rate (4°/s converted to rad/s)
+P_req = np.radians(10)        # target roll rate (4°/s converted to rad/s)
 P_req_safety = 1.5 * P_req   # apply safety factor
 
 # ------------------- Functions -------------------
@@ -45,13 +45,13 @@ closest_above = (None, float('inf'))  # (params, excess)
 
 b1_range = np.arange(5, 8.0, 0.1)          # inner limit [m]
 b2_range = np.arange(0.0, b/2, 0.1)          # outer limit [m], capped at semispan
-delta_range = np.radians(np.arange(15, 41, 5))  # aileron deflection range [rad]
+delta_range = np.radians(np.arange(10, 41, 5))  # aileron deflection range [rad]
 
 for b1 in b1_range:
     for b2 in b2_range:
         if b2 <= b1:
             continue
-        if (b2 - b1) < 1:  # enforce minimum aileron span length
+        if (b2 - b1) < 1.5:  # enforce minimum aileron span length
             continue
 
         S_reference = S_ref(b1, b2)
