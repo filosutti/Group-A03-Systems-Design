@@ -12,7 +12,7 @@ c_d0 = 0.2      # drag coefficient increment (TBD)
 tau = 0.5       # control effectiveness factor
 V = 228.31      # cruise speed TAS [m/s]
 
-P_req = np.radians(10)        # target roll rate (4°/s converted to rad/s)
+P_req = np.radians(32)        # target roll rate (4°/s converted to rad/s)
 P_req_safety = 1.5 * P_req   # apply safety factor
 
 # ------------------- Functions -------------------
@@ -22,7 +22,7 @@ def c(y):
 
 def S_ref(b1, b2):
     """Reference aileron area (both wings)."""
-    return 2 * quad(c, b1, b2)[0]
+    return quad(c, b1, b2)[0]
 
 def C_L_delta_a(c_l_alpha, tau, S_reference, b, C_r, b1, b2, lambda_w):
     """Rolling moment due to aileron deflection."""
