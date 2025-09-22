@@ -11,13 +11,13 @@ c_l_alpha = 5.73    # 2D lift curve slope [1/rad]
 c_d0 = 6*0.0027       # profile drag
 tau = 0.21          # control surface effectiveness
 P_req = np.radians(4)       # target roll rate [rad/s] (4°/s)
-P_req_safety = 4* P_req  # safety factor
+P_req_safety = 5*P_req  # safety factor
 b_2outer_limit = 10.5  #outer limit for b2
 b_1outer_limit = 8     #outer limit for b1
 b_1inner_limit = 5  #inner limit for b1 
 b_2iinner_limit = 8.5  #inner limit for b2
-delta_a_innerlimit = 10
-delta_a_outerlimit = 25
+delta_a_innerlimit = 8
+delta_a_outerlimit = 15
 
 CL_Max=1.52
 M_Max=32142
@@ -92,5 +92,7 @@ if best_solution:
     print(f"  Outboard end   b2 = {b2:.2f} m")
     print(f"  Deflection     δa = {da:.1f}°")
     print(f"Achieved roll rate: {np.degrees(P_actual):.2f}°/s")
+    print(f"Reference area: {S_reference:.2f} m2")
+
 else:
     print("No feasible aileron configuration found.")
