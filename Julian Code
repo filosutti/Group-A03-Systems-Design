@@ -1,0 +1,61 @@
+#Import
+import math
+import numpy as np
+import matplotlib.pyplot as plt
+
+#Constants
+g = 9.81
+
+#Requirements
+PLreq = 9302 #Payload (kg)
+TOreq = 1296 #Takeoff (m)
+LDreq = 1210 #Landing (m)
+CRreq = 0.77 #C ruise (Mach)
+Vcr_TAS = 228.332
+Vcr_EAS = 127.104
+R_des = 2019.0
+
+#Class I weight estimation
+OEMpMTOM = 0.6
+Mp = 9302.0
+ef = 44000000.0
+R_div = 450.0
+
+#Wing
+AR = 9
+cf = 0.0027
+SwetpS = 6.0
+CLmax_cruise = 1.5
+CLmax_Takeoff = 1.9
+CLmax_ngine = 88 #kN
+TSFC = 11.7    #g/(kNs)
+njf = 0.46
+BPR = 12
+
+#Stats
+
+
+#Code
+nj = (Vcr_TAS / (TSFC/1000000)) / ef
+print(nj)
+Cd0 = cf * SwetpS
+
+e = 1/(np.pi * AR * 0.0075 + 1/0.97)
+print(e)
+Cd = 2*Cd0
+Cl = np.sqrt(np.pi * AR * e * Cd0)
+LpD = 0.5*np.sqrt(np.pi*AR*e/Cd0)
+print(LpD)
+R_lost = (1/0.7)*LpD*(10668 + (Vcr_TAS)**2/(2*g))/1000
+print(R_lost)
+Req_res = 1.2*R_div + 45*60*Vcr_TAS/1000
+Req = ((R_des + R_lost)*(1.05) + Req_res)
+print(Req)
+print(Req_res)
+MFpMTOM = 1 - np.exp(-Req*1000/(nj*(ef/g)*LpD))
+print(MFpMTOM)
+MTOM = PLreq/(1-(OEMpMTOM)-MFpMTOM)
+MF = MFpMTOM*MTOM
+OEM = OEMpMTOM*MTOM
+print(MTOM)
+print(OEM)
