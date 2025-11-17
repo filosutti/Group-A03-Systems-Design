@@ -1,3 +1,6 @@
+import scipy as sp
+from scipy import interpolate
+
 ylst = []
 cllst = []
 cdlst = []
@@ -26,3 +29,9 @@ print("ylst", ylst)
 print("clst", cllst)
 print("cdlst", cdlst)
 print("cmlst", cmlst)
+
+cl_int = sp.interpolate.interp1d(ylst, cllst, kind='cubic', fill_value="extrapolate")
+cd_int = sp.interpolate.interp1d(ylst, cdlst, kind='cubic', fill_value="extrapolate")
+cm_int = sp.interpolate.interp1d(ylst, cmlst, kind='cubic', fill_value="extrapolate")
+
+print(cl_int(1))
