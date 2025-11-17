@@ -1,25 +1,64 @@
 print('hello kyrgyzstan')
-x = [0,1,2,3]
-y = [5,4,3,2]
-c = [1,2]
+def inertia_calculation(x,y,c,ns,As):
 
-Ixxtot = 0
-Iyytot = 0
-Ixytot = 0
-t = 0.1
-for i in range(len(x)):
-    dx = x[i+1]-x[i]
-    dy = y[i+1]-y[i]
-    l = (dx^2+dy^2)**0.5
-    A = l*t
-    d_y = x[i] + (dx)/2 - c[0]
-    d_x = y[i] + (dy)/2 - c[1]
-    Ixx = (t*((l)**3)*(dy/(l))**2)/12+ A*(d_x**2)
-    Iyy = (t*((l)**3)*(dx/(l))**2)/12+ A*(d_y**2)
-    Ixy = (t*((l)**3)*(dx*dy)/(l**2))/12 + A*(d_x*d_y)
-    Ixxtot += Ixx
-    Iyytot += Iyy
-    Ixytot += Ixy
-print('Ixx =' + Ixxtot)
-print('Iyy =' + Iyytot)
-print('Ixy =' + Ixytot)
+    # iterative variables + thickness
+    Ixxtot = 0
+    
+    Iyytot = 0
+    
+    Ixytot = 0
+    
+    J = 0
+    
+    t = 0.1
+    #iterations
+    for i in range(len(x)):
+        dx = x[i+1]-x[i]
+
+        dy = y[i+1]-y[i]
+
+        x2 = x[i]
+
+        y2 = y[i]
+
+        l = (dx^2+dy^2)**0.5
+        
+        A = l*t
+        
+        d_y = x[i] + (dx)/2 - c[0]
+        
+        d_x = y[i] + (dy)/2 - c[1]
+        if i == 1,3:
+            for i in ns:
+                x2 += dx/ns
+                y2 += dy/ns
+                d_y2 = abs(x2-c[0])
+                d_x2 = abs(y2-c[1])
+                Ixxtot += As*d_x2**2
+                Iyytot += As*d_y2**2
+                Ixytot += As*d_x2*d_y2
+
+
+        Ixx = (t*((l)**3)*(dy/(l))**2)/12+ A*(d_x**2)
+        
+        Iyy = (t*((l)**3)*(dx/(l))**2)/12+ A*(d_y**2)
+        
+        Ixy = (t*((l)**3)*(dx*dy)/(l**2))/12 + A*(d_x*d_y)
+        
+        Ixxtot += Ixx
+        
+        Iyytot += Iyy
+        
+        Ixytot += Ixy
+        
+        J += (Ixxtot + Iyytot)
+        
+        print('hello kyrgyzstan')
+    
+    return Ixxtot, Iyytot, Ixytot, J
+
+def deflection_calculation(E, I, L, P):
+    
+    
+    
+    return delta
