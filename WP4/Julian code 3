@@ -6,6 +6,7 @@ c = [1,2]
 Ixxtot = 0
 Iyytot = 0
 Ixytot = 0
+J = 0
 t = 0.1
 for i in range(len(x)):
     dx = x[i+1]-x[i]
@@ -20,6 +21,9 @@ for i in range(len(x)):
     Ixxtot += Ixx
     Iyytot += Iyy
     Ixytot += Ixy
+    J += (Ixxtot + Iyytot)
 print('Ixx =' + Ixxtot)
 print('Iyy =' + Iyytot)
 print('Ixy =' + Ixytot)
+
+
