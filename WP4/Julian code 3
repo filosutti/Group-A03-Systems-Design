@@ -1,6 +1,7 @@
 print('hello kyrgyzstan')
 def inertia_calculation(x,y,c,ns,As):
-
+    x.append(x[0])
+    y.append(y[0])
     # iterative variables + thickness
     Ixxtot = 0
     
@@ -13,8 +14,7 @@ def inertia_calculation(x,y,c,ns,As):
     t = 0.1
     #iterations
     for i in range(len(x)):
-        if i == len(x):
-            i = 0
+
         dx = x[i+1]-x[i]
 
         dy = y[i+1]-y[i]
@@ -32,13 +32,13 @@ def inertia_calculation(x,y,c,ns,As):
         d_x = y[i] + (dy)/2 - c[1]
         if i == 1 or i == 3:
             for k in ns:
-                x2 += dx/ns
-                y2 += dy/ns
                 d_y2 = abs(x2-c[0])
                 d_x2 = abs(y2-c[1])
                 Ixxtot += As*d_x2**2
                 Iyytot += As*d_y2**2
                 Ixytot += As*d_x2*d_y2
+                x2 += dx/ns
+                y2 += dy/ns
 
 
         Ixx = (t*((l)**3)*(dy/(l))**2)/12+ A*(d_x**2)
@@ -53,10 +53,8 @@ def inertia_calculation(x,y,c,ns,As):
         
         Ixytot += Ixy
         
-        J += (Ixxtot + Iyytot)
-        
         print('hello kyrgyzstan')
-    
+    J += (Ixxtot + Iyytot)
     return Ixxtot, Iyytot, Ixytot, J
 
 def deflection_calculation(E, I, L, P):
