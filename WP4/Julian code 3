@@ -1,29 +1,27 @@
 print('hello kyrgyzstan')
-x = [0,1,2,3]
-y = [5,4,3,2]
-c = [1,2]
+def inertia_calculation(c):
+    x = [0,1,2,3]
+    y = [5,4,3,2]
 
-Ixxtot = 0
-Iyytot = 0
-Ixytot = 0
-J = 0
-t = 0.1
-for i in range(len(x)):
-    dx = x[i+1]-x[i]
-    dy = y[i+1]-y[i]
-    l = (dx^2+dy^2)**0.5
-    A = l*t
-    d_y = x[i] + (dx)/2 - c[0]
-    d_x = y[i] + (dy)/2 - c[1]
-    Ixx = (t*((l)**3)*(dy/(l))**2)/12+ A*(d_x**2)
-    Iyy = (t*((l)**3)*(dx/(l))**2)/12+ A*(d_y**2)
-    Ixy = (t*((l)**3)*(dx*dy)/(l**2))/12 + A*(d_x*d_y)
-    Ixxtot += Ixx
-    Iyytot += Iyy
-    Ixytot += Ixy
-    J += (Ixxtot + Iyytot)
-print('Ixx =' + Ixxtot)
-print('Iyy =' + Iyytot)
-print('Ixy =' + Ixytot)
+    Ixxtot = 0
+    Iyytot = 0
+    Ixytot = 0
+    J = 0
+    t = 0.1
+    for i in range(len(x)):
+        dx = x[i+1]-x[i]
+        dy = y[i+1]-y[i]
+        l = (dx^2+dy^2)**0.5
+        A = l*t
+        d_y = x[i] + (dx)/2 - c[0]
+        d_x = y[i] + (dy)/2 - c[1]
+        Ixx = (t*((l)**3)*(dy/(l))**2)/12+ A*(d_x**2)
+        Iyy = (t*((l)**3)*(dx/(l))**2)/12+ A*(d_y**2)
+        Ixy = (t*((l)**3)*(dx*dy)/(l**2))/12 + A*(d_x*d_y)
+        Ixxtot += Ixx
+        Iyytot += Iyy
+        Ixytot += Ixy
+        J += (Ixxtot + Iyytot)
 
+    return Ixxtot, Iyytot, Ixytot, J
 
