@@ -37,8 +37,8 @@ R_des = 2019
 
 #--------------------------------------------------------
 #Class I weight estimation
-MTOM = 38939.25
-OEM = 22694.2
+MTOM = 32142.3929
+OEM = 19285.4357
 Mp = 9302
 MF = MTOM - OEM - Mp 
 ef = 44000000 
@@ -75,6 +75,4 @@ def cruise_speed_function(wps):
     tpw = (mass_frac_cruise / α)*(((Cd0*0.5*rho_cruise*Vcr_TAS**2) / (0.95*wps))+((0.95*wps)/(np.pi*AR*e*0.5*rho_cruise*Vcr_TAS**2)))
     return tpw
 
-
-print((np.sqrt(np.pi*AR*e*Cd0)/(Cd)))
       

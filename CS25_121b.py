@@ -31,8 +31,8 @@ Vcr_TAS = 228.332
 Vcr_EAS = 127.104
 R_des = 2019
 #Class I weight estimation
-MTOM = 38939.25
-OEM = 22694.2
+MTOM = 32142.392908426657
+OEM = 19285.4357
 Mp = 9302
 MF = MTOM - OEM - Mp 
 ef = 44000000 
@@ -62,9 +62,16 @@ BPR = 12
 
 Total_temperature = t_cruise * (1 + (gamma - 1)/2*m*m)
 
-#using eq (7.37)
 
-α = p_h_ROC/101325*(1-(0.43+0.014*BPR)*np.sqrt(m))  #thrust lapse rate
-def tpw1_function(wps):
-    tpw = mass_frac_ROC/α * (np.sqrt(c*c/wps/mass_frac_ROC*rho_h_ROC/2*np.sqrt(Cd0*np.pi * AR * e)) + np.sqrt(Cd0/np.pi/AR/e))
+
+def CS25121B_func(wps):
+
+    delta_takeoff = 15
+    delta_landing_gear = 0.00175
+
+    e_final = e + 0.0026*delta_takeoff
+    Cd0_final = Cd0 + 0.0013*delta_takeoff + delta_landing_gear
+
+    α = 101325*(1+0.4*wps/1.225/CLmax_Takeoff/gamma/8.31/288.15)**3.5 * (1-(0.43+0.014*BPR)*(2*wps/1.225/CLmax_Takeoff/1.4/8.31/288.15)**0.25)  #thrust lapse rate
+    tpw = 2/α*(c/math.sqrt(wps*2/1.225/CLmax_Takeoff)+2*math.sqrt(Cd0_final/np.pi/AR/e_final))
     return tpw
