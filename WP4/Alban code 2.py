@@ -1,25 +1,76 @@
-#Input: Wing Box Geometry
-#Output: Wing Box Centroid
-
 import numpy as np
 import math
 import matplotlib.pyplot as plt
 
-print("i love kyrgyzstan")
-
-# corner inputs (temporary)
-corner = []
+########## temporary ##########
+# wing box skin inputs
 corners = 4
+corner = []
+skinThickness = float(input("Enter the skin thickness (m): "))
+skinDensity = float(input("Enter the skin density (kg/m^3): "))
+
 for i in range(corners):
     print(f"Enter coordinates for corner {i+1}:")
-    x = float(input("  x: "))
-    y = float(input("  y: "))
-    corner.append((x, y))
+    xc = float(input("  x: "))
+    yc = float(input("  y: "))
+    corner.append((xc, yc))
 
-def WingBoxCentroid(corner):
-    cx = (corner[0][0] + corner[1][0] + corner[2][0] + corner[3][0]) / corners
-    cy = (corner[0][1] + corner[1][1] + corner[2][1] + corner[3][1]) / corners
-    print("Coordinates (x, y) of wing box centroid: (", cx, ",", cy, ")")
-    return cx, cy
+# stringer inputs
+stringers = []
+nStringers = int(input("Enter number of stringers (point areas): "))
+stringerDensity = float(input("Enter stringer density (kg/m^3): "))
 
-WingBoxCentroid(corner)
+for i in range(nStringers):
+    print(f"Enter data for stringer {i+1}:")
+    xa = float(input("  x: "))
+    ya = float(input("  y: "))
+    area = float(input("  effective area (m^2): "))
+    stringers.append((xa, ya, area, stringerDensity))
+##########  temporary  ##########
+
+
+
+def WingBoxCentroid(corner, skinThickness, skinDensity, stringers=[]):
+    # Close the loop
+    x = [p[0] for p in corner] + [corner[0][0]]
+    y = [p[1] for p in corner] + [corner[0][1]]
+
+    # Compute polygon area
+    A = 0
+    Cx = 0
+    Cy = 0
+    for i in range(4):
+        cross = x[i]*y[i+1] - x[i+1]*y[i]
+        A += cross
+        Cx += (x[i] + x[i+1]) * cross
+        Cy += (y[i] + y[i+1]) * cross
+    A *= 0.5
+    Cx /= (6*A)
+    Cy /= (6*A)
+
+    # Skin mass (area times thickness times density)
+    m_skin = abs(A) * skinThickness * skinDensity
+
+    # Start mass sums
+    sum_mx = m_skin * Cx
+    sum_my = m_skin * Cy
+    total_mass = m_skin
+
+    # Add stringers (point areas)
+    for s in stringers:
+        xs, ys, area, density = s
+        m = area * density
+        sum_mx += m * xs
+        sum_my += m * ys
+        total_mass += m
+
+    # Total centroid
+    xc = sum_mx / total_mass
+    yc = sum_my / total_mass
+
+    # Return centroid
+    c = [xc, yc]
+    return c
+
+centroid = WingBoxCentroid(corner, skinThickness, skinDensity, stringers)
+print("Wing box centroid:", centroid)
