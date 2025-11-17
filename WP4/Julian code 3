@@ -1,8 +1,5 @@
 print('hello kyrgyzstan')
-def inertia_calculation(c):
-    x = [0,1,2,3]
-    y = [5,4,3,2]
-
+def inertia_calculation(x,y,c):
     Ixxtot = 0
     Iyytot = 0
     Ixytot = 0
