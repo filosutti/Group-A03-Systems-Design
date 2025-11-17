@@ -34,3 +34,4 @@ def V_F(V_S1, V_S0): # V_S1 and V_S0 should already be in equivalent airspeed
 
 a_cruise = ISA(h_cruise)[3]
 V_c = a_cruise * M_cr
+print(V_d(V_c)) # V_d results to be lower than the speed of sound at cruise altitude
