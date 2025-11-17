@@ -1,7 +1,7 @@
-y_list = []
-cl_list = []
-cd_list = []
-cm_list = []
+ylst = []
+cllst = []
+cdlst = []
+cmlst = []
 
 import os
 import sys
@@ -10,9 +10,6 @@ import sys
 
 with open ('WP4/XFLR0.txt','r') as f:
     for line in f:
-        if line.strip() == line.startswith("y-span") or len(line.split()) < 10 or float(line.split()[0]) < 0:
-            continue
-        
         parts = line.split()
 
         y = float(parts[0])
@@ -20,12 +17,12 @@ with open ('WP4/XFLR0.txt','r') as f:
         cd = float(parts[5])   
         cm = float(parts[7])   
 
-        y_list.append(y)
-        cl_list.append(cl)
-        cd_list.append(cd)
-        cm_list.append(cm)
+        ylst.append(y)
+        cllst.append(cl)
+        cdlst.append(cd)
+        cmlst.append(cm)
 
-print(y_list)
-print(cl_list)
-print(cd_list)
-print(cm_list)
+print("ylst", ylst)
+print("clst", cllst)
+print("cdlst", cdlst)
+print("cmlst", cmlst)
