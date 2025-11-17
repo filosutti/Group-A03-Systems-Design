@@ -3,7 +3,7 @@ import math
 import matplotlib.pyplot as plt
 
 ########## temporary ##########
-# wing box skin inputs
+# wing box skin inputs (must be in order)
 corners = 4
 corner = []
 skinThickness = float(input("Enter the skin thickness (m): "))
@@ -45,6 +45,8 @@ def WingBoxCentroid(corner, skinThickness, skinDensity, stringers=[]):
         Cx += (x[i] + x[i+1]) * cross
         Cy += (y[i] + y[i+1]) * cross
     A *= 0.5
+    if abs(A) < 0.000001:
+        raise ValueError("Polygon area zero or polygon is degenerate")
     Cx /= (6*A)
     Cy /= (6*A)
 
