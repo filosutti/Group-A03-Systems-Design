@@ -9,7 +9,7 @@ import sys
 sys.path.append('..')
 
 
-with open ('XFLR_a_0.txt', 'r') as f:
+with open ("C:\Users\32486\Documents\GitHub\Group-A03-System-Design\WP4\XFLR_a_0.txt", 'r') as f:
     for line in f:
         if line.strip() == line.startswith("y-span") or len(line.split()) < 10 or float(line.split()[0]) < 0:
             continue
@@ -30,6 +30,3 @@ print(y_list)
 print(cl_list)
 print(cd_list)
 print(cm_list)
-
-
-
