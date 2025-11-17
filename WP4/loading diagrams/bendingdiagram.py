@@ -1,0 +1,1 @@
+Y_e = 3.75 #m #lateral nacelle positioning (from centreline to halfnacelle)

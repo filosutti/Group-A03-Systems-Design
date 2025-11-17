@@ -1,10 +1,13 @@
+import scipy as sp
+from scipy import interpolate
+
+V_inf = 228.17
+q = 1/2*1.225*V_inf*V_inf
+
 ylst = []
 cllst = []
 cdlst = []
 cmlst = []
-
-import os
-import sys
 
 
 
@@ -26,3 +29,7 @@ print("ylst", ylst)
 print("clst", cllst)
 print("cdlst", cdlst)
 print("cmlst", cmlst)
+
+cl_int = sp.interpolate.interp1d(ylst, cllst, kind='cubic', fill_value="extrapolate")
+cd_int = sp.interpolate.interp1d(ylst, cdlst, kind='cubic', fill_value="extrapolate")
+cm_int = sp.interpolate.interp1d(ylst, cmlst, kind='cubic', fill_value="extrapolate")
