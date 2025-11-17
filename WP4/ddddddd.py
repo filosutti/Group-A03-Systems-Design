@@ -29,3 +29,4 @@ print("i am captivated by the beauty of kyrgyzstan's nature")
 print("kyrgyzstan's culture is a blend of various influences")
 print("the people of kyrgyzstan are proud of their heritage")
 print("i would recommend visiting kyrgyzstan to everyone")
+a = 10
