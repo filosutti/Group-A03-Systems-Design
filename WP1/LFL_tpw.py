@@ -1,6 +1,5 @@
 #Import
 import math
-import numpy as np
 
 #----------------------------------------------------------------------------------------------------------------
 #assumptions
@@ -71,7 +70,6 @@ nj = (Vcr_TAS/(TSFC/1000000))/ef
 
 #----------------------------------------------------------------------------------------------------------------
 #Code
-
 def LandFieldTPW(wps):
     beta = 0.84
     rho0 = 1.225226 #[kg/m^3]
@@ -85,5 +83,6 @@ def LandFieldTPW(wps):
     Landing_Field_TPW = (1/beta) * (LandingFieldLength/C_LFL) * (0.5 * rho0 * CLmax_Landing)
     
     return Landing_Field_TPW
+
 
 
