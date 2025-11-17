@@ -24,7 +24,7 @@ def V_d(V_c):
     V_d = V_c * 1.25
     return(V_d)
 
-def V_F(V_S1, V_S0): 
+def V_F(V_S1, V_S0): # V_S1 and V_S0 should already be in equivalent airspeed
     V_F1 = V_S1 * 1.6 # with the wing-flaps in take-off position at maximum take-off weight
     V_F2 = V_S1 * 1.8 #with the wing-flaps in approach position at maximum landing weight
     V_F3 = V_S0 * 1.8 # with the wing-flaps in landing position at maximum landing weight
