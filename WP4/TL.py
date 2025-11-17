@@ -1,6 +1,9 @@
 import scipy as sp
 from scipy import interpolate
 
+V_inf = 228.17
+q = 1/2*1.225*V_inf*V_inf
+
 ylst = []
 cllst = []
 cdlst = []
