@@ -1,9 +1,12 @@
+#Import
 import math
 import numpy as np
 
 #assumptions
 massratioL = 0.925
-h_cruise = 10675   #metres
+gamma = 1.4
+m = 0.77       #mach number
+h_cruise = 10675 #metres
 t_cruise = 214.53  #kelvin
 p_cruise = 21485.9  #pascals
 rho_cruise = 0.3489 #kg/m3 
@@ -16,7 +19,6 @@ p_h_ROC = 38780.84  #pascals
 rho_h_ROC = 0.5629  #kg/m3
 mass_frac_ROC = 0.95  #mass fraction for ROC, taken from similar aircraft data from prev year adsee spreadsheet
 c = 12  #m/s
-gamma =1.4
 
 #Constants
 g = 9.81
@@ -30,60 +32,52 @@ Vcr_TAS = 228.332
 Vcr_EAS = 127.104
 R_des = 2019
 #Class I weight estimation
-MTOM = 32142.392908426657
-OEM = 19285.4357
+MTOM = 38939.25
+OEM = 22694.2
 Mp = 9302
 MF = MTOM - OEM - Mp 
 ef = 44000000 
 R_div = 250  #?
 #wing
-   #assumed
 AR = 9
-e = 1/(np.pi*AR*ψ + 1/φ)  #oswald eff factor
 L = g
 cf = 0.0027
 SwetpS = 6
 CLmax_cruise = 1.5
+CLmax_Takeoff = 1.9
 CLmax_Landing = 2.3
 V_stall_requirement = 1
 V_appro = 1.23 * V_stall_requirement
 Cd0 = cf*SwetpS
 Cd = 2*Cd0
-BPR = 12
-CLmax_Takeoff = 1.9
-
+nj = (Vcr_TAS/(TSFC/1000000))/ef
 
 #PW1519G
 ThrustPerEngine = 88 #kN
 TSFC = 11.3 #g/(kNs)
 njf = 0.46
+BPR = 12
+
+#Stats
 
 
 
-#------------------------------------
+#Code
 
 
-<<<<<<<< HEAD:CS25_121b.py
+#Minimum speed formula
 
 
-def CS25121B_func(wps):
+#Landing field Length formula
 
-    delta_takeoff = 15
-    delta_landing_gear = 0.00175
 
-    e_final = e + 0.0026*delta_takeoff
-    Cd0_final = Cd0 + 0.0013*delta_takeoff + delta_landing_gear
+#Cruise speed formula
 
-    α = 101325*(1+0.4*wps/1.225/CLmax_Takeoff/gamma/8.31/288.15)**3.5 * (1-(0.43+0.014*BPR)*(2*wps/1.225/CLmax_Takeoff/1.4/8.31/288.15)**0.25)  #thrust lapse rate
-    tpw = 2/α*(c/math.sqrt(wps*2/1.225/CLmax_Takeoff)+2*math.sqrt(Cd0_final/np.pi/AR/e_final))
-========
-def CS25_121c_function(wps):
 
-    e_final = e
-    Cd0_final = Cd0
-    
-    αt = 101325*(1+0.4*wps/1.225/CLmax_Takeoff/gamma/8.31/288.15)**3.5 * (1-(0.43+0.014*BPR)*(2*wps/1.225/CLmax_Takeoff/1.4/8.31/288.15)**0.25)  #thrust lapse rate equation 7.37
-    tpw = 2/αt*(2*np.sqrt(Cd0_final/np.pi/AR/e_final)+c/np.sqrt(wps*2/CLmax_Takeoff/1.225))
-    
->>>>>>>> 683f8542bcb88436e2f1435bc70a939f79540090:WP1/CS25_121c.py
-    return tpw
+#Climb rate formula 
+
+
+#Climb gradient requirements formulas
+
+
+#Take-off field length formula

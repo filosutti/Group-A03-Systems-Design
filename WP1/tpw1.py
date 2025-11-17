@@ -63,20 +63,6 @@ njf = 0.46
 #------------------------------------
 
 
-<<<<<<<< HEAD:CS25_121b.py
-
-
-def CS25121B_func(wps):
-
-    delta_takeoff = 15
-    delta_landing_gear = 0.00175
-
-    e_final = e + 0.0026*delta_takeoff
-    Cd0_final = Cd0 + 0.0013*delta_takeoff + delta_landing_gear
-
-    α = 101325*(1+0.4*wps/1.225/CLmax_Takeoff/gamma/8.31/288.15)**3.5 * (1-(0.43+0.014*BPR)*(2*wps/1.225/CLmax_Takeoff/1.4/8.31/288.15)**0.25)  #thrust lapse rate
-    tpw = 2/α*(c/math.sqrt(wps*2/1.225/CLmax_Takeoff)+2*math.sqrt(Cd0_final/np.pi/AR/e_final))
-========
 def CS25_121c_function(wps):
 
     e_final = e
@@ -85,5 +71,4 @@ def CS25_121c_function(wps):
     αt = 101325*(1+0.4*wps/1.225/CLmax_Takeoff/gamma/8.31/288.15)**3.5 * (1-(0.43+0.014*BPR)*(2*wps/1.225/CLmax_Takeoff/1.4/8.31/288.15)**0.25)  #thrust lapse rate equation 7.37
     tpw = 2/αt*(2*np.sqrt(Cd0_final/np.pi/AR/e_final)+c/np.sqrt(wps*2/CLmax_Takeoff/1.225))
     
->>>>>>>> 683f8542bcb88436e2f1435bc70a939f79540090:WP1/CS25_121c.py
     return tpw
