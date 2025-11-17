@@ -6,9 +6,6 @@ cllst = []
 cdlst = []
 cmlst = []
 
-import os
-import sys
-
 
 
 with open ('WP4/XFLR0.txt','r') as f:
@@ -33,5 +30,3 @@ print("cmlst", cmlst)
 cl_int = sp.interpolate.interp1d(ylst, cllst, kind='cubic', fill_value="extrapolate")
 cd_int = sp.interpolate.interp1d(ylst, cdlst, kind='cubic', fill_value="extrapolate")
 cm_int = sp.interpolate.interp1d(ylst, cmlst, kind='cubic', fill_value="extrapolate")
-
-print(cl_int(1))
