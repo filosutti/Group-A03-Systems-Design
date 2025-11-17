@@ -1,9 +1,14 @@
 #CODE
+import matplotlib.pyplot as plt
+
 h_cruise=10668
 M_cr=0.77
 CL_maxcr=1.56
 CL_maxto=2.4344
 CL_maxap=2.653
+m_maxto=27719.34119
+n_max=max((2.1+24000/(9.80665*m_maxto*0.2248+10000)), 2.5)
+n_min=-1
     
 def ISA(h):
     T=288.15-0.0065*h
@@ -34,5 +39,54 @@ def nvdiagram(h, m):
 
 m=27719
 
-print(Veq(0.433, m, 10668))
+v_list=[0]
+n_list=[0]
+V=0
+V_S1=25
+V_D=200
+V_C=160
+while V<V_S1*(n_max)**0.5:
+    V=min(V+1, V_S1*(n_max)**0.5)
+    n=(V/V_S1)**2
+    v_list.append(V)
+    n_list.append(n)
+while V_S1*(n_max)**0.5<=V<V_D:
+    n=n_max
+    V=max(V+1, V_D)
+    v_list.append(V)
+    n_list.append(n)
+
+while 0<n<=n_max:
+    V=V
+    n=int(10*(n-0.1))/10
+    v_list.append(V)
+    n_list.append(n)
+while V_C<V<=V_D:
+    V=V-1
+    n=(-n_min/(V_D-V_C))*V+n_min*V_D/(V_D-V_C)
+    v_list.append(V)
+    n_list.append(n)
+while V_S1<V<=V_C:
+    V=V-1
+    n=n_min
+    v_list.append(V)
+    n_list.append(n)
+while 0<V<=V_S1*(n_max)**0.5:
+    V=V-1
+    n=-(V/V_S1)**2
+    v_list.append(V)
+    n_list.append(n)
+
+    
+plt.figure()
+plt.plot(v_list, n_list)
+plt.xlabel("Equivalent Airspeed V (kts or m/s)")
+plt.ylabel("Load Factor n")
+plt.title("V–n Diagram")
+plt.grid(True)
+plt.show()
+
+    
+    
+    
     
