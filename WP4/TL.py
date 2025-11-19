@@ -8,7 +8,10 @@ ylst0 = []
 cllst0 = []
 cdlst0 = []
 cmlst0 = []
-
+ylst10 = []
+cllst10 = []
+cdlst10 = []
+cmlst10 = []
 
 def c(y):
     cr = 4.02
@@ -20,7 +23,8 @@ def c(y):
 with open ('WP4/XFLR0.txt','r') as f:
     for line in f:
         parts = line.split()
-
+        if len(parts) < 8:    # <-- skip blank / malformed lines
+            continue
         y = float(parts[0])
         cl = float(parts[3])
         cd = float(parts[5])   
@@ -41,8 +45,8 @@ cl_int_0 = sp.interpolate.interp1d(ylst0, cllst0, kind='cubic', fill_value="extr
 cd_int_0 = sp.interpolate.interp1d(ylst0, cdlst0, kind='cubic', fill_value="extrapolate")
 cm_int_0 = sp.interpolate.interp1d(ylst0, cmlst0, kind='cubic', fill_value="extrapolate")
 
-with open ('WP4/XFLR10.txt','r') as f:
-    for line in f:
+with open ('WP4/XFLR10.txt','r') as g:
+    for line in g:
         parts = line.split()
 
         y = float(parts[0])
@@ -50,17 +54,17 @@ with open ('WP4/XFLR10.txt','r') as f:
         cd = float(parts[5])   
         cm = float(parts[7])   
 
-        ylst.append(y)
-        cllst.append(cl)
-        cdlst.append(cd)
-        cmlst.append(cm)
+        ylst10.append(y)
+        cllst10.append(cl)
+        cdlst10.append(cd)
+        cmlst10.append(cm)
 
-print("ylst", ylst)
-print("clst", cllst)
-print("cdlst", cdlst)
-print("cmlst", cmlst)
+print("ylst", ylst10)
+print("clst", cllst10)
+print("cdlst", cdlst10)
+print("cmlst", cmlst10)
 
 #below takes y as parameter and yields the spanwise cl, cdi and cm
-cl_int_0 = sp.interpolate.interp1d(ylst, cllst, kind='cubic', fill_value="extrapolate")
-cd_int_0 = sp.interpolate.interp1d(ylst, cdlst, kind='cubic', fill_value="extrapolate")
-cm_int_0 = sp.interpolate.interp1d(ylst, cmlst, kind='cubic', fill_value="extrapolate")
+cl_int_10 = sp.interpolate.interp1d(ylst10, cllst10, kind='cubic', fill_value="extrapolate")
+cd_int_10 = sp.interpolate.interp1d(ylst10, cdlst10, kind='cubic', fill_value="extrapolate")
+cm_int_10 = sp.interpolate.interp1d(ylst10, cmlst10, kind='cubic', fill_value="extrapolate")
