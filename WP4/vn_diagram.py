@@ -1,22 +1,16 @@
 #CODE
 import matplotlib.pyplot as plt
-from Katerina code.py import ISA(h)
+from Katerina_code import ISA
+from Katerina_code import V_a
+from Katerina_code import V_d
+from Katerina_code import V_F
+from Katerina_code import V_c
 
-h_cruise=10668
-M_cr=0.77
-CL_maxcr=1.56
-CL_maxto=2.4344
-CL_maxap=2.653
 m_maxto=27719.34119
 n_max=max((2.1+24000/(9.80665*m_maxto*0.2248+10000)), 2.5)
+n_ult=1.5*n_max
 n_min=-1
     
-def ISA(h):
-    T=288.15-0.0065*h
-    P=101325*(T/288.15)**(9.80665/(0.0065*287))
-    Rho=P/(287*T)
-    a=(1.4*287*T)**0.5
-    return(T, P, Rho, a)
 
 def Veq(CL, m, h):
     T, P, Rho, a=ISA(h)
@@ -86,6 +80,7 @@ plt.ylabel("Load Factor n")
 plt.title("V–n Diagram")
 plt.grid(True)
 plt.show()
+
 
     
     

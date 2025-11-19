@@ -73,7 +73,7 @@ njf = 0.46
 #------------------------------------
 
 
-def CS25_121d_function(wps):
+def CS25_121d_function(wps,e,Cd0,AR,CLmax_Takeoff):
 
     Cd0_final = Cd0 + 0.0013*35
     e_final = e + 0.0026*35
