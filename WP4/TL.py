@@ -91,7 +91,7 @@ def MperSpan0(y):
     return MperSpan
 
 # Use the spanwise stations from the dataset (positive half-span)
-y_plot = np.array(ylst0)   # or ylst10, they should be the same
+y_plot = np.array(ylst0)
 
 # Compute L' and M' at each y
 L_values = [LperSpan0(y) for y in y_plot]
@@ -114,4 +114,3 @@ plt.title("Spanwise Pitching Moment Distribution")
 plt.grid(True)
 
 plt.show()
-print(10)
