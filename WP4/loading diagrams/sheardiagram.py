@@ -46,13 +46,12 @@ print(w)
 #Shear
 #-------------------------------------------------------------------------------------
 def Shear(x):
-    integral, error1 = scipy.integrate.quad(w, x, winghalfspan)
+    ShearIntegral, ShearError = scipy.integrate.quad(w, x, winghalfspan)
     Engine_PointLoad_Shear = W_engine_NOLOAD * (1-Heaviside(x,x_engine))
-    return -integral-Engine_PointLoad_Shear
+    return -ShearIntegral-Engine_PointLoad_Shear
 
 
-
-xs = np.linspace(0,winghalfspan,200)
+xs = np.linspace(0,winghalfspan,200) #200 datapoints 
 Ss = [Shear(x) for x in xs]
 
 plt.figure(figsize=(10, 6))   # wider figure
@@ -61,7 +60,3 @@ plt.xlabel("Spanwise position x [m]")
 plt.ylabel("Shear S(x) [N]")
 plt.title("Shear Force Diagram")
 plt.show()
-
-
-
-
