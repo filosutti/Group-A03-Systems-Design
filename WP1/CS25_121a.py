@@ -49,7 +49,8 @@ MF = MTOM - OEM - Mp
 ef = 44000000 
 R_div = 250  #?
 #wing
-AR = 9
+AR = 10.35402811
+
 L = g
 
 CLmax_cruise = 1.5
@@ -61,7 +62,6 @@ SwetpS = 6
 Cd0 = cf*SwetpS
 Cd = 2*Cd0
 
-
 #PW1519G
 ThrustPerEngine = 88 #kN
 TSFC = 11.3 #g/(kNs)
@@ -72,9 +72,10 @@ njf = 0.46
 #------------------------------------
 
 
-def CS25_121a_function(wps):
+def CS25_121a_function(wps,CLmax_Takeoff,e,Cd0,AR):
 
-
+    e_final = e + 0.0026*delta_takeoff
+    Cd0_final = Cd0 + 0.0013*delta_takeoff + delta_landing_gear
     αt = 101325*(1+0.4*wps/1.225/CLmax_Takeoff/gamma/8.31/288.15)**3.5 * (1-(0.43+0.014*BPR)*(2*wps/1.225/CLmax_Takeoff/1.4/8.31/288.15)**0.25)  #thrust lapse rate equation 7.37
     tpw = 2/αt*(2*np.sqrt(Cd0_final/np.pi/AR/e_final)+c/np.sqrt(wps*2/CLmax_Takeoff/1.225))
     

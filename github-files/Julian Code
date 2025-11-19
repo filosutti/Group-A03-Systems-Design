@@ -2,60 +2,383 @@
 import math
 import numpy as np
 import matplotlib.pyplot as plt
+n = 0
+MTOM = 32000
+Sw = MTOM*9.81/5628.6 #initial guess
+MTOMval = [MTOM]
+OEWval = []
+Sval = []
+MTOM1 = 0
+while abs(MTOM1-MTOM) > 0.0001:
+    # --- Parameter initialization ---
+    Wdg = MTOM*2.204623 # design gross weight [lb]
+    Nz = 3.75        # ultimate load factor
+    Sw = Sw*10.76     # wing area [ft^2]
+    A = 9.0         # aspect ratio
+    t_c_root = 0.12 # thickness-to-chord ratio at root
+    Lambda = 0.41927  # quarter-chord sweep angle [deg → rad]
+    lambda_ratio = 0.32         # taper ratio
+    Scsw = 58.0175                 # control surface area scaling factor
 
-#Constants
-g = 9.81
+    Kuht = 1.0     # horizontal tail factor
+    Fw = 0.58    # fuselage width at connection to tail
+    Bh = 17      #tail span
+    Sht = 225.9       # horizontal tail area [ft^2]
+    L_t = 32.89       # tail length [ft]
+    Ky = 9.867       # tail moment arm factor
+    Ah = 4.0       #aspect ratio horizontal tail
+    Se = 37.2   # elevator-to-tail area ratio
+    Lambda_ht = 0.4887
 
-#Requirements
-PLreq = 9302 #Payload (kg)
-TOreq = 1296 #Takeoff (m)
-LDreq = 1210 #Landing (m)
-CRreq = 0.77 #C ruise (Mach)
-Vcr_TAS = 228.332
-Vcr_EAS = 127.104
-R_des = 2019.0
+    Ht_Hv = 0.0    
+    Svt = 193.75       # vertical tail area [ft^2]
+    Kz = 32.89         # vertical tail factor
+    Lambda_vt = 0.30122
+    Av = 1.5
+    t_c_root_vt = t_c_root  # same thickness ratio
 
-#Class I weight estimation
-OEMpMTOM = 0.6
-Mp = 9302.0
-ef = 44000000.0
-R_div = 450.0
+    #-----------
 
-#Wing
-AR = 9
-cf = 0.0027
-SwetpS = 6.0
-CLmax_cruise = 1.5
-CLmax_Takeoff = 1.9
-CLmax_ngine = 88 #kN
-TSFC = 11.7    #g/(kNs)
-njf = 0.46
-BPR = 12
+    # Fuselage parameters
+    K_door = 1.0      # fuselage door factor
+    K_Lg = 1.12        # fuselage structural factor
+    L = 93.209          # fuselage structural length [ft]
+    Sf = 2612.156        # fuselage wetted area [ft^2]
+    K_ws = 0.427        # wing-fuselage interaction factor
+    D = 0.062         
 
-#Stats
+    # Main landing gear parameters
+    K_mp = 1.0        # main gear proportioning factor
+    Wl = 59522.232       # landing design weight [lb]
+    Nl = 4.125          # ultimate landing load factor
+    Lm = 78.74          # main gear length [in]
+    N_mw = 4.0        # number of main wheels
+    N_mss = 2.0       # number of main shock struts
+    V_stall = 110.8    # stall speed [kt]
+
+    # Nose landing gear parameters
+    K_np = 1.0        # nose gear proportioning factor
+    Ln = 86.61          # nose gear length [in]
+    N_nw = 2.0        # number of nose wheels
+
+    # Nacelle parameters
+    K_ng = 1.017        # nacelle group factor
+    N_w = 5.76         # nacelle width
+    Wec = 4834.378
+    Nen = 2
+    Sn = 26.3866
+    Nlt = 14.557
+
+    #--------
+
+    # Fuel system parameters
+    Vt = 1166.623        # total fuel volume [gal]
+    Vi = 1483.0         # integral tank volume [gal]
+    Vp = 1483.0         # protected/pressurized tank volume [gal]
+    Nt = 2.0          # number of fuel tanks
+
+    # Engine control parameters
+    Lec = 4.20624        # length of engine control system [ft]
+
+    # Starter parameters
+    Wen = 4800.0       # engine weight [lb]
+
+    # Flight control system parameters
+    Nm = 1.0          # number of mechanical functions
+    Nf = 5.0          # number of functions performed by controls
+    Scs = 966.5        # control surface area [ft^2]
+    Iy = 6898746.3        # aircraft yawing moment of inertia [lb·ft²]
+
+    #-------
+
+    # APU parameters
+    W_APU_uninstalled = 308.0   # uninstalled APU weight [lb]
+
+    # Instruments parameters
+    K_r = 1.0       # reliability or redundancy factor
+    Nc = 4.0         # number of crew members or control stations
+    Lf = 93.21        # fuselage length [ft]
+    Bw = 82.867        # body width (or max fuselage width) [ft]
+
+    # Electrical system parameters
+    R_kVA = 50.0     # total generator rating [kVA]
+    La = 60.0        # aircraft length [ft]
+    Ngen = 2.0       # number of generators
+
+    # Avionics parameters
+    Wuav = 1100.0     # uninstalled avionics weight [lb]
+
+    # Furnishings parameters
+    Wc = 7650.0        # max cargo weight [lb]
+
+    # Air conditioning parameters
+    Np = 76.0          # number of people onboard
+    Vpr = 6150.5       # pressurized volume [ft^3]
+
+    # --- Weight equations ---
+
+    # Wing weight
+    W_wing = 0.0051 * (Wdg * Nz)**0.557 * Sw**0.649 * A**0.5 \
+            * (t_c_root)**-0.4 * (1 + lambda_ratio)**0.1 \
+            * (math.cos(Lambda))**-1.0 * Scsw**0.1
+
+    # Horizontal tail weight
+    W_ht = 0.0379 * Kuht * (1 + Fw/Bh)**-0.25 * Wdg**0.639 * Nz**0.10 \
+            * Sht**0.75 * L_t**-1.0 * Ky**0.704 \
+            * (math.cos(Lambda_ht))**-1.0 * Ah**0.166 * (1 + Se/Sht)**0.1
+
+    # Vertical tail weight
+    W_vt = 0.0026 * (1 + Ht_Hv)**0.225 * Wdg**0.556 * Nz**0.536 \
+            * L_t**-0.5 * Svt**0.5 * Kz**0.875 \
+            * (math.cos(Lambda_vt))**-1.0 * Av**0.35 * (t_c_root_vt)**-0.5
+
+    # Fuselage weight
+    W_fuse = 0.3280 * K_door * K_Lg * (Wdg * Nz)**0.5 * L**0.25 * Sf**0.302 * (1 + K_ws)**0.04 * (L/D)**0.10
+
+    # Main landing gear weight
+    W_mlg = 0.0106 * K_mp * Wl**0.888 * Nl**0.25 * Lm**0.4 * N_mw**0.321 / N_mss**0.5 * V_stall**0.1
+
+    # Nose landing gear weight
+    W_nlg = 0.032 * K_np * Wl**0.646 * Nl**0.2 * Ln**0.5 * N_nw**0.45
+
+    # Nacelle group weight
+    W_nac = 0.6724 * K_ng * Nlt**0.10 * N_w**0.294 * Nz**0.119 * Wec**0.611 * Nen**0.984 * Sn**0.224
+
+    # Fuel system weight
+    W_fuel = 2.405 * Vt**0.606 * (1 + Vi/Vt)**-1.0 * (1 + Vp/Vt) * Nt**0.5
+
+    # Engine control system weight
+    W_engine_controls = 5.0 * Nen + 0.80 * Lec
+
+    # Starter (pneumatic) weight
+    W_starter = 49.19 * ((Nen * Wen) / 1000)**0.541
+
+    # Flight control system weight
+    W_flight_controls = 145.9 * Nf**0.554 * (1 + Nm/Nf)**-1.05 * Scs**0.20 * (Iy * 1e-6)**0.07
+
+    # Installed APU weight
+    W_APU_installed = 2.2 * W_APU_uninstalled
+
+    # Instruments weight
+    W_instruments = 4.509 * K_r * Nc**0.541 * Nen * (Lf + Bw)**0.5
+
+    # Hydraulics system weight
+    W_hydraulics = 0.2673 * Nf * (Lf + Bw)**0.937
+
+    # Electrical system weight
+    W_electrical = 7.291 * R_kVA**0.782 * La**0.346 * Ngen**0.10
+
+    # Avionics weight
+    W_avionics = 1.73 * Wuav**0.983
+
+    # Furnishings weight
+    W_furnishings = 0.0577 * Nc**0.1 * Wc**0.393 * Sf**0.75
+
+    # Air conditioning system weight
+    W_air_conditioning = 62.36 * Np**0.25 * (Vpr / 1000)**0.604 * Wuav**0.10
+
+    # Anti-ice system weight
+    W_anti_ice = 0.002 * Wdg
+
+    # Handling gear weight
+    W_handling_gear = 3.0e-4 * Wdg
+
+    #Seat weight
+    W_seats = 142 + 32*Np - 4*32
+
+    #Lavatories weight
+    W_lavatories = 99.6
+
+    #OEW total:
+    OEW = W_wing + W_ht + W_vt + W_fuse + W_mlg + W_nlg + W_nac + W_fuel + W_engine_controls + W_starter + W_flight_controls + W_APU_installed + W_instruments + W_hydraulics + W_electrical + W_avionics + W_furnishings + W_air_conditioning + W_anti_ice + W_handling_gear + W_seats + W_lavatories
+    OEW = OEW*0.453592 #convert to kg
+    Sw = Sw/10.76 
+    #Constants
+    g = 9.81
+
+    #Requirements
+    PLreq = 9302 #Payload (kg)
+    TOreq = 1296 #Takeoff (m)
+    LDreq = 1210 #Landing (m)
+    CRreq = 0.77 #C ruise (Mach)
+    Vcr_TAS = 228.332
+    Vcr_EAS = 127.104
+    R_des = 2019.0
+
+    #Class I weight estimation
+    OEMpMTOM = 0.6
+    Mp = 9302.0
+    ef = 44000000.0
+    R_div = 450.0
+
+    #Wing
+
+    SwetpS = 6
+    CLmax_cruise = 1.5
+    CLmax_Takeoff = 1.9
+    CLmax_ngine = 88 #kN
+    TSFC = 11.7    #g/(kNs)
+    njf = 0.46
+    BPR = 12
+
+    #Stats
+
+    #Constants
+    V=228.311238
+    M=0.77
+    Rho=0.37950635
+    mu=0.00001444
+    AR=9
+    b_wt=2
+    quarter_chord_sweep=math.acos(1.16/(M+0.5))
+    tr=0.2*(2-quarter_chord_sweep)
+    l_fus=28.412
+    x_cg=15.1222
+    x_ac=0.9*l_fus
+    l_arm=x_ac-x_cg
+    vh=1.01
+    ARh=4
+    lambdah=0.5
+    qsweeph=28*math.pi/180
+    xc_max=0.3
+    tc=0.12
+    thirdsweepwing=23.4343428*math.pi/180
+    vv=0.105
+    sweepLEv=30*math.pi/180
+    ARv=2
+    trv=0.5
+    IF_w=1.4
+    IF_wt=1.01
+    IF_v=1.05
+    IF_h=1.05
+    beta=0.9
+    g=9.80665
+    Excresence=1.05
 
 
-#Code
-nj = (Vcr_TAS / (TSFC/1000000)) / ef
-print(nj)
-Cd0 = cf * SwetpS
+    d_contribution_fus=0.445323
+    d_contribution_eng=0.075550288
 
-e = 1/(np.pi * AR * 0.0075 + 1/0.97)
-print(e)
-Cd = 2*Cd0
-Cl = np.sqrt(np.pi * AR * e * Cd0)
-LpD = 0.5*np.sqrt(np.pi*AR*e/Cd0)
-print(LpD)
-R_lost = (1/0.7)*LpD*(10668 + (Vcr_TAS)**2/(2*g))/1000
-print(R_lost)
-Req_res = 1.2*R_div + 45*60*Vcr_TAS/1000
-Req = ((R_des + R_lost)*(1.05) + Req_res)
-print(Req)
-print(Req_res)
-MFpMTOM = 1 - np.exp(-Req*1000/(nj*(ef/g)*LpD))
-print(MFpMTOM)
-MTOM = PLreq/(1-(OEMpMTOM)-MFpMTOM)
-MF = MFpMTOM*MTOM
-OEM = OEMpMTOM*MTOM
-print(MTOM)
-print(OEM)
+    LE_sweep=26.69*math.pi/180
+    half_chord_sweep=21.16963277*math.pi/180
+
+    def Re(l):
+        Re=Rho*V*l/mu
+        return(Re)
+
+    def FF(sweep):
+        FF=(1+0.6*tc/xc_max+100*(tc)**4)*(1.34*M**0.18*(math.cos(sweep))**0.28)
+        return(FF)
+
+    def Cf(Re):
+        Cf_l=1.328/(Re)**0.5
+        Cf_t=0.455/((math.log10(Re))**2.58*(1+0.144*M**2)**0.65)
+        Cf=0.1*Cf_l+0.9*Cf_t
+        return(Cf)
+    
+    def CD(M_TO, S):
+        b=(AR*S)**(0.5)
+        Cr=2*S/((1+tr)*b)
+        Ct=Cr*tr
+        MAC=(2/3)*Cr*(1+tr+tr**2)/(1+tr)
+        MAC_winglet=(2/3)*Ct*(1+tr+tr**2)/(1+tr)
+        S_wt=b_wt*(Ct+Ct*tr)/2
+        Re_w=Re(MAC)
+        Cf_w=Cf(Re_w)
+        FF_w=FF(thirdsweepwing)
+        Re_wt=Re(MAC_winglet)
+        Cf_wt=Cf(Re_wt)
+        Sh=S*vh*MAC/l_arm
+        bh=(ARh*Sh)**0.5
+        Crh=2*Sh/((1+lambdah)*bh)
+        MACh=(2/3)*Crh*(1+lambdah+lambdah**2)/(1+lambdah)
+        Re_ht=Re(MACh)
+        sweepLEh=math.atan(math.tan(qsweeph)+0.25*2*Crh*(1-lambdah)/bh)
+        sweepffh=math.atan(math.tan(sweepLEh)-0.3*2*Crh*(1-lambdah)/bh)
+        FF_h=FF(sweepffh)
+        Cf_h=Cf(Re_ht)
+        Sv=S*vv*b/l_arm
+        bv=(ARv*Sv)**0.5
+        Crv=2*Sv/((1+trv)*bv)
+        MACv=(2/3)*Crv*(1+trv+trv**2)/(1+trv)
+        Re_vt=Re(MACv)
+        sweepffv=math.atan(math.tan(sweepLEv)-0.3*Crv*(1-trv)/bv)
+        FF_v=FF(sweepffv)
+        Cf_v=Cf(Re_vt)
+        S_wetw=1.07*2*S
+        S_wetwt=1.07*2*S_wt
+        S_weth=1.05*2*Sh
+        S_wetv=1.05*2*Sv
+        CD0=Excresence*(d_contribution_fus+d_contribution_eng+Cf_w*FF_w*IF_w*S_wetw+Cf_wt*FF_w*IF_wt*S_wetwt+Cf_h*FF_h*IF_h*S_weth+Cf_v*FF_v*IF_v*S_wetv)/S
+        CL=1.1*M_TO*beta*g/(0.5*Rho*V**2*S)
+        MDD=0.87/(math.cos(LE_sweep))-tc/(math.cos(LE_sweep))**2-CL/(10*(math.cos(LE_sweep))**3)
+        CD_w=0.002*(1+(M-MDD)/0.05)**2.5
+        AR_eff=AR+1.9*b_wt*AR/b
+        e=2/(2-AR_eff+(4+AR_eff**2*(1+math.tan(half_chord_sweep)**2))**0.5)
+        k=1/(math.pi*e*AR_eff)
+        CD_i=k*CL**2
+        CD=CD_i+CD_w+CD0
+        LD_ratio=CL/CD
+        return(LD_ratio)
+    LpD=CD(25559.25408, Sw)
+    #Code
+    #efficiency calculations
+    nj = (Vcr_TAS / (TSFC/1000000)) / ef
+
+    #Range calculations
+    R_lost = (1/0.7)*LpD*(10668 + (Vcr_TAS)**2/(2*g))/1000
+    Req_res = 1.2*R_div + 45*60*Vcr_TAS/1000
+    Req = ((R_des + R_lost)*(1.05) + Req_res)
+    OEMpMTOM = OEW/MTOM
+    MFpMTOM = 1 - np.exp(-Req*1000/(nj*(ef/g)*LpD))
+    
+    MTOM1 = MTOM
+    MTOM_new = PLreq / (1 - OEMpMTOM - MFpMTOM)
+    MTOM = 0.8 * MTOM + 0.2 * MTOM_new
+    n = n+1
+    MTOMval.append(MTOM)
+    OEWval.append(OEW)
+    Sw = MTOM*g/4326.5
+    Sval.append(Sw)
+    MF = MFpMTOM*MTOM
+
+# Example list of values
+
+print(MF)
+# Plot the values
+plt.plot(MTOMval, marker='o', linestyle='-', linewidth=2)
+
+# Add labels and a title
+plt.title("MTOM over Iterations")
+plt.xlabel("Iteration #")
+plt.ylabel("MTOM (kg)")
+
+# Show the plot
+plt.show()
+
+
+# Plot the values
+plt.plot(OEWval, marker='o', linestyle='-', linewidth=2)
+
+# Add labels and a title
+plt.title("OEW over Iterations")
+plt.xlabel("Iteration #")
+plt.ylabel("OEW (kg)")
+
+# Show the plot
+plt.show()
+
+# Plot the values
+plt.plot(Sval, marker='o', linestyle='-', linewidth=2)
+
+# Add labels and a title
+plt.title("Wing area over Iterations")
+plt.xlabel("Iteration #")
+plt.ylabel("wing area (m^2)")
+
+# Show the plot
+plt.show()
+
+print("Final MTOM (kg): ", MTOM)
+print("Final OEW (kg): ", OEW)
+print("Final Wing area (m^2): ", Sw)

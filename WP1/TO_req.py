@@ -1,11 +1,8 @@
 import numpy as np
-def TOF_req(WpS):
+def TOF_req(wps,e,Cd0,AR,CLmax_Takeoff):
     TOreq = 1296
-    Cd0 = 0.0162
-    e = 0.8045
-    CLmax_Takeoff = 1.9
+    WpS = wps
     g = 9.81
-    AR = 9
     Speed_ratio = 1.13
     Cl2 = Speed_ratio**2 * CLmax_Takeoff
     kt = 0.85

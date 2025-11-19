@@ -63,6 +63,7 @@ njf = 0.46
 #------------------------------------
 
 
+<<<<<<< Updated upstream
 <<<<<<<< HEAD:CS25_121b.py
 
 
@@ -78,6 +79,9 @@ def CS25121B_func(wps):
     tpw = 2/α*(c/math.sqrt(wps*2/1.225/CLmax_Takeoff)+2*math.sqrt(Cd0_final/np.pi/AR/e_final))
 ========
 def CS25_121c_function(wps):
+=======
+def CS25_121c_function(wps,e,Cd0,AR,CLmax_Takeoff):
+>>>>>>> Stashed changes
 
     e_final = e
     Cd0_final = Cd0
