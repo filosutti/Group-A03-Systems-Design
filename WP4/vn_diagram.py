@@ -7,6 +7,7 @@ m_maxto=27719.34119
 n_max=max((2.1+24000/(9.80665*m_maxto*0.2248+10000)), 2.5)
 n_ult=1.5*n_max
 n_min=-1
+n_ult2=n_min*1.5
 
 def VEAS(v, h):
     T0, P0, Rho0, a0=ISA(0)
@@ -19,7 +20,7 @@ m=27719
 v_list=[0]
 n_list=[0]
 V=0
-V_S0ap, V_S0to, V_S1, V_A, V_D, V_F1, V_F2, V_F3, V_F=nvdiagram(h_cruise, m, n_max)
+V_S0ap, V_S0to, V_S1, V_A, V_D, V_F1, V_F2, V_F3, V_F=nvdiagram(0, m, n_max)
 while V<V_S1*(n_max)**0.5:
     V=min(V+1, V_S1*(n_max)**0.5)
     n=(V/V_S1)**2
@@ -62,7 +63,7 @@ plt.grid(True)
 plt.show()
 
 
-print(V_c)
+print(V_c, V_S0ap, V_S0to, V_S1, V_A, V_D, V_F1, V_F2, V_F3, V_F)
     
     
     
