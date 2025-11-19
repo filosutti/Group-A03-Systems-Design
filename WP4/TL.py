@@ -17,7 +17,7 @@ cdlst10 = []
 cmlst10 = []
 L = n_ult*W
 cL = L/q/S
-aoa =  10
+aoa =  (cL-cL0)*(cL10-cL0)*10
 def c(y):
     cr = 4.02
     ct = 1.27
