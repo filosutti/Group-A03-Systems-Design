@@ -1,19 +1,23 @@
 import scipy as sp
 from scipy import interpolate
-
+from vn_diagram import n_ult
 V_inf = 228.17
 q = 1/2*1.225*V_inf*V_inf
-
+W = 27719*9.80665
+S = 62.8
+cL0 = 0.304
+cL10 = 1.15
 ylst0 = []
 cllst0 = []
 cdlst0 = []
 cmlst0 = []
-
 ylst10 = []
 cllst10 = []
 cdlst10 = []
 cmlst10 = []
-
+L = n_ult*W
+cL = L/q/S
+aoa =  10
 def c(y):
     cr = 4.02
     ct = 1.27
@@ -24,8 +28,8 @@ def c(y):
 with open ('WP4/XFLR0.txt','r') as f:
     for line in f:
         parts = line.split()
-        #if len(parts) < 8:    # <-- skip blank / malformed lines
-           # continue
+        if len(parts) < 8:    # <-- skip blank / malformed lines
+            continue
         y = float(parts[0])
         cl = float(parts[3])
         cd = float(parts[5])   
@@ -70,3 +74,5 @@ print("cmlst 10", cmlst10)
 cl_int_10 = sp.interpolate.interp1d(ylst10, cllst10, kind='cubic', fill_value="extrapolate")
 cd_int_10 = sp.interpolate.interp1d(ylst10, cdlst10, kind='cubic', fill_value="extrapolate")
 cm_int_10 = sp.interpolate.interp1d(ylst10, cmlst10, kind='cubic', fill_value="extrapolate")
+
+print(cl_int_10(1)*q*c(1))
