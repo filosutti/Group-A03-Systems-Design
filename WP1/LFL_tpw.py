@@ -73,7 +73,12 @@ nj = (Vcr_TAS/(TSFC/1000000))/ef
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 def LandFieldTPW(wps):
+=======
+
+def LandFieldTPW(wps,CLmax_Landing):
+>>>>>>> Stashed changes
 =======
 
 def LandFieldTPW(wps,CLmax_Landing):
