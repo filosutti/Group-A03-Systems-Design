@@ -7,8 +7,6 @@ m_maxto=27719.34119
 n_max=max((2.1+24000/(9.80665*m_maxto*0.2248+10000)), 2.5)
 n_ult=1.5*n_max
 n_min=-1
-    
-
 
 def VEAS(v, h):
     T0, P0, Rho0, a0=ISA(0)
@@ -16,8 +14,6 @@ def VEAS(v, h):
     v_eas=v*(Rho/Rho0)
     return(v_eas)
     
-
-
 m=27719
 
 v_list=[0]
