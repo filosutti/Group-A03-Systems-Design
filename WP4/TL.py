@@ -36,10 +36,10 @@ with open ('WP4/XFLR0.txt','r') as f:
         cdlst0.append(cd)
         cmlst0.append(cm)
 
-print("ylst", ylst0)
-print("clst", cllst0)
-print("cdlst", cdlst0)
-print("cmlst", cmlst0)
+print("ylst 0", ylst0)
+print("clst 0", cllst0)
+print("cdlst 0", cdlst0)
+print("cmlst 0", cmlst0)
 
 #below takes y as parameter and yields the spanwise cl, cdi and cm
 cl_int_0 = sp.interpolate.interp1d(ylst0, cllst0, kind='cubic', fill_value="extrapolate")
@@ -49,7 +49,8 @@ cm_int_0 = sp.interpolate.interp1d(ylst0, cmlst0, kind='cubic', fill_value="extr
 with open ('WP4/XFLR10.txt','r') as g:
     for line in g:
         parts = line.split()
-
+        if len(parts) < 8:    # <-- skip blank / malformed lines
+            continue
         y = float(parts[0])
         cl = float(parts[3])
         cd = float(parts[5])   
@@ -60,10 +61,10 @@ with open ('WP4/XFLR10.txt','r') as g:
         cdlst10.append(cd)
         cmlst10.append(cm)
 
-print("ylst", ylst10)
-print("clst", cllst10)
-print("cdlst", cdlst10)
-print("cmlst", cmlst10)
+print("ylst 10", ylst10)
+print("clst 10", cllst10)
+print("cdlst 10", cdlst10)
+print("cmlst 10", cmlst10)
 
 #below takes y as parameter and yields the spanwise cl, cdi and cm
 cl_int_10 = sp.interpolate.interp1d(ylst10, cllst10, kind='cubic', fill_value="extrapolate")

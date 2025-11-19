@@ -22,25 +22,22 @@ def Veq(CL, m, h):
     v=((2*9.80665*m)/(Rho*CL*62.8299727939332))**0.5
     return(v)
 
-def nvdiagram(h, m):
+def nvdiagram(h, m, n_max):
     V_S0ap=Veq(CL_maxap, m, h)
     V_S0to=Veq(CL_maxto, m, h)
     V_S1=Veq(CL_maxcr, m, h)
-    return (V_S0ap, V_S0to, V_S1)
-
-def V_a(V_s1, n_max):
-    # V_a >= V_s1 * (n)max)**0.5
     V_a = V_s1*(n_max)**0.5 
-    return(V_a)
-
-def V_d(V_c):
-    #𝑉_D >= 1.25 𝑉_c since M_cr = 0.77 which is less than 0.85
     V_d = V_c * 1.25
-    return(V_d)
-
-def V_F(V_S1, V_S0): # V_S1 and V_S0 should already be in equivalent airspeed
     V_F1 = V_S1 * 1.6 # with the wing-flaps in take-off position at maximum take-off weight
     V_F2 = V_S1 * 1.8 #with the wing-flaps in approach position at maximum landing weight
-    V_F3 = V_S0 * 1.8 # with the wing-flaps in landing position at maximum landing weight
+    V_F3 = V_S0ap * 1.8 # with the wing-flaps in landing position at maximum landing weight
     V_F = max(V_F1, V_F2, V_F3)
-    return(V_F)
+    return (V_S0ap, V_S0to, V_S1, V_a, V_d, V_F1, V_F2, V_F3, V_F)
+
+
+#def V_F(V_S1, V_S0): # V_S1 and V_S0 should already be in equivalent airspeed
+   # V_F1 = V_S1 * 1.6 # with the wing-flaps in take-off position at maximum take-off weight
+   # V_F2 = V_S1 * 1.8 #with the wing-flaps in approach position at maximum landing weight
+   # V_F3 = V_S0 * 1.8 # with the wing-flaps in landing position at maximum landing weight
+  #  V_F = max(V_F1, V_F2, V_F3)
+  #  return(V_F)
