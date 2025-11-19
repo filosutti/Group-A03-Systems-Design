@@ -47,7 +47,7 @@ def nvdiagram(h, m, n_max):
     V_F2eas= VEAS(V_F2, h)
     V_F3eas= VEAS(V_F3, h)
     V_Feas= VEAS(V_F, h)
-    return (V_S0ap, V_S0to, V_S1, V_a, V_d, V_F1, V_F2, V_F3, V_F, V_S0apeas, V_S0toeas, V_S1eas, V_aeas, V_deas, V_F1eas, V_F2eas, V_F3eas, V_Feas)
+    return (V_S0apeas, V_S0toeas, V_S1eas, V_aeas, V_deas, V_F1eas, V_F2eas, V_F3eas, V_Feas)
 
 
 #def V_F(V_S1, V_S0): # V_S1 and V_S0 should already be in equivalent airspeed
