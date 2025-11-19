@@ -48,7 +48,8 @@ cm_int_0 = sp.interpolate.interp1d(ylst0, cmlst0, kind='cubic', fill_value="extr
 with open ('WP4/XFLR10.txt','r') as g:
     for line in g:
         parts = line.split()
-
+        if len(parts) < 8:    # <-- skip blank / malformed lines
+            continue
         y = float(parts[0])
         cl = float(parts[3])
         cd = float(parts[5])   
