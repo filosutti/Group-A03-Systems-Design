@@ -17,12 +17,15 @@ n_choose = n_pos
 #-------------------------------------------------------------------------------------
 
 
-#Define Point Loads
+# Point Loads
 #-------------------------------------------------------------------------------------
 W_engine_NOLOAD = 2177.243*g
+x_engine = 3.75 #m
 
+def Heaviside(x, x0):
+    return 1.0 if x >= x0 else 0.0
 
-#Define Distributed Loads
+# Distributed Loads
 #-------------------------------------------------------------------------------------
 def LiftDistribution(x, n):
     return (x)*n
@@ -36,10 +39,14 @@ def FuelDistribution(x):
 #Distributed Loading in one function
 #-------------------------------------------------------------------------------------
 def w(x):
-    return LiftDistribution(x,n_choose) - WeightDistribution(x,n_choose) - FuelDistribution(x) - W_engine_NOLOAD
+    return LiftDistribution(x,n_choose) - WeightDistribution(x,n_choose) - FuelDistribution(x) 
+
+#Compute Shear
+#-------------------------------------------------------------------------------------
+def Shear(x):
+    integral, shear_error = scipy.integrate.quad(w, x, winghalfspan)
+    Engine_PointLoad = W_engine_NOLOAD * (1-Heaviside(x,x_engine))
+    return -integral-Engine_PointLoad
 
 
-
-ShearEstimate, error1 = scipy.integrate.quad(w, 0, winghalfspan)
-print(ShearEstimate)
 
