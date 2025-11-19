@@ -19,6 +19,7 @@ m=27719
 
 v_list=[0]
 v1_list=[0]
+n1_list=[0]
 n_list=[0]
 V=0
 V1=0
@@ -54,18 +55,24 @@ while 0<V<=V_S1:
     n=-(V/V_S1)**2
     v_list.append(V)
     n_list.append(n)
+while V1<V_F:
+    V=min(V+1, V_F)
+    n1=min((V/V_S0ap)**2, 2)
+    v1_list.append(V)
+    n1_list.append(n)
 
     
 plt.figure()
-plt.plot(v_list, n_list)
+plt.plot(v_list, n_list, label="V vs n")
+plt.plot(v1_list, n1_list, label="V1 vs n1")
 plt.xlabel("Equivalent Airspeed V (kts or m/s)")
 plt.ylabel("Load Factor n")
 plt.title("V–n Diagram")
 plt.grid(True)
+plt.legend()
 plt.show()
 
 
-print(V_C, V_S0ap, V_S0to, V_S1, V_A, V_D, V_F1, V_F2, V_F3, V_F)
     
     
     
