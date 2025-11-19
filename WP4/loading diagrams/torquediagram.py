@@ -8,7 +8,7 @@ import math as m
 # -----------------------------
 # Load inputs
 # -----------------------------
-from XLRF5_data import ylst0, LperSpan0, MperSpan0
+from TL import ylst0, LperSpan0, MperSpan0
 
 ygrid0 = ylst0   # List of spanwise locations from XLRF5 data
 L = ygrid0.max()   #Half-span of the wing
