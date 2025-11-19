@@ -1,9 +1,12 @@
 import scipy as sp
 from scipy import interpolate
+import matplotlib.pyplot as plt
+import numpy as np
+
 #from vn_diagram import n_ult
 n_ult = 3.75
 V_inf = 228.17
-q = 1/2*1.225*V_inf*V_inf
+q = 1/2*0.38*V_inf*V_inf
 W = 27719*9.80665
 S = 62.8
 cL0 = 0.304
@@ -77,3 +80,37 @@ cd_int_10 = sp.interpolate.interp1d(ylst10, cdlst10, kind='cubic', fill_value="e
 cm_int_10 = sp.interpolate.interp1d(ylst10, cmlst10, kind='cubic', fill_value="extrapolate")
 
 print(cl_int_10(1)*q*c(1))
+
+def LperSpan0(y):
+    cly = (cl_int_10(y)-cl_int_0(y))*aoa/10 + cl_int_0(y)
+    LperSpan = cly*q*c(y)
+    return LperSpan
+def MperSpan0(y):
+    cmy = (cm_int_10(y)-cm_int_0(y))*aoa/10 + cm_int_0(y)
+    MperSpan = cmy*q*c(y)*c(y)
+    return MperSpan
+
+# Use the spanwise stations from the dataset (positive half-span)
+y_plot = np.array(ylst0)   # or ylst10, they should be the same
+
+# Compute L' and M' at each y
+L_values = [LperSpan0(y) for y in y_plot]
+M_values = [MperSpan0(y) for y in y_plot]
+
+# --- Plot L per span ---
+plt.figure()
+plt.plot(y_plot, L_values)
+plt.xlabel("y [m]")
+plt.ylabel("Lift per span L'(y)")
+plt.title("Spanwise Lift Distribution")
+plt.grid(True)
+
+# --- Plot M per span ---
+plt.figure()
+plt.plot(y_plot, M_values)
+plt.xlabel("y [m]")
+plt.ylabel("Moment per span M'(y)")
+plt.title("Spanwise Pitching Moment Distribution")
+plt.grid(True)
+
+plt.show()
