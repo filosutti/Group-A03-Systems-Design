@@ -114,3 +114,4 @@ plt.title("Spanwise Pitching Moment Distribution")
 plt.grid(True)
 
 plt.show()
+print(10)
