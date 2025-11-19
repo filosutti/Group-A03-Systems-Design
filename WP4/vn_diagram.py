@@ -20,7 +20,7 @@ m=27719
 v_list=[0]
 n_list=[0]
 V=0
-V_S0ap, V_S0to, V_S1, V_A, V_D, V_F1, V_F2, V_F3, V_F=nvdiagram(0, m, n_max)
+V_S0ap, V_S0to, V_S1, V_A, V_D, V_F1, V_F2, V_F3, V_F=nvdiagram(h_cruise, m, n_max)
 while V<V_S1*(n_max)**0.5:
     V=min(V+1, V_S1*(n_max)**0.5)
     n=(V/V_S1)**2
@@ -39,7 +39,7 @@ while 0<n<=n_max:
     n_list.append(n)
 while V_c<V<=V_D:
     V=V-1
-    n=(-n_min/(V_D-V_c))*V+n_min*V_D/(V_D-V_c)
+    n=max((-n_min/(V_D-V_c))*V+n_min*V_D/(V_D-V_c), n_min)
     v_list.append(V)
     n_list.append(n)
 while V_S1<V<=V_c:
