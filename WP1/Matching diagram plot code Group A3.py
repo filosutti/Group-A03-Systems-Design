@@ -71,7 +71,6 @@ BPR = 12
 
 #--------------------------------------------------------
 #wing
-AR = 9
 L = g
 cf = 0.0027
 SwetpS = 6
@@ -90,6 +89,12 @@ nj = (Vcr_TAS/(TSFC/1000000))/ef
 
 
 wps = 200 #initialise wing loading
+Cd0 = 0.03170639
+AR = 10.76175932
+
+e = 0.69736275
+CLmax_Landing = 2.36
+CLmax_Takeoff = 1.848
 ROC_LST = []
 cruisespeedlst = []
 LandingFieldLST = []
@@ -111,43 +116,43 @@ while(i<9):
 while(wps < 9200):
 
     try:
-        cruisespeedlst.append(cruise_speed_function(wps))
+        cruisespeedlst.append(cruise_speed_function(wps,Cd0,AR,e))
     except ZeroDivisionError:
         cruisespeedlst.append(0)
     try:
-        LandingFieldLST.append(LandFieldTPW(wps))
+        LandingFieldLST.append(LandFieldTPW(wps,CLmax_Landing))
     except ZeroDivisionError:
         LandingFieldLST.append(0)
     try:
-        minspeedLST.append(minSpeed(wps, V_appro))
+        minspeedLST.append(minSpeed(wps, V_appro,CLmax_Takeoff))
     except ZeroDivisionError:
         minspeedLST.append(0)
     try:
-        CS25_119_LST.append(CS25_119(wps))
+        CS25_119_LST.append(CS25_119(wps,AR,e,Cd0))
     except ZeroDivisionError:
         CS25_119_LST.append(0)
     try:
-        CS25_121A_LST.append(CS25_121a_function(wps))
+        CS25_121A_LST.append(CS25_121a_function(wps,CLmax_Takeoff,e,Cd0,AR))
     except ZeroDivisionError:
         CS25_121A_LST.append(0)
     try:
-        CS25_121B_LST.append(CS25121B_func(wps))
+        CS25_121B_LST.append(CS25121B_func(wps,e,Cd0,AR,CLmax_Takeoff))
     except ZeroDivisionError:
         CS25_121B_LST.append(0)
     try:
-        CS25_121C_LST.append(CS25_121c_function(wps))
+        CS25_121C_LST.append(CS25_121c_function(wps,e,Cd0,AR,CLmax_Takeoff))
     except ZeroDivisionError:
         CS25_121C_LST.append(0)
     try:
-        CS25_121D_LST.append(CS25_121d_function(wps))
+        CS25_121D_LST.append(CS25_121d_function(wps,e,Cd0,AR,CLmax_Takeoff))
     except ZeroDivisionError:
         CS25_121D_LST.append(0)
     try:
-        TO_LST.append(TOF_req(wps))
+        TO_LST.append(TOF_req(wps,e,Cd0,AR,CLmax_Takeoff))
     except ZeroDivisionError:
         TO_LST.append(0)
     try:
-        ROC_LST.append(tpw1_function(wps))
+        ROC_LST.append(tpw1_function(wps,Cd0,AR,e))
     except ZeroDivisionError:
         ROC_LST.append(0)
     wpslst.append(wps)
