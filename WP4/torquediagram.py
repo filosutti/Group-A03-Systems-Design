@@ -8,10 +8,10 @@ import math as m
 # -----------------------------
 # Load inputs
 # -----------------------------
-from TL import ylst0, LperSpan0, MperSpan0
+from TL import LperSpan0, MperSpan0
 
-ygrid0 = ylst0   # List of spanwise locations from XLRF5 data
-L = ygrid0.max()   #Half-span of the wing
+
+L = 11.89   #Half-span of the wing
 
 # -----------------------------
 # Aerodynamic moment arm: Distanec between flexural axis and aerodynamic center
@@ -30,8 +30,8 @@ def d(x):
 # -----------------------------
 # Interpolated aerodynamic loads from XLRF5 data
 # -----------------------------
-Lift   = interp1d(ygrid0, LperSpan0, kind='cubic', fill_value='extrapolate')  # This is the lift distribution function in N/m, data from XFLR5
-Moment = interp1d(ygrid0, MperSpan0, kind='cubic', fill_value='extrapolate') # This is the pitching moment distribution function in N, data from XFLR5
+Lift   =  LperSpan0
+Moment = MperSpan0 # This is the pitching moment distribution function in N, data from XFLR5
 
 # -----------------------------
 # Distributed torque densities
@@ -107,16 +107,14 @@ T_after  = T(x_engine + 1e-6)
 # Plot
 # -----------------------------
 
-if _name_ == "_main_":
-    plt.figure(figsize=(10,5))
-    plt.plot(x_vals, T_vals, linewidth=2)
-    plt.axhline(0, color='black', linewidth=0.8)
-    plt.axvline(x_engine, color='red', linestyle='--', label='Engine Location')
-    plt.scatter([x_engine], [T_before], color='blue')  # point before engine
-    plt.scatter([x_engine], [T_after], color='green')  # point after engine
-    plt.title("Torque Diagram")
-    plt.xlabel("x [m]")
-    plt.ylabel("T(x) [N·m]")
-    plt.legend()
-    plt.grid()
-    plt.show()
+plt.figure(figsize=(10, 6))
+plt.plot(x_vals, T_vals / 1e3, label='Internal Torque T(x)', color='blue')
+plt.plot([x_engine, x_engine], [T_before / 1e3, T_after / 1e3], color='red', linestyle='--', label='Engine Point Torque')
+plt.scatter([x_engine], [T_after / 1e3], color='red')  # Mark the point after the jump
+plt.title('Internal Torque Distribution Along Wing Span')
+plt.xlabel('Spanwise Location x (m)')
+plt.ylabel('Internal Torque T(x) (kN·m)')
+plt.axhline(0, color='black', linewidth=0.8, linestyle='--')
+plt.legend()
+plt.grid()
+plt.show()
