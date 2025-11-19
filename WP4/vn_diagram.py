@@ -1,5 +1,6 @@
 #CODE
 import matplotlib.pyplot as plt
+from Katerina code.py import ISA(h)
 
 h_cruise=10668
 M_cr=0.77
