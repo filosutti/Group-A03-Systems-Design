@@ -1,10 +1,10 @@
 #CODE
 import matplotlib.pyplot as plt
-from Katerina code.py import ISA(h)
-from Katerina code.py import V_a(V_s1, n_max)
-from Katerina code.py import V_d(V_c)
-from Katerina code.py import V_a(V_s1, n_max)
-from Katerina code.py import V_F(V_S1, V_S0)
+from Katerina code import ISA(h)
+from Katerina code import V_a(V_s1, n_max)
+from Katerina code import V_d(V_c)
+from Katerina code import V_a(V_s1, n_max)
+from Katerina code import V_F(V_S1, V_S0)
 
 m_maxto=27719.34119
 n_max=max((2.1+24000/(9.80665*m_maxto*0.2248+10000)), 2.5)
