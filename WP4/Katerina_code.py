@@ -17,6 +17,17 @@ V_c = a_cruise * M_cr
 
 # it is defined the speed above which structural integrity is not guaranteed if the control surfaces are fully deflected.
 #  𝑛 is the limit positive manoeuvring load factor at 𝑉_𝐶
+def Veq(CL, m, h):
+    T, P, Rho, a=ISA(h)
+    v=((2*9.80665*m)/(Rho*CL*62.8299727939332))**0.5
+    return(v)
+
+def nvdiagram(h, m):
+    V_S0ap=Veq(CL_maxap, m, h)
+    V_S0to=Veq(CL_maxto, m, h)
+    V_S1=Veq(CL_maxcr, m, h)
+    return (V_S0ap, V_S0to, V_S1)
+
 def V_a(V_s1, n_max):
     # V_a >= V_s1 * (n)max)**0.5
     V_a = V_s1*(n_max)**0.5 
@@ -33,6 +44,3 @@ def V_F(V_S1, V_S0): # V_S1 and V_S0 should already be in equivalent airspeed
     V_F3 = V_S0 * 1.8 # with the wing-flaps in landing position at maximum landing weight
     V_F = max(V_F1, V_F2, V_F3)
     return(V_F)
-
-
-print(V_d(V_c)) # V_d results to be lower than the speed of sound at cruise altitude
