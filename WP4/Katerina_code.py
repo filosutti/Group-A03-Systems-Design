@@ -4,8 +4,6 @@ CL_maxcr=1.56
 CL_maxto=2.4344
 CL_maxap=2.653
 
-a_cruise = ISA(h_cruise)[3]
-V_c = a_cruise * M_cr
 
 def ISA(h):
     T=288.15-0.0065*h
@@ -13,6 +11,9 @@ def ISA(h):
     Rho=P/(287*T)
     a=(1.4*287*T)**0.5
     return(T, P, Rho, a)
+
+a_cruise = ISA(h_cruise)[3]
+V_c = a_cruise * M_cr
 
 # it is defined the speed above which structural integrity is not guaranteed if the control surfaces are fully deflected.
 #  𝑛 is the limit positive manoeuvring load factor at 𝑉_𝐶
