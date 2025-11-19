@@ -56,10 +56,10 @@ while 0<V<=V_S1:
     v_list.append(V)
     n_list.append(n)
 while V1<V_F:
-    V=min(V+1, V_F)
-    n1=min((V/V_S0ap)**2, 2)
-    v1_list.append(V)
-    n1_list.append(n)
+    V1=min(V1+1, V_F)
+    n1=min((V1/V_S0ap)**2, 2)
+    v1_list.append(V1)
+    n1_list.append(n1)
 
     
 plt.figure()
