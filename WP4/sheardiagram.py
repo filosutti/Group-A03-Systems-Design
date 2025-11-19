@@ -4,7 +4,6 @@ from matplotlib import pyplot as plt
 from TL import LperSpan0
 
 
-
 #Constants 
 #-------------------------------------------------------------------------------------
 g = 9.81
