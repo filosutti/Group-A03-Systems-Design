@@ -24,7 +24,7 @@ def d(x):
 
     c_t = c_r * taper
     chord = c_r - (c_r - c_t) * (x / span)
-    return 0.325 * chord
+    return 0.20 * chord
 
 
 # -----------------------------
