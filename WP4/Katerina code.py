@@ -4,6 +4,8 @@ CL_maxcr=1.56
 CL_maxto=2.4344
 CL_maxap=2.653
 
+a_cruise = ISA(h_cruise)[3]
+V_c = a_cruise * M_cr
 
 def ISA(h):
     T=288.15-0.0065*h
@@ -36,6 +38,4 @@ def V_F(V_S1, V_S0): # V_S1 and V_S0 should already be in equivalent airspeed
     return(V_F)
 
 
-a_cruise = ISA(h_cruise)[3]
-V_c = a_cruise * M_cr
 print(V_d(V_c)) # V_d results to be lower than the speed of sound at cruise altitude
