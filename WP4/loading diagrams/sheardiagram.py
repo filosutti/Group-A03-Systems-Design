@@ -1,5 +1,5 @@
 import scipy 
-import numpy 
+import numpy as np
 from matplotlib import pyplot as plt
 
 
@@ -13,7 +13,7 @@ wingweight = 909.447 #kg
 
 #-------------------------------------------------------------------------------------
 #choose whether n is pos or neg
-n_choose = n_pos
+n_choose = n_neg
 #-------------------------------------------------------------------------------------
 
 
@@ -27,11 +27,11 @@ def Heaviside(x, x0):
 
 # Distributed Loads
 #-------------------------------------------------------------------------------------
-def LiftDistribution(x, n):
-    return (x)*n
+def LiftDistribution(x):
+    return (x)
 
-def WeightDistribution(x,n):
-    return ((7*x)-821.693393608074)*n
+def WeightDistribution(x):
+    return ((7*x)-821.693393608074)
 
 def FuelDistribution(x):
     return 10*x-9148.6175
@@ -40,8 +40,9 @@ def FuelDistribution(x):
 #Distributed Loading
 #-------------------------------------------------------------------------------------
 def w(x):
-    return LiftDistribution(x,n_choose) - WeightDistribution(x,n_choose) - FuelDistribution(x) 
+    return LiftDistribution(x) - WeightDistribution(x) - FuelDistribution(x) 
 
+print(w)
 #Shear
 #-------------------------------------------------------------------------------------
 def Shear(x):
@@ -49,6 +50,18 @@ def Shear(x):
     Engine_PointLoad_Shear = W_engine_NOLOAD * (1-Heaviside(x,x_engine))
     return -integral-Engine_PointLoad_Shear
 
-print(Shear(0))
+
+
+xs = np.linspace(0,winghalfspan,200)
+Ss = [Shear(x) for x in xs]
+
+plt.figure(figsize=(10, 6))   # wider figure
+plt.plot(xs, Ss)
+plt.xlabel("Spanwise position x [m]")
+plt.ylabel("Shear S(x) [N]")
+plt.title("Shear Force Diagram")
+plt.show()
+
+
 
 
