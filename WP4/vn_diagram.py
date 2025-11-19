@@ -62,6 +62,7 @@ plt.grid(True)
 plt.show()
 
 
+print(V_c)
     
     
     
