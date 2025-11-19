@@ -70,12 +70,36 @@ nj = (Vcr_TAS/(TSFC/1000000))/ef
 
 #----------------------------------------------------------------------------------------------------------------
 #Code
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
 def LandFieldTPW(wps):
+=======
+
+def LandFieldTPW(wps,CLmax_Landing):
+>>>>>>> Stashed changes
+=======
+
+def LandFieldTPW(wps,CLmax_Landing):
+>>>>>>> Stashed changes
+=======
+
+def LandFieldTPW(wps,CLmax_Landing):
+>>>>>>> Stashed changes
+=======
+
+def LandFieldTPW(wps,CLmax_Landing):
+>>>>>>> Stashed changes
+=======
+
+def LandFieldTPW(wps,CLmax_Landing):
+>>>>>>> Stashed changes
     beta = 0.84
     rho0 = 1.225226 #[kg/m^3]
-    C_LFL = 0.23 #[s^2/m]
+    C_LFL = 0.37 #[s^2/m]
     LandingFieldLength = 1210
-    CLmax_Landing = 2.3
 
     #----------------------------------------------------------------------------------------------------------------
     #Landing Field Length formulae

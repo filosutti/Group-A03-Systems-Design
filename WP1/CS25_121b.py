@@ -64,7 +64,7 @@ Total_temperature = t_cruise * (1 + (gamma - 1)/2*m*m)
 
 
 
-def CS25121B_func(wps):
+def CS25121B_func(wps,e,Cd0,AR,CLmax_Takeoff):
 
     delta_takeoff = 15
     delta_landing_gear = 0.00175

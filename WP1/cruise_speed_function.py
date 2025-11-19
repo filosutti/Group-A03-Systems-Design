@@ -53,7 +53,6 @@ BPR = 12
 
 #--------------------------------------------------------
 #wing
-AR = 9
 L = g
 cf = 0.0027
 SwetpS = 6
@@ -62,15 +61,13 @@ CLmax_Takeoff = 1.9
 CLmax_Landing = 2.3
 V_stall_requirement = 1
 V_appro = 1.23 * V_stall_requirement
-Cd0 = cf*SwetpS
-Cd = 2*Cd0
-nj = (Vcr_TAS/(TSFC/1000000))/ef
-e = 1/(np.pi*AR*ψ + 1/φ)
+
+
 mass_frac_cruise = 0.90
 
 
-
-def cruise_speed_function(wps):
+def cruise_speed_function(wps,Cd0,AR,e):
+    
     α = p_cruise/101325*(1-(0.43+0.014*BPR)*np.sqrt(m))  #thrust lapse rate
     tpw = (mass_frac_cruise / α)*(((Cd0*0.5*rho_cruise*Vcr_TAS**2) / (0.95*wps))+((0.95*wps)/(np.pi*AR*e*0.5*rho_cruise*Vcr_TAS**2)))
     return tpw
