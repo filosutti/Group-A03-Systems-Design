@@ -33,6 +33,3 @@ def V_F(V_S1, V_S0): # V_S1 and V_S0 should already be in equivalent airspeed
     V_F3 = V_S0 * 1.8 # with the wing-flaps in landing position at maximum landing weight
     V_F = max(V_F1, V_F2, V_F3)
     return(V_F)
-
-
-print(V_d(V_c)) # V_d results to be lower than the speed of sound at cruise altitude

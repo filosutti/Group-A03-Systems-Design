@@ -6,8 +6,6 @@ from Katerina_code import V_d
 from Katerina_code import V_F
 from Katerina_code import V_c
 
-print(V_c)
-
 
 m_maxto=27719.34119
 n_max=max((2.1+24000/(9.80665*m_maxto*0.2248+10000)), 2.5)
