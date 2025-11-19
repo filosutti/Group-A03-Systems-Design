@@ -6,6 +6,7 @@ from Katerina_code import V_d
 from Katerina_code import V_F
 from Katerina_code import V_c
 
+
 m_maxto=27719.34119
 n_max=max((2.1+24000/(9.80665*m_maxto*0.2248+10000)), 2.5)
 n_ult=1.5*n_max
@@ -25,8 +26,6 @@ def VEAS(v, h):
     
 
 def nvdiagram(h, m):
-    a_cr=ISA(10668)
-    V_cr=M_cr*a_cr
     V_S0ap=Veq(CL_maxap, m, h)
     V_S0to=Veq(CL_maxto, m, h)
     V_S1=Veq(CL_maxcr, m, h)
