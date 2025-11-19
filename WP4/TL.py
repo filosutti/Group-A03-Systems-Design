@@ -8,6 +8,7 @@ ylst0 = []
 cllst0 = []
 cdlst0 = []
 cmlst0 = []
+
 ylst10 = []
 cllst10 = []
 cdlst10 = []
@@ -23,8 +24,8 @@ def c(y):
 with open ('WP4/XFLR0.txt','r') as f:
     for line in f:
         parts = line.split()
-        if len(parts) < 8:    # <-- skip blank / malformed lines
-            continue
+        #if len(parts) < 8:    # <-- skip blank / malformed lines
+           # continue
         y = float(parts[0])
         cl = float(parts[3])
         cd = float(parts[5])   
