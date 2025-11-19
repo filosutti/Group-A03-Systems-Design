@@ -1,10 +1,6 @@
 #CODE
 import matplotlib.pyplot as plt
-from Katerina_code import ISA
-from Katerina_code import V_a
-from Katerina_code import V_d
-from Katerina_code import V_F
-from Katerina_code import V_c
+from Katerina_code import *
 
 
 m_maxto=27719.34119
@@ -13,10 +9,6 @@ n_ult=1.5*n_max
 n_min=-1
     
 
-def Veq(CL, m, h):
-    T, P, Rho, a=ISA(h)
-    v=((2*9.80665*m)/(Rho*CL*62.8299727939332))**0.5
-    return(v)
 
 def VEAS(v, h):
     T0, P0, Rho0, a0=ISA(0)
@@ -25,11 +17,6 @@ def VEAS(v, h):
     return(v_eas)
     
 
-def nvdiagram(h, m):
-    V_S0ap=Veq(CL_maxap, m, h)
-    V_S0to=Veq(CL_maxto, m, h)
-    V_S1=Veq(CL_maxcr, m, h)
-    return (V_S0ap, V_S0to, V_S1)
 
 m=27719
 

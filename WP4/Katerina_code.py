@@ -17,6 +17,17 @@ V_c = a_cruise * M_cr
 
 # it is defined the speed above which structural integrity is not guaranteed if the control surfaces are fully deflected.
 #  𝑛 is the limit positive manoeuvring load factor at 𝑉_𝐶
+def Veq(CL, m, h):
+    T, P, Rho, a=ISA(h)
+    v=((2*9.80665*m)/(Rho*CL*62.8299727939332))**0.5
+    return(v)
+
+def nvdiagram(h, m):
+    V_S0ap=Veq(CL_maxap, m, h)
+    V_S0to=Veq(CL_maxto, m, h)
+    V_S1=Veq(CL_maxcr, m, h)
+    return (V_S0ap, V_S0to, V_S1)
+
 def V_a(V_s1, n_max):
     # V_a >= V_s1 * (n)max)**0.5
     V_a = V_s1*(n_max)**0.5 
