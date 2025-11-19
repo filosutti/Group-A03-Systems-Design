@@ -18,15 +18,17 @@ def VEAS(v, h):
 m=27719
 
 v_list=[0]
+v1_list=[0]
 n_list=[0]
 V=0
+V1=0
 V_S0ap, V_S0to, V_S1, V_A, V_C, V_D, V_F1, V_F2, V_F3, V_F=nvdiagram(h_cruise, m, n_max)
-while V<V_S1*(n_max)**0.5:
-    V=min(V+1, V_S1*(n_max)**0.5)
+while V<V_A:
+    V=min(V+1, V_A)
     n=(V/V_S1)**2
     v_list.append(V)
     n_list.append(n)
-while V_S1*(n_max)**0.5<=V<V_D:
+while V_A<=V<V_D:
     n=n_max
     V=max(V+1, V_D)
     v_list.append(V)
@@ -47,7 +49,7 @@ while V_S1<V<=V_C:
     n=n_min
     v_list.append(V)
     n_list.append(n)
-while 0<V<=V_S1*(n_max)**0.5:
+while 0<V<=V_S1:
     V=V-1
     n=-(V/V_S1)**2
     v_list.append(V)
