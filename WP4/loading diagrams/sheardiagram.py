@@ -42,7 +42,6 @@ def FuelDistribution(x):
 def w(x):
     return LiftDistribution(x) - WeightDistribution(x) - FuelDistribution(x) 
 
-print(w)
 #Shear
 #-------------------------------------------------------------------------------------
 def Shear(x):
@@ -51,12 +50,16 @@ def Shear(x):
     return -ShearIntegral-Engine_PointLoad_Shear
 
 
-xs = np.linspace(0,winghalfspan,200) #200 datapoints 
-Ss = [Shear(x) for x in xs]
+sheardiagram = input("Type Y if you want the shear diagram:")
+if sheardiagram == "Y" or "y":
+    xs = np.linspace(0,winghalfspan,200) #200 datapoints 
+    Ss = [Shear(x) for x in xs]
 
-plt.figure(figsize=(10, 6))   # wider figure
-plt.plot(xs, Ss)
-plt.xlabel("Spanwise position x [m]")
-plt.ylabel("Shear S(x) [N]")
-plt.title("Shear Force Diagram")
-plt.show()
+    plt.figure(figsize=(10, 6))   # wider figure
+    plt.plot(xs, Ss)
+    plt.xlabel("Spanwise position x [m]")
+    plt.ylabel("Shear S(x) [N]")
+    plt.title("Shear Force Diagram")
+    plt.show()
+else:
+    print("Program conclucded successfully.")
