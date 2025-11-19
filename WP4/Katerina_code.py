@@ -26,7 +26,7 @@ def nvdiagram(h, m, n_max):
     V_S0ap=Veq(CL_maxap, m, h)
     V_S0to=Veq(CL_maxto, m, h)
     V_S1=Veq(CL_maxcr, m, h)
-    V_a = V_s1*(n_max)**0.5 
+    V_a = V_S1*(n_max)**0.5 
     V_d = V_c * 1.25
     V_F1 = V_S1 * 1.6 # with the wing-flaps in take-off position at maximum take-off weight
     V_F2 = V_S1 * 1.8 #with the wing-flaps in approach position at maximum landing weight
