@@ -249,36 +249,3 @@ def MperSpan1(y):
     cmy = (cm_int_10(y)-cm_int_0(y))*aoa/10 + cm_int_0(y)
     MperSpan = cmy*q*c(y)*c(y)
     return MperSpan
-
-# Load the y-coordinates directly from the data file
-y_plot = []
-with open('WP4/XFLR0.txt','r') as f:
-    for line in f:
-        parts = line.split()
-        if len(parts) < 8:
-            continue
-        y_plot.append(float(parts[0]))
-
-y_plot = np.array(y_plot)
-
-# Compute L'(y) and M'(y) for the second load case
-L_values_1 = [LperSpan1(y) for y in y_plot]
-M_values_1 = [MperSpan1(y) for y in y_plot]
-
-# ---- Plot Lift per span (case 1) ----
-plt.figure()
-plt.plot(y_plot, L_values_1)
-plt.xlabel("y [m]")
-plt.ylabel("L'(y)  [N/m]")
-plt.title("Spanwise Lift Distribution (n = –1.5)")
-plt.grid(True)
-
-# ---- Plot Moment per span (case 1) ----
-plt.figure()
-plt.plot(y_plot, M_values_1)
-plt.xlabel("y [m]")
-plt.ylabel("M'(y)  [N·m/m]")
-plt.title("Spanwise Pitching Moment Distribution (n = –1.5)")
-plt.grid(True)
-
-plt.show()
