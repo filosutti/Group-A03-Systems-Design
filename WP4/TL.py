@@ -3,15 +3,23 @@ from scipy import interpolate
 import matplotlib.pyplot as plt
 import numpy as np
 
-#from vn_diagram import n_ult
+from vn_diagram import n_ult
+
+V_inf = 228.17
+q = 1/2*0.38*V_inf*V_inf
+W = 27719*9.80665
+S = 62.8
+
+def c(y):
+    cr = 4.02
+    ct = 1.27
+    b = 23.78
+    c = ct + (cr - ct)*(b/2 - y)*2/b
+    return c
+
 
 def LperSpan0(y):
     n_ult = 3.75
-    n_ult_min = -1.5
-    V_inf = 228.17
-    q = 1/2*0.38*V_inf*V_inf
-    W = 27719*9.80665
-    S = 62.8
     cL0 = 0.304
     cL10 = 1.15
     ylst0 = []
@@ -24,25 +32,19 @@ def LperSpan0(y):
     cmlst10 = []
     L = n_ult*W
     cL = L/q/S
-    aoa =  (cL-cL0)*(cL10-cL0)*10
-    def c(y):
-        cr = 4.02
-        ct = 1.27
-        b = 23.78
-        c = ct + (cr - ct)*(b/2 - y)*2/b
-        return c
+    aoa =  (cL-cL0)/(cL10-cL0)*10
 
     with open ('WP4/XFLR0.txt','r') as f:
         for line in f:
             parts = line.split()
             if len(parts) < 8:    # <-- skip blank / malformed lines
                 continue
-            y = float(parts[0])
+            yval = float(parts[0])
             cl = float(parts[3])
             cd = float(parts[5])   
             cm = float(parts[7])   
 
-            ylst0.append(y)
+            ylst0.append(yval)
             cllst0.append(cl)
             cdlst0.append(cd)
             cmlst0.append(cm)
@@ -56,12 +58,12 @@ def LperSpan0(y):
             parts = line.split()
             if len(parts) < 8:    # <-- skip blank / malformed lines
                 continue
-            y = float(parts[0])
+            yval = float(parts[0])
             cl = float(parts[3])
             cd = float(parts[5])   
             cm = float(parts[7])   
 
-            ylst10.append(y)
+            ylst10.append(yval)
             cllst10.append(cl)
             cdlst10.append(cd)
             cmlst10.append(cm)
@@ -76,11 +78,6 @@ def LperSpan0(y):
 
 def MperSpan0(y):
     n_ult = 3.75
-    n_ult_min = -1.5
-    V_inf = 228.17
-    q = 1/2*0.38*V_inf*V_inf
-    W = 27719*9.80665
-    S = 62.8
     cL0 = 0.304
     cL10 = 1.15
     ylst0 = []
@@ -93,25 +90,18 @@ def MperSpan0(y):
     cmlst10 = []
     L = n_ult*W
     cL = L/q/S
-    aoa =  (cL-cL0)*(cL10-cL0)*10
-    def c(y):
-        cr = 4.02
-        ct = 1.27
-        b = 23.78
-        c = ct + (cr - ct)*(b/2 - y)*2/b
-        return c
-
+    aoa =  (cL-cL0)/(cL10-cL0)*10
     with open ('WP4/XFLR0.txt','r') as f:
         for line in f:
             parts = line.split()
             if len(parts) < 8:    # <-- skip blank / malformed lines
                 continue
-            y = float(parts[0])
+            yval = float(parts[0])
             cl = float(parts[3])
             cd = float(parts[5])   
             cm = float(parts[7])   
 
-            ylst0.append(y)
+            ylst0.append(yval)
             cllst0.append(cl)
             cdlst0.append(cd)
             cmlst0.append(cm)
@@ -125,12 +115,12 @@ def MperSpan0(y):
             parts = line.split()
             if len(parts) < 8:    # <-- skip blank / malformed lines
                 continue
-            y = float(parts[0])
+            yval = float(parts[0])
             cl = float(parts[3])
             cd = float(parts[5])   
             cm = float(parts[7])   
 
-            ylst10.append(y)
+            ylst10.append(yval)
             cllst10.append(cl)
             cdlst10.append(cd)
             cmlst10.append(cm)
@@ -146,10 +136,6 @@ def MperSpan0(y):
 
 def LperSpan1(y):
     n_ult = -1.5
-    V_inf = 228.17
-    q = 1/2*0.38*V_inf*V_inf
-    W = 27719*9.80665
-    S = 62.8
     cL0 = 0.304
     cL10 = 1.15
     ylst0 = []
@@ -162,25 +148,18 @@ def LperSpan1(y):
     cmlst10 = []
     L = n_ult*W
     cL = L/q/S
-    aoa =  (cL-cL0)*(cL10-cL0)*10
-    def c(y):
-        cr = 4.02
-        ct = 1.27
-        b = 23.78
-        c = ct + (cr - ct)*(b/2 - y)*2/b
-        return c
-
+    aoa =  (cL-cL0)/(cL10-cL0)*10
     with open ('WP4/XFLR0.txt','r') as f:
         for line in f:
             parts = line.split()
             if len(parts) < 8:    # <-- skip blank / malformed lines
                 continue
-            y = float(parts[0])
+            yval = float(parts[0])
             cl = float(parts[3])
             cd = float(parts[5])   
             cm = float(parts[7])   
 
-            ylst0.append(y)
+            ylst0.append(yval)
             cllst0.append(cl)
             cdlst0.append(cd)
             cmlst0.append(cm)
@@ -194,12 +173,12 @@ def LperSpan1(y):
             parts = line.split()
             if len(parts) < 8:    # <-- skip blank / malformed lines
                 continue
-            y = float(parts[0])
+            yval = float(parts[0])
             cl = float(parts[3])
             cd = float(parts[5])   
             cm = float(parts[7])   
 
-            ylst10.append(y)
+            ylst10.append(yval)
             cllst10.append(cl)
             cdlst10.append(cd)
             cmlst10.append(cm)
@@ -215,10 +194,6 @@ def LperSpan1(y):
 
 def MperSpan1(y):
     n_ult = -1.5
-    V_inf = 228.17
-    q = 1/2*0.38*V_inf*V_inf
-    W = 27719*9.80665
-    S = 62.8
     cL0 = 0.304
     cL10 = 1.15
     ylst0 = []
@@ -231,25 +206,18 @@ def MperSpan1(y):
     cmlst10 = []
     L = n_ult*W
     cL = L/q/S
-    aoa =  (cL-cL0)*(cL10-cL0)*10
-    def c(y):
-        cr = 4.02
-        ct = 1.27
-        b = 23.78
-        c = ct + (cr - ct)*(b/2 - y)*2/b
-        return c
-
+    aoa =  (cL-cL0)/(cL10-cL0)*10
     with open ('WP4/XFLR0.txt','r') as f:
         for line in f:
             parts = line.split()
             if len(parts) < 8:    # <-- skip blank / malformed lines
                 continue
-            y = float(parts[0])
+            yval = float(parts[0])
             cl = float(parts[3])
             cd = float(parts[5])   
             cm = float(parts[7])   
 
-            ylst0.append(y)
+            ylst0.append(yval)
             cllst0.append(cl)
             cdlst0.append(cd)
             cmlst0.append(cm)
@@ -263,12 +231,12 @@ def MperSpan1(y):
             parts = line.split()
             if len(parts) < 8:    # <-- skip blank / malformed lines
                 continue
-            y = float(parts[0])
+            yval = float(parts[0])
             cl = float(parts[3])
             cd = float(parts[5])   
             cm = float(parts[7])   
 
-            ylst10.append(y)
+            ylst10.append(yval)
             cllst10.append(cl)
             cdlst10.append(cd)
             cmlst10.append(cm)
@@ -281,3 +249,36 @@ def MperSpan1(y):
     cmy = (cm_int_10(y)-cm_int_0(y))*aoa/10 + cm_int_0(y)
     MperSpan = cmy*q*c(y)*c(y)
     return MperSpan
+
+# Load the y-coordinates directly from the data file
+y_plot = []
+with open('WP4/XFLR0.txt','r') as f:
+    for line in f:
+        parts = line.split()
+        if len(parts) < 8:
+            continue
+        y_plot.append(float(parts[0]))
+
+y_plot = np.array(y_plot)
+
+# Compute L'(y) and M'(y) for the second load case
+L_values_1 = [LperSpan1(y) for y in y_plot]
+M_values_1 = [MperSpan1(y) for y in y_plot]
+
+# ---- Plot Lift per span (case 1) ----
+plt.figure()
+plt.plot(y_plot, L_values_1)
+plt.xlabel("y [m]")
+plt.ylabel("L'(y)  [N/m]")
+plt.title("Spanwise Lift Distribution (n = –1.5)")
+plt.grid(True)
+
+# ---- Plot Moment per span (case 1) ----
+plt.figure()
+plt.plot(y_plot, M_values_1)
+plt.xlabel("y [m]")
+plt.ylabel("M'(y)  [N·m/m]")
+plt.title("Spanwise Pitching Moment Distribution (n = –1.5)")
+plt.grid(True)
+
+plt.show()
