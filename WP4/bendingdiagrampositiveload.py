@@ -2,32 +2,38 @@ import numpy as np
 import matplotlib.pyplot as plt
 from scipy.integrate import cumulative_trapezoid
 
-
 # -----------------------------
 # Import V(x) and geometry from shear file
 # -----------------------------
-from WP4.sheardiagramPOSITIVEloadfactor import Shear
+from sheardiagramPOSITIVEloadfactor import Shear
 
-L = 11.89 # half Wing span in meters
-
+L = 11.89  # half Wing span in meters
 x_engine = 3.75
-# -----------------------------
-# Vectorized x positions from tip to root to have M_tip = 0
-# -----------------------------
-x_vals = np.linspace(L, 0, 400) # integrate from tip
-V_vals = np.array([Shear(x) for x in x_vals])
 
+# -----------------------------
+# Vectorized x positions from tip to root to enforce M_tip = 0
+# -----------------------------
+x_vals = np.linspace(L, 0, 400)   # integrate from tip toward root
+V_vals = np.array([Shear(x) for x in x_vals])
 
 # -----------------------------
 # Bending moment M(x) via cumulative trapezoidal integration
 # -----------------------------
 M_vals = cumulative_trapezoid(V_vals, x_vals, initial=0)
 
-
-# Reverse arrays to plot from root to tip
+# Reverse arrays to plot root → tip
 x_vals = x_vals[::-1]
 M_vals = M_vals[::-1]
 
+# -----------------------------
+# Internal moment function M_pos_load(x)
+# -----------------------------
+def M_pos_load(x):
+    """
+    Returns the internal bending moment at spanwise location x [m].
+    Works for 0 ≤ x ≤ L.
+    """
+    return float(np.interp(x, x_vals, M_vals))
 
 # -----------------------------
 # Plot Bending Moment
