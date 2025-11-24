@@ -29,7 +29,7 @@ def Heaviside(x, x0):
 # Distributed Loads
 #-------------------------------------------------------------------------------------
 def LiftDistribution(x):
-    return (x)
+    return LperSpan0(x)
 
 def WeightDistribution(x):
     return ((7*x)-821.693393608074) #integral from 0 to 11.89 equals 909.4474900737*g
