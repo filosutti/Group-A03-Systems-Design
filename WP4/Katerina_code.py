@@ -30,13 +30,13 @@ def VEAS(v, h):
     return(v_eas)
 
 V_C=VEAS(V_ct, h_cruise)
+V_D = V_C * 1.25
 
 def nvdiagram(h, m, n_max):
     V_S0ap=Veq(CL_maxap, m, h)
     V_S0to=Veq(CL_maxto, m, h)
     V_S1=Veq(CL_maxcr, m, h)
     V_a = V_S1*(n_max)**0.5 
-    V_d = V_C * 1.25
     V_F1 = V_S1 * 1.6 # with the wing-flaps in take-off position at maximum take-off weight
     V_F2 = V_S1 * 1.8 #with the wing-flaps in approach position at maximum landing weight
     V_F3 = V_S0ap * 1.8 # with the wing-flaps in landing position at maximum landing weight
@@ -49,7 +49,7 @@ def nvdiagram(h, m, n_max):
     V_F2eas= VEAS(V_F2, h)
     V_F3eas= VEAS(V_F3, h)
     V_Feas= VEAS(V_F, h)
-    return (V_S0apeas, V_S0toeas, V_S1eas, V_aeas, V_d, V_F1eas, V_F2eas, V_F3eas, V_Feas)
+    return (V_S0apeas, V_S0toeas, V_S1eas, V_aeas, V_F1eas, V_F2eas, V_F3eas, V_Feas)
 
 
 #def V_F(V_S1, V_S0): # V_S1 and V_S0 should already be in equivalent airspeed

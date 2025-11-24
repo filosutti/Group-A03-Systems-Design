@@ -15,8 +15,6 @@ def VEAS(v, h):
     T, P, Rho, a=ISA(h)
     v_eas=v*(Rho/Rho0)
     return(v_eas)
-    
-m=27719
 
 v_list=[0]
 v1_list=[0]
@@ -29,7 +27,7 @@ n3_list=[0]
 V=0
 V1 = 0
 V2=0
-V_S0ap, V_S0to, V_S1, V_A, V_D, V_F1, V_F2, V_F3, V_F=nvdiagram(5000, m, n_max)
+V_S0ap, V_S0to, V_S1, V_A, V_F1, V_F2, V_F3, V_F=nvdiagram(0, m_maxto, n_max)
 V_int=(2*V_S1**2)**0.5
 while V<V_A:
     V=min(V+1, V_A)
