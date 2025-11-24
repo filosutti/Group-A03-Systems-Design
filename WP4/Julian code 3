@@ -5,12 +5,43 @@ from scipy.interpolate import interp1d
 import math as m
 from torquediagrampositiveloadfactor import torque_pos_loadfactor
 from torquediagrampositiveloadfactor import torque_neg_loadfactor
+from alban_code_3 import calculate_wingbox_centroid
 print('hello kyrgyzstan')
 def inertia_calculation(z):
-    ns = 10  # number of stringers
+    ns = 1  # number of stringers
     As = 0.0025  # area of each stringer in m^2
-    ce = 
+
+        # 1. Geometry: (Front-Bot -> Rear-Bot -> Rear-Top -> Front-Top)
+    coords = [
+        (0.2, -0.02723),  
+        (0.7, -0.0066),   
+        (0.7, 0.0666),    
+        (0.2, 0.08737)    
+    ]
+
+    # 2. Material Properties: Al 2024-T81
+    # from https://asm.matweb.com/search/SpecificMaterial.asp?bassnum=MA2024T81
+    # Density: 2.78 g/cc -> 2780 kg/m^3
+    t_skin = 0.001           # Skin thickness (m)
+    rho_Al2024 = 2780        # Density (kg/m^3)
+
+    # (Stored for future stress/stiffness calcs)
+    E_Al2024 = 72.4e9        # Young's Modulus (Pa) -> 72.4 GPa
+    Sigma_Yield = 450e6      # Yield Strength (Pa)  -> ~450 MPa
+    Sigma_Ult = 485e6        # Ultimate Strength (Pa) -> ~485 MPa
+
+    # 3. Stringers (x, y, area, density)
+    # Using same Al 2024 density for stringers
+    stringers_data = [
+        (0.45, 0.07, 0.0005, rho_Al2024),   # Top stringer
+        (0.45, -0.015, 0.0005, rho_Al2024)  # Bottom stringer
+    ]
+
+    # ==========================================
+    # EXECUTION
+    # ==========================================
     c = -0.2313*z + 4.02
+    ce = c*calculate_wingbox_centroid(coords, t_skin, rho_Al2024, stringers_data)
     x = [0.2*c,0.7*c,0.2*c,0.7*c]
     y = [0.08737*c,0.0666*c,-0.0066*c,-0.02723*c]
     x.append(x[0])
