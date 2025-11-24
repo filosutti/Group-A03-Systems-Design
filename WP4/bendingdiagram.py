@@ -6,7 +6,7 @@ from scipy.integrate import cumulative_trapezoid
 # -----------------------------
 # Import V(x) and geometry from shear file
 # -----------------------------
-from sheardiagram import Shear
+from WP4.sheardiagramPOSITIVEloadfactor import Shear
 
 L = 11.89 # half Wing span in meters
 

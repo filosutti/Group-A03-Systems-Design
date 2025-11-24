@@ -5,6 +5,8 @@ from Katerina_code import *
 
 
 m_maxto=27719.34119
+oem=14477
+m_nofuel=oem+9302
 n_max=max((2.1+24000/(9.80665*m_maxto*0.2248+10000)), 2.5)
 n_ult=1.5*n_max
 n_min=-1
@@ -27,7 +29,7 @@ n3_list=[0]
 V=0
 V1 = 0
 V2=0
-V_S0ap, V_S0to, V_S1, V_A, V_F1, V_F2, V_F3, V_F=nvdiagram(0, m_maxto, n_max)
+V_S0ap, V_S0to, V_S1, V_A, V_F1, V_F2, V_F3, V_F=nvdiagram(0, m_nofuel, n_max)
 V_int=(2*V_S1**2)**0.5
 while V<V_A:
     V=min(V+1, V_A)
@@ -84,12 +86,12 @@ plt.plot(v1_list, n1_list, label="Landing Flaps")
 plt.plot(v2_list, n2_list, label="Take-off Flaps")
 plt.xlabel("Equivalent Airspeed V (m/s)")
 plt.ylabel("Load Factor n [-]")
-plt.title("V–n Diagram")
+plt.title("V–n Diagram Sea-Level No Fuel Weight")
 plt.grid(True)
 plt.legend()
 plt.show()
 
-
+print(V_D)
     
     
     
