@@ -77,9 +77,9 @@ coords = [
 ]
 
 # 2. Material Properties: Al 2024-T81
-# Source: https://asm.matweb.com/search/SpecificMaterial.asp?bassnum=MA2024T81
+# from https://asm.matweb.com/search/SpecificMaterial.asp?bassnum=MA2024T81
 # Density: 2.78 g/cc -> 2780 kg/m^3
-t_skin = 0.002           # Skin thickness (m)
+t_skin = 0.001           # Skin thickness (m)
 rho_Al2024 = 2780        # Density (kg/m^3)
 
 # (Stored for future stress/stiffness calcs)
