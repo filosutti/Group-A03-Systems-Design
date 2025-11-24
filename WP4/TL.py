@@ -249,3 +249,4 @@ def MperSpan1(y):
     cmy = (cm_int_10(y)-cm_int_0(y))*aoa/10 + cm_int_0(y)
     MperSpan = cmy*q*c(y)*c(y)
     return MperSpan
+
