@@ -1,5 +1,14 @@
+import numpy as np
+from scipy.integrate import quad
+import matplotlib.pyplot as plt
+from scipy.interpolate import interp1d
+import math as m
+from torquediagrampositiveloadfactor import T
+
 print('hello kyrgyzstan')
-def inertia_calculation(x,y,c,ns,As):
+def inertia_calculation(c,ns,As):
+    x = [0.2*c,0.7*c,0.2*c,0.7*c]
+    y = [0.08737*c,0.0666*c,-0.0066*c,-0.02723*c]
     x.append(x[0])
     y.append(y[0])
     # iterative variables + thickness
@@ -27,13 +36,13 @@ def inertia_calculation(x,y,c,ns,As):
         
         A = l*t
         
-        d_y = x[i] + (dx)/2 - c[0]
+        d_y = x[i] + (dx)/2 - ce[0]
         
-        d_x = y[i] + (dy)/2 - c[1]
+        d_x = y[i] + (dy)/2 - ce[1]
         if i == 1 or i == 3:
             for k in range(ns):
-                d_y2 = x2-c[0]
-                d_x2 = y2-c[1]
+                d_y2 = x2-ce[0]
+                d_x2 = y2-ce[1]
                 Ixxtot += As*d_x2**2
                 Iyytot += As*d_y2**2
                 Ixytot += As*d_x2*d_y2
@@ -57,8 +66,13 @@ def inertia_calculation(x,y,c,ns,As):
     J = (Ixxtot + Iyytot)
     return Ixxtot, Iyytot, Ixytot, J
 
-def deflection_calculation(E, I, L, P):
-    
+def firstint(z):
+    G = 28,000,000,000  # Pa
+    dv = scipy.integrate.quad(T(z)/(G*I(c,ns,As)[4])
+    return dv
+def secondint(dv):
+    v = scipy.integrate.quad(dv)
+    return v
     
     
     return delta
