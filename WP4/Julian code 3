@@ -6,7 +6,10 @@ import math as m
 from torquediagrampositiveloadfactor import torque_pos_loadfactor
 from torquediagrampositiveloadfactor import torque_neg_loadfactor
 print('hello kyrgyzstan')
-def inertia_calculation(ns,As,z):
+def inertia_calculation(z):
+    ns = 10  # number of stringers
+    As = 0.0025  # area of each stringer in m^2
+    ce = 
     c = -0.2313*z + 4.02
     x = [0.2*c,0.7*c,0.2*c,0.7*c]
     y = [0.08737*c,0.0666*c,-0.0066*c,-0.02723*c]
@@ -21,7 +24,7 @@ def inertia_calculation(ns,As,z):
     
     J = 0
     
-    t = 0.1
+    t = 0.001
     #iterations
     for i in range(len(x)-1):
 
