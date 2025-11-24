@@ -9,7 +9,7 @@ import math as m
 # -----------------------------
 from TL import LperSpan0, MperSpan0
 
-L = 11.89   #Half-span of the wing
+L = 11.89   # Half-span of the wing
 
 # -----------------------------
 # Aerodynamic moment arm: Distance between flexural axis and aerodynamic center
@@ -62,9 +62,9 @@ def T0_calc():
 T0 = T0_calc()
 
 # -----------------------------
-# Internal torque distribution
+# Internal torque distribution (RENAMED)
 # -----------------------------
-def T(x):
+def torque_pos_loadfactor(x):
     tl, _ = quad(tau_l, 0, x)
     tm, _ = quad(tau_m, 0, x)
     tpoint = MomentPoint if x >= x_engine else 0.0
@@ -90,12 +90,12 @@ print("Check: T0 + tl + tm + Mpt = ",
 # Plot internal torque diagram
 # -----------------------------
 x_vals = np.linspace(0, L, 400)
-T_vals = np.array([T(xi) for xi in x_vals])
+T_vals = np.array([torque_pos_loadfactor(xi) for xi in x_vals])
 
 print(f"\nT(L) = {T_vals[-1]:.6f}   (should be 0)\n")
 
-T_before = T(x_engine - 1e-6)
-T_after  = T(x_engine + 1e-6)
+T_before = torque_pos_loadfactor(x_engine - 1e-6)
+T_after  = torque_pos_loadfactor(x_engine + 1e-6)
 
 plt.figure(figsize=(10, 6))
 plt.plot(x_vals, T_vals / 1e3, label='Internal Torque T(x)', color='blue')
