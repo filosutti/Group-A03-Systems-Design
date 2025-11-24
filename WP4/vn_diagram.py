@@ -29,7 +29,7 @@ n3_list=[0]
 V=0
 V1 = 0
 V2=0
-V_S0ap, V_S0to, V_S1, V_A, V_F1, V_F2, V_F3, V_F=nvdiagram(0, m_nofuel, n_max)
+V_S0ap, V_S0to, V_S1, V_A, V_F1, V_F2, V_F3, V_F=nvdiagram(0, oem, n_max)
 V_int=(2*V_S1**2)**0.5
 while V<V_A:
     V=min(V+1, V_A)
@@ -91,7 +91,10 @@ plt.grid(True)
 plt.legend()
 plt.show()
 
+print(V_A)
+print(V_C)
 print(V_D)
+print(V_S1)
     
     
     
