@@ -1,21 +1,14 @@
 import scipy 
 import numpy as np
 from matplotlib import pyplot as plt
-from TL import LperSpan0
+from TL import LperSpan1
 
 
 #Constants 
 #-------------------------------------------------------------------------------------
 g = 9.81
-n_pos = 2.5
-n_neg = -1
 winghalfspan = 11.89 #m
 wingweight = 909.447 #kg
-
-#-------------------------------------------------------------------------------------
-#choose whether n is pos or neg
-n_choose = n_neg
-#-------------------------------------------------------------------------------------
 
 
 #Define Point Loads
@@ -29,7 +22,7 @@ def Heaviside(x, x0):
 # Distributed Loads
 #-------------------------------------------------------------------------------------
 def LiftDistribution(x):
-    return LperSpan0(x)
+    return LperSpan1(x)
 
 def WeightDistribution(x):
     return ((7*x)-821.693393608074) #integral from 0 to 11.89 equals 909.4474900737*g
@@ -41,7 +34,7 @@ def FuelDistribution(x):
 #Distributed Loading
 #-------------------------------------------------------------------------------------
 def w(x):
-    return LiftDistribution(x) - WeightDistribution(x) - FuelDistribution(x) 
+    return -LiftDistribution(x) - WeightDistribution(x) - FuelDistribution(x) 
 
 #Shear
 #-------------------------------------------------------------------------------------
