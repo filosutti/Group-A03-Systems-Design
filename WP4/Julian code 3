@@ -3,10 +3,11 @@ from scipy.integrate import quad
 import matplotlib.pyplot as plt
 from scipy.interpolate import interp1d
 import math as m
-from torquediagrampositiveloadfactor import T
-
+from torquediagrampositiveloadfactor import torque_pos_loadfactor
+from torquediagrampositiveloadfactor import torque_neg_loadfactor
 print('hello kyrgyzstan')
-def inertia_calculation(c,ns,As):
+def inertia_calculation(ns,As,z):
+    c = -0.2313*z + 4.02
     x = [0.2*c,0.7*c,0.2*c,0.7*c]
     y = [0.08737*c,0.0666*c,-0.0066*c,-0.02723*c]
     x.append(x[0])
@@ -68,11 +69,29 @@ def inertia_calculation(c,ns,As):
 
 def firstint(z):
     G = 28,000,000,000  # Pa
-    dv = scipy.integrate.quad(T(z)/(G*I(c,ns,As)[4])
+    c = -0.2313*z + 4.02
+    dv = scipy.integrate.quad(torque_pos_loadfactor(z)/(G*I(ns,As,z)[4]),0,11.89)
     return dv
 def secondint(dv):
-    v = scipy.integrate.quad(dv)
+    v = scipy.integrate.quad(dv,0,11.89)
     return v
     
-    
-    return delta
+
+def v(z):
+    res = secondint(firstint(z))
+    return res
+
+# Create z range
+z = np.linspace(-10, 10, 400)
+
+# Compute v(z)
+v_values = v(z)
+
+# Plot
+plt.figure(figsize=(8, 5))
+plt.plot(z, v_values)
+plt.xlabel('z')
+plt.ylabel('v(z)')
+plt.title('Plot of v as a Function of z')
+plt.grid(True)
+plt.show()
