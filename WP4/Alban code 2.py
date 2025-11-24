@@ -35,7 +35,7 @@ for i in range(nStringers):
 
 
 
-def WingBoxCentroid(corner, skinThickness, skinDensity, stringers=[]):
+def DONTUSETHISWingBoxCentroid(corner, skinThickness, skinDensity, stringers=[]):
     # Close the loop
     x = [p[0] for p in corner] + [corner[0][0]]
     y = [p[1] for p in corner] + [corner[0][1]]
@@ -79,5 +79,5 @@ def WingBoxCentroid(corner, skinThickness, skinDensity, stringers=[]):
     c = [xc, yc]
     return c
 
-centroid = WingBoxCentroid(corner, skinThickness, skinDensity, stringers)
+centroid = DONTUSETHISWingBoxCentroid(corner, skinThickness, skinDensity, stringers)
 print("Wing box centroid:", centroid)
