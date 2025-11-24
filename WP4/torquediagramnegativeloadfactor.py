@@ -8,10 +8,10 @@ import math as m
 # -----------------------------
 # Load inputs
 # -----------------------------
-from TL import ylst0, LperSpan0, MperSpan0
+from TL import LperSpan1, MperSpan1
 
-ygrid0 = ylst0   # List of spanwise locations from XLRF5 data
-L = ygrid0.max()   #Half-span of the wing
+
+L = 11.89   #Half-span of the wing
 
 # -----------------------------
 # Aerodynamic moment arm: Distanec between flexural axis and aerodynamic center
@@ -24,14 +24,14 @@ def d(x):
 
     c_t = c_r * taper
     chord = c_r - (c_r - c_t) * (x / span)
-    return 0.325 * chord
+    return 0.20 * chord
 
 
 # -----------------------------
 # Interpolated aerodynamic loads from XLRF5 data
 # -----------------------------
-Lift   = interp1d(ygrid0, LperSpan0, kind='cubic', fill_value='extrapolate')  # This is the lift distribution function in N/m, data from XFLR5
-Moment = interp1d(ygrid0, MperSpan0, kind='cubic', fill_value='extrapolate') # This is the pitching moment distribution function in N, data from XFLR5
+Lift   =  LperSpan1
+Moment = MperSpan1 # This is the pitching moment distribution function in N, data from XFLR5
 
 # -----------------------------
 # Distributed torque densities
@@ -50,7 +50,7 @@ thrust_arm  = 2.32 + 0.3                  # m, take nacelle height divided by 2,
 engine_arm  = 2.495                      # m, distance from the flexural axis to the engine CG
 x_engine    = 3.75                      # m, position of the engine on the flexural axis, or distance from the root. 
 
-T_thrust = 83.1e3  # Multiply by cos(sweep angle) to get axial component of thrust in direction of the wing
+T_thrust = 83.1e3 
 
 # engine weight = CCW (+)
 # thrust       = CW  (–)
@@ -81,42 +81,41 @@ def T(x):
 tl_total, _ = quad(tau_l, 0, L)
 tm_total, _ = quad(tau_m, 0, L)
 
-print("\n--- TORQUE SIGN CHECKS ---")
-print(f"Engine weight moment (CCW +) : {w_engine * engine_arm: .1f} N·m")
-print(f"Engine thrust moment (CW -)   : {T_thrust * thrust_arm: .1f} N·m")
-print(f"MomentPoint (net engine)      : {MomentPoint: .1f} N·m   (negative = CW)")
-print(f"Integral tau_l (0→L)          : {tl_total: .1f} N·m")
-print(f"Integral tau_m (0→L)          : {tm_total: .1f} N·m")
-print(f"T0 (root reaction)            : {T0: .1f} N·m")
-print("Check: T0 + tl + tm + Mpt = ",
-      T0 + tl_total + tm_total + MomentPoint)
+#print("\n--- TORQUE SIGN CHECKS ---")
+#print(f"Engine weight moment (CCW +) : {w_engine * engine_arm: .1f} N·m")
+#print(f"Engine thrust moment (CW -)   : {T_thrust * thrust_arm: .1f} N·m")
+#print(f"MomentPoint (net engine)      : {MomentPoint: .1f} N·m   (negative = CW)")
+#print(f"Integral tau_l (0→L)          : {tl_total: .1f} N·m")
+#print(f"Integral tau_m (0→L)          : {tm_total: .1f} N·m")
+#print(f"T0 (root reaction)            : {T0: .1f} N·m")
+#print("Check: T0 + tl + tm + Mpt = ",
+#      T0 + tl_total + tm_total + MomentPoint)
 
 # -----------------------------
 # Plot internal torque diagram
 # -----------------------------
-x_vals = np.linspace(0, L, 400)   # X positions from root to tip
-T_vals = np.array([T(xi) for xi in x_vals])  # Corresponding torque values
+#x_vals = np.linspace(0, L, 400)   # X positions from root to tip
+#T_vals = np.array([T(xi) for xi in x_vals])  # Corresponding torque values
 
-print(f"\nT(L) = {T_vals[-1]:.6f}   (should be 0)\n")
+#print(f"\nT(L) = {T_vals[-1]:.6f}   (should be 0)\n")
 
 # Engine jump (for plotting the point moment)  
-T_before = T(x_engine - 1e-6)
-T_after  = T(x_engine + 1e-6)
+#T_before = T(x_engine - 1e-6)
+#T_after  = T(x_engine + 1e-6)
 
 # -----------------------------
 # Plot
 # -----------------------------
 
-if _name_ == "_main_":
-    plt.figure(figsize=(10,5))
-    plt.plot(x_vals, T_vals, linewidth=2)
-    plt.axhline(0, color='black', linewidth=0.8)
-    plt.axvline(x_engine, color='red', linestyle='--', label='Engine Location')
-    plt.scatter([x_engine], [T_before], color='blue')  # point before engine
-    plt.scatter([x_engine], [T_after], color='green')  # point after engine
-    plt.title("Torque Diagram")
-    plt.xlabel("x [m]")
-    plt.ylabel("T(x) [N·m]")
-    plt.legend()
-    plt.grid()
-    plt.show()
+#plt.figure(figsize=(10, 6))
+#plt.plot(x_vals, T_vals / 1e3, label='Internal Torque T(x)', color='blue')
+#plt.plot([x_engine, x_engine], [T_before / 1e3, T_after / 1e3], color='red', linestyle='--', label='Engine Point Torque')
+#plt.scatter([x_engine], [T_after / 1e3], color='red')  # Mark the point after the jump
+#plt.title('Internal Torque Distribution Along Wing Span')
+#plt.xlabel('Spanwise Location x (m)')
+#plt.ylabel('Internal Torque T(x) (kN·m)')
+#plt.axhline(0, color='black', linewidth=0.8, linestyle='--')
+#plt.legend()
+#plt.grid()
+#plt.show()
+
