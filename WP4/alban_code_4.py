@@ -9,7 +9,7 @@ rho_Al2024 = 2780
 n_stringers_side = 10
 L_stringer = 1/25           #0.25 of this offset to inside for centroid of point area of stringer
 t_stringer = 2*(10**(-3))
-A_stringer = (L_stringer * t_stringer)*2 - (t_stringer**2)  #approx area of L shape stringer
+A_stringer = ((L_stringer * t_stringer)*2) - (t_stringer**2)  #approx area of L shape stringer
 
 ##########################################
 # FUNCTION TO CALCULATE CENTROID
@@ -86,6 +86,7 @@ def calculate_wingbox_centroid(corners, skin_thickness, skin_density, n_str, A_s
     Cy = moment_y / total_mass
 
     return Cx, Cy, stringer_coords
+
 
 # ==========================================
 # EXECUTION
