@@ -1,7 +1,7 @@
 import scipy 
 import numpy as np
 from matplotlib import pyplot as plt
-from TL import LperSpan1
+from TL import LperSpan1, LperSpan0
 
 
 #Constants 
@@ -31,17 +31,27 @@ def FuelDistribution(x):
     return 10*x-9148.6175 
 
 
+#Finding Root Internal reaction shear 
+def V0_calc():
+    Fuel, FuelError = scipy.integrate.quad(FuelDistribution, 0, winghalfspan)
+    Lift, LiftError = scipy.integrate.quad(LperSpan0, 0, winghalfspan)
+    return - Fuel - wingweight * g - W_engine_NOLOAD + Lift 
+
+V0 = V0_calc()
+
+
 #Distributed Loading
 #-------------------------------------------------------------------------------------
 def w(x):
-    return -LiftDistribution(x) - WeightDistribution(x) - FuelDistribution(x) 
+    return - LiftDistribution(x) - WeightDistribution(x) - FuelDistribution(x) 
 
 #Shear
 #-------------------------------------------------------------------------------------
 def Shear(x):
     ShearIntegral, ShearError = scipy.integrate.quad(w, x, winghalfspan)
     Engine_PointLoad_Shear = W_engine_NOLOAD * (1-Heaviside(x,x_engine))
-    return -ShearIntegral-Engine_PointLoad_Shear
+    Root_Internal_Shear = V0 * (1-Heaviside(x,0))
+    return - ShearIntegral - Engine_PointLoad_Shear + Root_Internal_Shear
 
 
 xs = np.linspace(0,winghalfspan,200) #200 datapoints 
