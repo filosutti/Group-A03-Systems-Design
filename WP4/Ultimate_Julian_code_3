@@ -4,7 +4,8 @@ import matplotlib.pyplot as plt
 import scipy.integrate
 import math as m
 from scipy.interpolate import interp1d
-
+import time
+start_time = time.perf_counter()
 # ---------------------------------------------------------------------
 # ENVIRONMENT & GEOMETRY (UNCHANGED)
 # ---------------------------------------------------------------------
@@ -362,45 +363,18 @@ def d(x):
 # SECTION 1: CENTROID & INERTIA CALCULATION (UPDATED)
 # ---------------------------------------------------------------------
 # Re-using the provided calculate_wingbox_centroid (though it's complex)
-def calculate_wingbox_centroid(corners, skin_thickness, skin_density, stringers):
-    # ... [Implementation from user code]
-    # Removed mass calculation, focusing on moments and Cx/Cy
-    
-    total_area = 0
-    moment_x = 0
-    moment_y = 0
-    
-    # 1. Skins (Use Area = Length * Thickness)
-    num_points = len(corners)
-    for i in range(num_points):
-        p1, p2 = corners[i], corners[(i + 1) % num_points]
-        L_seg = np.sqrt((p2[0] - p1[0])**2 + (p2[1] - p1[1])**2)
-        xc_seg = (p1[0] + p2[0]) / 2
-        yc_seg = (p1[1] + p2[1]) / 2
-        A_seg = L_seg * skin_thickness
-        
-        total_area += A_seg
-        moment_x += A_seg * xc_seg
-        moment_y += A_seg * yc_seg
-        
-    # 2. Stringers (Use Area directly)
-    for s in stringers:
-        sx, sy, area, _ = s
-        A_str = area
-        
-        total_area += A_str
-        moment_x += A_str * sx
-        moment_y += A_str * sy
-        
-    if total_area == 0: return (0, 0)
-    return (moment_x / total_area, moment_y / total_area)
+from alban_code_4 import calculate_wingbox_centroid
+n_stringers_side = 10
+L_stringer = 1/25           #0.25 of this offset to inside for centroid of point area of stringer
+t_stringer = 2*(10**(-3))
+A_stringer = (L_stringer * t_stringer)*2 - (t_stringer**2)  #approx area of L shape stringer
 
 def inertia_calculation(z):
     c_z = -0.2313*z + 4.02 
     
     # Centroid Calculation (Uses UNIFIED stringer list)
-    ce_unscaled = calculate_wingbox_centroid(coords_unscaled, t_skin, rho_Al2024, harmonized_stringers_unscaled)
-    ce = (c_z * ce_unscaled[0], c_z * ce_unscaled[1])
+    Cx, Cy, stringer_coords = calculate_wingbox_centroid(coords_unscaled, t_skin, rho_Al2024, n_str, A_str, L_str)
+    ce = (c_z * Cx, c_z * Cy)
     
     x_frac = [0.2, 0.7, 0.7, 0.2]
     y_frac = [-0.02723, -0.0066, 0.0666, 0.08737]
@@ -440,13 +414,12 @@ def inertia_calculation(z):
         Ixytot += Ixy
     
     # 2. Harmonized Stringer Contributions
-    for sx_f, sy_f, A_str_f, _ in harmonized_stringers_unscaled:
+    for sx_f, sy_f in stringer_coords:
         sx, sy = sx_f * c_z, sy_f * c_z
-        A_str = A_str_f * (c_z / 4.02)**2 # Stringer area scales roughly with (chord)^2 - Assuming area is defined at root chord=4.02
+    A_str = A_stringer * (c_z)**2
         
         # NOTE: Stringer area should be considered constant or scale by (chord/chord_root)^2
         # For this context, let's keep A_str_f constant, only coordinates scale:
-        A_str = A_str_f
         
         d_y2 = sx - ce[0] # Horizontal distance from centroid
         d_x2 = sy - ce[1] # Vertical distance from centroid
@@ -621,3 +594,8 @@ plt.axvline(x_engine, color='red', linestyle='--', label='Engine Location')
 plt.grid(True)
 plt.legend()
 plt.show()
+end_time = time.perf_counter()
+elapsed_time = end_time - start_time
+
+print(f"Result (Shear_pos(0)): {result:.2f} N")
+print(f"Execution time: {elapsed_time:.6f} seconds")
