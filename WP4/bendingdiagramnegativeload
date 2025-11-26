@@ -28,7 +28,7 @@ M_vals = M_vals[::-1]
 # -----------------------------
 # Internal moment function M_pos_load(x)
 # -----------------------------
-def M_pos_load(x):
+def M_neg_load(x):
     """
     Returns the internal bending moment at spanwise location x [m].
     Works for 0 ≤ x ≤ L.
