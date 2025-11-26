@@ -3,10 +3,45 @@ from scipy.integrate import quad
 import matplotlib.pyplot as plt
 from scipy.interpolate import interp1d
 import math as m
-from torquediagrampositiveloadfactor import T
-
+from torquediagrampositiveloadfactor import torque_pos_loadfactor
+from torquediagrampositiveloadfactor import torque_neg_loadfactor
+from alban_code_3 import calculate_wingbox_centroid
 print('hello kyrgyzstan')
-def inertia_calculation(c,ns,As):
+def inertia_calculation(z):
+    ns = 1  # number of stringers
+    As = 0.0025  # area of each stringer in m^2
+
+        # 1. Geometry: (Front-Bot -> Rear-Bot -> Rear-Top -> Front-Top)
+    coords = [
+        (0.2, -0.02723),  
+        (0.7, -0.0066),   
+        (0.7, 0.0666),    
+        (0.2, 0.08737)    
+    ]
+
+    # 2. Material Properties: Al 2024-T81
+    # from https://asm.matweb.com/search/SpecificMaterial.asp?bassnum=MA2024T81
+    # Density: 2.78 g/cc -> 2780 kg/m^3
+    t_skin = 0.001           # Skin thickness (m)
+    rho_Al2024 = 2780        # Density (kg/m^3)
+
+    # (Stored for future stress/stiffness calcs)
+    E_Al2024 = 72.4e9        # Young's Modulus (Pa) -> 72.4 GPa
+    Sigma_Yield = 450e6      # Yield Strength (Pa)  -> ~450 MPa
+    Sigma_Ult = 485e6        # Ultimate Strength (Pa) -> ~485 MPa
+
+    # 3. Stringers (x, y, area, density)
+    # Using same Al 2024 density for stringers
+    stringers_data = [
+        (0.45, 0.07, 0.0005, rho_Al2024),   # Top stringer
+        (0.45, -0.015, 0.0005, rho_Al2024)  # Bottom stringer
+    ]
+
+    # ==========================================
+    # EXECUTION
+    # ==========================================
+    c = -0.2313*z + 4.02
+    ce = c*calculate_wingbox_centroid(coords, t_skin, rho_Al2024, stringers_data)
     x = [0.2*c,0.7*c,0.2*c,0.7*c]
     y = [0.08737*c,0.0666*c,-0.0066*c,-0.02723*c]
     x.append(x[0])
@@ -20,7 +55,7 @@ def inertia_calculation(c,ns,As):
     
     J = 0
     
-    t = 0.1
+    t = 0.001
     #iterations
     for i in range(len(x)-1):
 
@@ -68,11 +103,29 @@ def inertia_calculation(c,ns,As):
 
 def firstint(z):
     G = 28,000,000,000  # Pa
-    dv = scipy.integrate.quad(T(z)/(G*I(c,ns,As)[4])
+    c = -0.2313*z + 4.02
+    dv = scipy.integrate.quad(torque_pos_loadfactor(z)/(G*I(ns,As,z)[4]),0,11.89)
     return dv
 def secondint(dv):
-    v = scipy.integrate.quad(dv)
+    v = scipy.integrate.quad(dv,0,11.89)
     return v
     
-    
-    return delta
+
+def v(z):
+    res = secondint(firstint(z))
+    return res
+
+# Create z range
+z = np.linspace(-10, 10, 400)
+
+# Compute v(z)
+v_values = v(z)
+
+# Plot
+plt.figure(figsize=(8, 5))
+plt.plot(z, v_values)
+plt.xlabel('z')
+plt.ylabel('v(z)')
+plt.title('Plot of v as a Function of z')
+plt.grid(True)
+plt.show()
