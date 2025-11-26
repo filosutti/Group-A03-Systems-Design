@@ -290,42 +290,66 @@ def MperSpan1(y):
         # Placeholder fallback if file reading failed
         return 100 * (1 - y / L)
 
-
 # ---------------------------------------------------------------------
-# CONSTANTS & GEOMETRY (UNCHANGED)
+# CONSTANTS & GEOMETRY (UPDATED FOR HARMONIZATION)
 # ---------------------------------------------------------------------
 G = 28e9 
 E = 72.4e9 
 
-# Engine parameters
-w_engine   = 4800 * 0.45359237 * 9.81   
+# Engine parameters (UNCHANGED)
+w_engine  = 4800 * 0.45359237 * 9.81 
 thrust_arm = 2.32 + 0.3
 engine_arm = 2.495
-x_engine   = 3.75 
-T_thrust   = 83.1e3
+x_engine  = 3.75 
+T_thrust = 83.1e3
 
-# Unscaled wingbox section properties
-t_skin = 0.01
+# Harmonized Wingbox section properties
+t_skin = 0.012 
 rho_Al2024 = 2780
-coords_unscaled = [(0.2, -0.02723), (0.7, -0.0066), (0.7, 0.0666), (0.2, 0.08737)]
-stringers_data = [(0.45, 0.07, 0.0005, rho_Al2024), (0.45, -0.015, 0.0005, rho_Al2024)]
+coords_unscaled = [(0.2, -0.02723), (0.7, -0.0066), (0.7, 0.0666), (0.2, 0.08737)] # FB, RB, RT, FT
 
-# Distributed Weight/Fuel Loads
+# --- HARMONIZED STRINGER DATA ---
+# Define Stringers at 4 corners + 3 top + 3 bottom (10 total)
+# For simplicity, we define the fraction (x_f, y_f) and area (A_str) for each.
+# Area set to 0.0023 m^2 for non-corners, 0.001 m^2 for corners (A_corner = t_skin * 0.1 * c_r)
+
+A_stringer_standard = 0.0023
+A_stringer_corner = 0.001 # Approximation of corner area for simplicity
+
+# (x_fraction, y_fraction, Area, Density)
+harmonized_stringers_unscaled = [
+    # Corners (indices 0, 1, 2, 3 of coords_unscaled)
+    (0.2, -0.02723, A_stringer_corner, rho_Al2024), # Front-Bottom
+    (0.7, -0.0066, A_stringer_corner, rho_Al2024),  # Rear-Bottom
+    (0.7, 0.0666, A_stringer_corner, rho_Al2024),   # Rear-Top
+    (0.2, 0.08737, A_stringer_corner, rho_Al2024),  # Front-Top
+
+    # Top/Bottom mid-segments (3 on top skin, 3 on bottom skin)
+    # Top Skin (between (0.7, 0.0666) and (0.2, 0.08737))
+    (0.6, 0.0708, A_stringer_standard, rho_Al2024), 
+    (0.5, 0.0750, A_stringer_standard, rho_Al2024),
+    (0.4, 0.0792, A_stringer_standard, rho_Al2024),
+    
+    # Bottom Skin (between (0.2, -0.02723) and (0.7, -0.0066))
+    (0.3, -0.0231, A_stringer_standard, rho_Al2024), 
+    (0.4, -0.0189, A_stringer_standard, rho_Al2024),
+    (0.5, -0.0148, A_stringer_standard, rho_Al2024),
+]
+
+# Distributed Weight/Fuel Loads (UNCHANGED)
 g = 9.81
 W_engine_NOLOAD = 2177.243 * g
 
 def Heaviside(x, x0):
-    return 1.0 if x >= x0 else 0.0
+ return 1.0 if x >= x0 else 0.0
 
-def WeightDistribution(x):
-    # Negative value means downward force
+def WeightDistribution(x): # Negative value means downward force
     return ((7*x)-821.693393608074)
 
 def FuelDistribution(x):
-    # Negative value means downward force
-    return 10*x-9148.6175 
+ return 10*x-9148.6175 
 
-# Aerodynamic moment arm
+# Aerodynamic moment arm (UNCHANGED)
 def d(x):
     c_r = 4.02
     span = L
@@ -335,45 +359,55 @@ def d(x):
     return 0.20 * chord
 
 # ---------------------------------------------------------------------
-# SECTION 1: CENTROID & INERTIA CALCULATION (UNCHANGED)
+# SECTION 1: CENTROID & INERTIA CALCULATION (UPDATED)
 # ---------------------------------------------------------------------
+# Re-using the provided calculate_wingbox_centroid (though it's complex)
 def calculate_wingbox_centroid(corners, skin_thickness, skin_density, stringers):
-    # ... (body remains unchanged)
-    total_mass = 0
+    # ... [Implementation from user code]
+    # Removed mass calculation, focusing on moments and Cx/Cy
+    
+    total_area = 0
     moment_x = 0
     moment_y = 0
+    
+    # 1. Skins (Use Area = Length * Thickness)
     num_points = len(corners)
     for i in range(num_points):
         p1, p2 = corners[i], corners[(i + 1) % num_points]
         L_seg = np.sqrt((p2[0] - p1[0])**2 + (p2[1] - p1[1])**2)
         xc_seg = (p1[0] + p2[0]) / 2
         yc_seg = (p1[1] + p2[1]) / 2
-        m_seg = L_seg * skin_thickness * skin_density
-        total_mass += m_seg
-        moment_x += m_seg * xc_seg
-        moment_y += m_seg * yc_seg
+        A_seg = L_seg * skin_thickness
+        
+        total_area += A_seg
+        moment_x += A_seg * xc_seg
+        moment_y += A_seg * yc_seg
+        
+    # 2. Stringers (Use Area directly)
     for s in stringers:
-        sx, sy, area, s_density = s
-        m_str = area * s_density
-        total_mass += m_str
-        moment_x += m_str * sx
-        moment_y += m_str * sy
-    if total_mass == 0: return (0, 0)
-    return (moment_x / total_mass, moment_y / total_mass)
+        sx, sy, area, _ = s
+        A_str = area
+        
+        total_area += A_str
+        moment_x += A_str * sx
+        moment_y += A_str * sy
+        
+    if total_area == 0: return (0, 0)
+    return (moment_x / total_area, moment_y / total_area)
 
 def inertia_calculation(z):
-    # ... (body remains unchanged)
-    c_z = -0.2313*z + 4.02 # Chord at spanwise location z
+    c_z = -0.2313*z + 4.02 
     
-    cx_unscaled, cy_unscaled = calculate_wingbox_centroid(coords_unscaled, t_skin, rho_Al2024, stringers_data)
-    ce = (c_z * cx_unscaled, c_z * cy_unscaled)
+    # Centroid Calculation (Uses UNIFIED stringer list)
+    ce_unscaled = calculate_wingbox_centroid(coords_unscaled, t_skin, rho_Al2024, harmonized_stringers_unscaled)
+    ce = (c_z * ce_unscaled[0], c_z * ce_unscaled[1])
     
     x_frac = [0.2, 0.7, 0.7, 0.2]
     y_frac = [-0.02723, -0.0066, 0.0666, 0.08737]
     x_scaled = [xf * c_z for xf in x_frac]
     y_scaled = [yf * c_z for yf in y_frac]
     
-    # Torsional Constant J (Bredt's Theory)
+    # Torsional Constant J (Bredt's Theory) - UNCHANGED
     Am = 0.5 * np.abs(np.sum(np.array(x_scaled) * np.roll(np.array(y_scaled), -1) - 
                              np.roll(np.array(x_scaled), -1) * np.array(y_scaled)))
     perimeter_integral = 0
@@ -388,8 +422,8 @@ def inertia_calculation(z):
     # Bending Inertias
     x_temp, y_temp = x_scaled + [x_scaled[0]], y_scaled + [y_scaled[0]]
     Ixxtot = Iyytot = Ixytot = 0
-    stringer_area = stringers_data[0][2] 
-
+    
+    # 1. Skin Contributions
     for i in range(len(x_temp)-1):
         dx, dy = x_temp[i+1]-x_temp[i], y_temp[i+1]-y_temp[i]
         l = np.sqrt(dx**2 + dy**2)
@@ -397,9 +431,7 @@ def inertia_calculation(z):
         d_y = x_temp[i] + dx/2 - ce[0]
         d_x = y_temp[i] + dy/2 - ce[1]
         
-        # Ixx (about horizontal axis) uses vertical distance d_x (y-coords)
         Ixx = (t*(l**3)*(dy/l)**2)/12 + A*(d_x**2)
-        # Iyy (about vertical axis) uses horizontal distance d_y (x-coords)
         Iyy = (t*(l**3)*(dx/l)**2)/12 + A*(d_y**2)
         Ixy = (t*(l**3)*(dx*dy)/(l**2))/12 + A*(d_x*d_y)
 
@@ -407,13 +439,21 @@ def inertia_calculation(z):
         Iyytot += Iyy
         Ixytot += Ixy
     
-    for sx_f, sy_f, _, _ in stringers_data:
+    # 2. Harmonized Stringer Contributions
+    for sx_f, sy_f, A_str_f, _ in harmonized_stringers_unscaled:
         sx, sy = sx_f * c_z, sy_f * c_z
-        d_y2 = sx - ce[0]
-        d_x2 = sy - ce[1]
-        Ixxtot += stringer_area * d_x2**2
-        Iyytot += stringer_area * d_y2**2
-        Ixytot += stringer_area * d_x2 * d_y2
+        A_str = A_str_f * (c_z / 4.02)**2 # Stringer area scales roughly with (chord)^2 - Assuming area is defined at root chord=4.02
+        
+        # NOTE: Stringer area should be considered constant or scale by (chord/chord_root)^2
+        # For this context, let's keep A_str_f constant, only coordinates scale:
+        A_str = A_str_f
+        
+        d_y2 = sx - ce[0] # Horizontal distance from centroid
+        d_x2 = sy - ce[1] # Vertical distance from centroid
+        
+        Ixxtot += A_str * d_x2**2
+        Iyytot += A_str * d_y2**2
+        Ixytot += A_str * d_x2 * d_y2
 
     return Ixxtot, Iyytot, Ixytot, J
 
@@ -476,36 +516,7 @@ plt.show()
 # SECTION 3: BENDING MOMENT & DEFLECTION (NEGATIVE Load Factor - CORRECTED)
 # ---------------------------------------------------------------------
 
-def w(x):
-    # Downward Lift (Lift(x) is negative) + Downward Weight/Fuel (W/F are negative)
-    return Lift(x) + WeightDistribution(x) + FuelDistribution(x)
-
-def Shear(x):
-    ShearIntegral, _ = scipy.integrate.quad(w, x, L)
-    Engine_PointLoad_Shear = -W_engine_NOLOAD * (1-Heaviside(x,x_engine))
-    return -ShearIntegral + Engine_PointLoad_Shear
-
-# Compute Bending Moment M(x)
-x_vals_M = np.linspace(L, 0, 400)
-V_vals = np.array([Shear(x) for x in x_vals_M])
-M_vals = cumulative_trapezoid(V_vals, x_vals_M, initial=0)
-x_vals_M = x_vals_M[::-1]
-M_vals = M_vals[::-1]
-
-def M_neg_load(x):
-    return float(np.interp(x, x_vals_M, M_vals))
-
-# Plot Bending Moment (Single case)
-plt.figure(figsize=(10,5))
-plt.plot(x_vals_M, M_vals / 1e6, linewidth=2, label='Bending Moment M(x)')
-plt.axhline(0, color='black', linewidth=0.8)
-plt.axvline(x_engine, color='red', linestyle='--', label='Engine Location')
-plt.xlabel('x [m] from root')
-plt.ylabel('Bending Moment M(x) (MN·m)')
-plt.title('Bending Moment Diagram (Negative Load Factor)')
-plt.grid(True)
-plt.legend()
-plt.show()
+from bendingdiagramnegativeload import M_neg_load
 
 # --- Deflection Calculation (Negative) ---
 z_grid = np.linspace(0, L, 500)
@@ -581,43 +592,7 @@ plt.show()
 # ---------------------------------------------------------------------
 # SECTION 5: BENDING MOMENT & DEFLECTION (POSITIVE Load Factor)
 # ---------------------------------------------------------------------
-
-def w_pos(x):
-    # Upward Lift (LperSpan0 is positive) + Downward Weight/Fuel (W/F are negative)
-    return LperSpan0(x) + WeightDistribution(x) + FuelDistribution(x) 
-
-def Shear_pos(x):
-    # Shear Integral of the positive distributed load
-    ShearIntegral, _ = scipy.integrate.quad(w_pos, x, L)
-    
-    # Engine Point Load is unchanged (it's weight/thrust, always downward/forward)
-    Engine_PointLoad_Shear = -W_engine_NOLOAD * (1-Heaviside(x,x_engine))
-    
-    return -ShearIntegral + Engine_PointLoad_Shear
-
-# Compute Bending Moment M(x)
-x_vals_M_pos = np.linspace(L, 0, 400) 
-V_vals_pos = np.array([Shear_pos(x) for x in x_vals_M_pos])
-M_vals_pos = cumulative_trapezoid(V_vals_pos, x_vals_M_pos, initial=0)
-x_vals_M_pos = x_vals_M_pos[::-1]
-M_vals_pos = M_vals_pos[::-1]
-
-def M_pos_load(x):
-    return float(np.interp(x, x_vals_M_pos, M_vals_pos))
-
-# Plot Bending Moment Comparison
-plt.figure(figsize=(10,6))
-plt.plot(x_vals_M, M_vals / 1e6, linewidth=2, linestyle='--', label='Negative Load Factor $M(x)$')
-plt.plot(x_vals_M_pos, M_vals_pos / 1e6, linewidth=2, color='g', label='Positive Load Factor $M(x)$')
-
-plt.axhline(0, color='black', linewidth=0.8)
-plt.axvline(x_engine, color='red', linestyle='--', label='Engine Location')
-plt.xlabel('x [m] from root')
-plt.ylabel('Bending Moment M(x) (MN·m)')
-plt.title('Bending Moment Diagram Comparison')
-plt.grid(True)
-plt.legend()
-plt.show()
+from bendingdiagrampositiveload import M_pos_load
 
 # --- Deflection Calculation (Positive) ---
 
