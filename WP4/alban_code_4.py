@@ -84,8 +84,9 @@ def calculate_wingbox_centroid(corners, skin_thickness, skin_density, n_str, A_s
 
     Cx = moment_x / total_mass
     Cy = moment_y / total_mass
-
+    
     return Cx, Cy, stringer_coords
+
 
 # ==========================================
 # EXECUTION
