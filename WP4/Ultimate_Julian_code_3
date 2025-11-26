@@ -297,6 +297,12 @@ def MperSpan1(y):
 G = 28e9 
 E = 72.4e9 
 
+#Stringer geometry
+n_stringers_side = 10
+L_stringer = 1/25           #0.25 of this offset to inside for centroid of point area of stringer
+t_stringer = 2*(10**(-3))
+A_stringer = (L_stringer * t_stringer)*2 - (t_stringer**2)  #approx area of L shape stringer
+
 # Engine parameters (UNCHANGED)
 w_engine  = 4800 * 0.45359237 * 9.81 
 thrust_arm = 2.32 + 0.3
@@ -309,33 +315,8 @@ t_skin = 0.012
 rho_Al2024 = 2780
 coords_unscaled = [(0.2, -0.02723), (0.7, -0.0066), (0.7, 0.0666), (0.2, 0.08737)] # FB, RB, RT, FT
 
-# --- HARMONIZED STRINGER DATA ---
-# Define Stringers at 4 corners + 3 top + 3 bottom (10 total)
-# For simplicity, we define the fraction (x_f, y_f) and area (A_str) for each.
-# Area set to 0.0023 m^2 for non-corners, 0.001 m^2 for corners (A_corner = t_skin * 0.1 * c_r)
 
-A_stringer_standard = 0.0023
-A_stringer_corner = 0.001 # Approximation of corner area for simplicity
 
-# (x_fraction, y_fraction, Area, Density)
-harmonized_stringers_unscaled = [
-    # Corners (indices 0, 1, 2, 3 of coords_unscaled)
-    (0.2, -0.02723, A_stringer_corner, rho_Al2024), # Front-Bottom
-    (0.7, -0.0066, A_stringer_corner, rho_Al2024),  # Rear-Bottom
-    (0.7, 0.0666, A_stringer_corner, rho_Al2024),   # Rear-Top
-    (0.2, 0.08737, A_stringer_corner, rho_Al2024),  # Front-Top
-
-    # Top/Bottom mid-segments (3 on top skin, 3 on bottom skin)
-    # Top Skin (between (0.7, 0.0666) and (0.2, 0.08737))
-    (0.6, 0.0708, A_stringer_standard, rho_Al2024), 
-    (0.5, 0.0750, A_stringer_standard, rho_Al2024),
-    (0.4, 0.0792, A_stringer_standard, rho_Al2024),
-    
-    # Bottom Skin (between (0.2, -0.02723) and (0.7, -0.0066))
-    (0.3, -0.0231, A_stringer_standard, rho_Al2024), 
-    (0.4, -0.0189, A_stringer_standard, rho_Al2024),
-    (0.5, -0.0148, A_stringer_standard, rho_Al2024),
-]
 
 # Distributed Weight/Fuel Loads (UNCHANGED)
 g = 9.81
@@ -364,16 +345,12 @@ def d(x):
 # ---------------------------------------------------------------------
 # Re-using the provided calculate_wingbox_centroid (though it's complex)
 from alban_code_4 import calculate_wingbox_centroid
-n_stringers_side = 10
-L_stringer = 1/25           #0.25 of this offset to inside for centroid of point area of stringer
-t_stringer = 2*(10**(-3))
-A_stringer = (L_stringer * t_stringer)*2 - (t_stringer**2)  #approx area of L shape stringer
 
 def inertia_calculation(z):
     c_z = -0.2313*z + 4.02 
     
     # Centroid Calculation (Uses UNIFIED stringer list)
-    Cx, Cy, stringer_coords = calculate_wingbox_centroid(coords_unscaled, t_skin, rho_Al2024, n_str, A_str, L_str)
+    Cx, Cy, stringer_coords = calculate_wingbox_centroid(coords_unscaled, t_skin, rho_Al2024, n_stringers_side, A_stringer, L_stringer)
     ce = (c_z * Cx, c_z * Cy)
     
     x_frac = [0.2, 0.7, 0.7, 0.2]
@@ -416,7 +393,7 @@ def inertia_calculation(z):
     # 2. Harmonized Stringer Contributions
     for sx_f, sy_f in stringer_coords:
         sx, sy = sx_f * c_z, sy_f * c_z
-    A_str = A_stringer * (c_z)**2
+        A_str = A_stringer * (c_z)**2
         
         # NOTE: Stringer area should be considered constant or scale by (chord/chord_root)^2
         # For this context, let's keep A_str_f constant, only coordinates scale:
