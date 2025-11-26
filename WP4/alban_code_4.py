@@ -1,11 +1,21 @@
 import numpy as np
 import matplotlib.pyplot as plt
+coords = [
+    (0.2, -0.02723), (0.7, -0.0066),   
+    (0.7, 0.0666),   (0.2, 0.08737)    
+]
+t_skin = 0.001
+rho_Al2024 = 2780
+n_stringers_side = 10
+L_stringer = 1/25           #0.25 of this offset to inside for centroid of point area of stringer
+t_stringer = 2*(10**(-3))
+A_stringer = (L_stringer * t_stringer)*2 - (t_stringer**2)  #approx area of L shape stringer
 
-def calculate_wingbox_centroid(corners, skin_thickness, skin_density, n_str, A_str):
-    """
-    Calculates centroid including auto-generated stringers.
-    Returns: (Cx, Cy, stringer_coordinates_list)
-    """
+##########################################
+# FUNCTION TO CALCULATE CENTROID
+##########################################
+
+def calculate_wingbox_centroid(corners, skin_thickness, skin_density, n_str, A_str, L_str):
     total_mass = 0
     moment_x = 0
     moment_y = 0
@@ -32,31 +42,39 @@ def calculate_wingbox_centroid(corners, skin_thickness, skin_density, n_str, A_s
 
     print("-" * 65)
 
-    # --- 2. STRINGERS (Generated Internally) ---
-    # Define segments: Top (Front-Top->Rear-Top) and Bot (Front-Bot->Rear-Bot)
-    # Indices: 0:Front-Bot, 1:Rear-Bot, 2:Rear-Top, 3:Front-Top
-    segments = [(corners[3], corners[2]), (corners[0], corners[1])]
+    # --- 2. STRINGERS ---
+    # Top Skin: corners[3] -> corners[2]
+    # Bot Skin: corners[0] -> corners[1]
+    segments = [
+        (corners[3], corners[2], "Top"), 
+        (corners[0], corners[1], "Bot")
+    ]
     
-    stringer_coords = [] # Store coordinates to return for plotting
+    stringer_coords = [] 
     count = 1
+    offset_dist = L_str * 0.25  # The 1/4 offset magnitude
 
-    for p_start, p_end in segments:
+    for p_start, p_end, side in segments:
         for i in range(1, n_str + 1):
-            f = i / (n_str + 1) # Interpolation fraction
+            f = i / (n_str + 1)
             
-            # Position
+            # Base Position on Skin
             sx = p_start[0] + f * (p_end[0] - p_start[0])
             sy = p_start[1] + f * (p_end[1] - p_start[1])
+
+            # Apply Offset Towards Middle
+            # If Top, go down (-). If Bot, go up (+).
+            if side == "Top":
+                sy -= offset_dist
+            else:
+                sy += offset_dist
             
-            # Mass
+            # Mass & Moments
             m_str = A_str * skin_density
-            
-            # Add to Totals
             total_mass += m_str
             moment_x += m_str * sx
             moment_y += m_str * sy
             
-            # Store and Print
             stringer_coords.append((sx, sy))
             print(f"Stringer {count:<6} {A_str:<12.6f} {m_str:<12.4f} ({sx:.3f}, {sy:.3f})")
             count += 1
@@ -70,28 +88,10 @@ def calculate_wingbox_centroid(corners, skin_thickness, skin_density, n_str, A_s
     return Cx, Cy, stringer_coords
 
 # ==========================================
-# INPUTS
-# ==========================================
-
-# 1. Geometry (Front-Bot -> Rear-Bot -> Rear-Top -> Front-Top)
-coords = [
-    (0.2, -0.02723),  
-    (0.7, -0.0066),   
-    (0.7, 0.0666),    
-    (0.2, 0.08737)    
-]
-
-# 2. Material & Stringer Params
-t_skin = 0.001          # Skin thickness (m)
-rho_Al2024 = 2780       # Density (kg/m^3)
-n_stringers_side = 10   # Stringers per side
-A_stringer = 0.0023     # Area per stringer (m^2)
-
-# ==========================================
 # EXECUTION
 # ==========================================
 
-cx, cy, str_coords = calculate_wingbox_centroid(coords, t_skin, rho_Al2024, n_stringers_side, A_stringer)
+cx, cy, str_coords = calculate_wingbox_centroid(coords, t_skin, rho_Al2024, n_stringers_side, A_stringer, L_stringer)
 
 print("="*30)
 print(f"FINAL CENTROID: ({cx:.5f}, {cy:.5f})")
@@ -107,13 +107,12 @@ plt.figure(figsize=(10, 6))
 plt.plot(x_box, y_box, 'b-', label='Skin', linewidth=2)
 plt.fill(x_box, y_box, alpha=0.1)
 
-# Plot Stringers (using the list returned by the function)
 if str_coords:
     sx_list, sy_list = zip(*str_coords)
-    plt.scatter(sx_list, sy_list, color='red', s=50, label='Stringers')
+    plt.scatter(sx_list, sy_list, color='red', s=50, label='Offset Stringers')
 
 plt.scatter(cx, cy, color='green', marker='x', s=200, linewidth=3, label='Centroid')
-plt.title(f'Wing Box Centroid\n({cx:.4f}, {cy:.4f})')
+plt.title(f'Wing Box Centroid (Offset Stringers)\n({cx:.4f}, {cy:.4f})')
 plt.axis('equal')
 plt.grid(True)
 plt.legend()
