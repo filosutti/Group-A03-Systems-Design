@@ -311,7 +311,7 @@ x_engine  = 3.75
 T_thrust = 83.1e3
 
 # Harmonized Wingbox section properties
-t_skin = 0.012 
+t_skin = 0.001
 rho_Al2024 = 2780
 coords_unscaled = [(0.2, -0.02723), (0.7, -0.0066), (0.7, 0.0666), (0.2, 0.08737)] # FB, RB, RT, FT
 
@@ -362,7 +362,7 @@ def inertia_calculation(z):
     Am = 0.5 * np.abs(np.sum(np.array(x_scaled) * np.roll(np.array(y_scaled), -1) - 
                              np.roll(np.array(x_scaled), -1) * np.array(y_scaled)))
     perimeter_integral = 0
-    t = t_skin 
+    t = t_skin*c_z
     for i in range(len(x_scaled)):
         x1, y1 = x_scaled[i], y_scaled[i]
         x2, y2 = x_scaled[(i + 1) % len(x_scaled)], y_scaled[(i + 1) % len(x_scaled)]
@@ -574,5 +574,4 @@ plt.show()
 end_time = time.perf_counter()
 elapsed_time = end_time - start_time
 
-print(f"Result (Shear_pos(0)): {result:.2f} N")
 print(f"Execution time: {elapsed_time:.6f} seconds")
