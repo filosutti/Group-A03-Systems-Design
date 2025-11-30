@@ -250,46 +250,15 @@ Interp_neg = get_interpolator(AoA_neg)
 
 
 # Function LperSpan0 is for Positive ultimate load factor (n_ult = 3.75)
-def LperSpan0(y):
-    # n_ult = 3.75 (Positive Load)
-    if Interp_pos is not None:
-        Cl_interp, _ = Interp_pos
-        cL_local = Cl_interp(y)
-        return q * c(y) * cL_local # Lift = q * c * Cl (Positive is Upward)
-    else:
-        # Placeholder fallback if file reading failed
-        return 1000 * (1 - (y / L)**2) 
+from TL import LperSpan0
 
 # Function MperSpan0 is for Positive ultimate load factor (Pitching Moment)
-def MperSpan0(y):
-    if Interp_pos is not None:
-        _, Cm_interp = Interp_pos
-        Cm_local = Cm_interp(y)
-        return q * c(y)**2 * Cm_local # Moment = q * c^2 * Cm (N*m/m)
-    else:
-        # Placeholder fallback if file reading failed
-        return -100 * (1 - y / L)
+from TL import MperSpan0
 
 # Function LperSpan1 is for Negative ultimate load factor (n_ult = -1.5)
-def LperSpan1(y):
-    # n_ult2 = -1.5 (Negative Load)
-    if Interp_neg is not None:
-        Cl_interp, _ = Interp_neg
-        cL_local = Cl_interp(y)
-        return q * c(y) * cL_local # Lift = q * c * Cl (Negative is Downward)
-    else:
-        # Placeholder fallback if file reading failed
-        return -1000 * (1 - (y / L)**2) 
-
+from TL import LperSpan1
 # Function MperSpan1 is for Negative ultimate load factor (Pitching Moment)
-def MperSpan1(y):
-    if Interp_neg is not None:
-        _, Cm_interp = Interp_neg
-        Cm_local = Cm_interp(y)
-        return q * c(y)**2 * Cm_local # Moment = q * c^2 * Cm (N*m/m)
-    else:
-        # Placeholder fallback if file reading failed
-        return 100 * (1 - y / L)
+from TL import MperSpan1
 
 # ---------------------------------------------------------------------
 # CONSTANTS & GEOMETRY (UPDATED FOR HARMONIZATION)
@@ -347,7 +316,8 @@ def d(x):
 from alban_code_4 import calculate_wingbox_centroid
 
 def inertia_calculation(z):
-    c_z = -0.2313*z + 4.02 
+    from TL import c
+    c_z = c(z)
     
     # Centroid Calculation (Uses UNIFIED stringer list)
     Cx, Cy, stringer_coords = calculate_wingbox_centroid(coords_unscaled, t_skin, rho_Al2024, n_stringers_side, A_stringer, L_stringer)
