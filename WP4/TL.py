@@ -51,16 +51,6 @@ with open ('WP4/XFLR10.txt','r') as g:
         cllst10.append(cl)
         cdlst10.append(cd)
         cmlst10.append(cm)
-
-def LperSpan0(y):
-    n_ult = 3.75
-    cL0 = 0.304
-    cL10 = 1.15
-
-    L = n_ult*W
-    cL = L/q/S
-    aoa =  (cL-cL0)/(cL10-cL0)*10
-
     #below takes y as parameter and yields the spanwise cl, cdi and cm
     cl_int_0 = sp.interpolate.interp1d(ylst0, cllst0, kind='cubic', fill_value="extrapolate")
     cd_int_0 = sp.interpolate.interp1d(ylst0, cdlst0, kind='cubic', fill_value="extrapolate")
@@ -70,6 +60,14 @@ def LperSpan0(y):
     cd_int_10 = sp.interpolate.interp1d(ylst10, cdlst10, kind='cubic', fill_value="extrapolate")
     cm_int_10 = sp.interpolate.interp1d(ylst10, cmlst10, kind='cubic', fill_value="extrapolate")
 
+def LperSpan0(y):
+    n_ult = 3.75
+    cL0 = 0.304
+    cL10 = 1.15
+
+    L = n_ult*W
+    cL = L/q/S
+    aoa =  (cL-cL0)/(cL10-cL0)*10
     cly = (cl_int_10(y)-cl_int_0(y))*aoa/10 + cl_int_0(y)
     LperSpan = cly*q*c(y)
     return LperSpan
@@ -81,15 +79,6 @@ def MperSpan0(y):
     L = n_ult*W
     cL = L/q/S
     aoa =  (cL-cL0)/(cL10-cL0)*10
-    #below takes y as parameter and yields the spanwise cl, cdi and cm
-    cl_int_0 = sp.interpolate.interp1d(ylst0, cllst0, kind='cubic', fill_value="extrapolate")
-    cd_int_0 = sp.interpolate.interp1d(ylst0, cdlst0, kind='cubic', fill_value="extrapolate")
-    cm_int_0 = sp.interpolate.interp1d(ylst0, cmlst0, kind='cubic', fill_value="extrapolate")
-    #below takes y as parameter and yields the spanwise cl, cdi and cm
-    cl_int_10 = sp.interpolate.interp1d(ylst10, cllst10, kind='cubic', fill_value="extrapolate")
-    cd_int_10 = sp.interpolate.interp1d(ylst10, cdlst10, kind='cubic', fill_value="extrapolate")
-    cm_int_10 = sp.interpolate.interp1d(ylst10, cmlst10, kind='cubic', fill_value="extrapolate")
-
     cmy = (cm_int_10(y)-cm_int_0(y))*aoa/10 + cm_int_0(y)
     MperSpan = cmy*q*c(y)*c(y)
     return MperSpan
@@ -101,15 +90,6 @@ def LperSpan1(y):
     L = n_ult*W
     cL = L/q/S
     aoa =  (cL-cL0)/(cL10-cL0)*10
-    #below takes y as parameter and yields the spanwise cl, cdi and cm
-    cl_int_0 = sp.interpolate.interp1d(ylst0, cllst0, kind='cubic', fill_value="extrapolate")
-    cd_int_0 = sp.interpolate.interp1d(ylst0, cdlst0, kind='cubic', fill_value="extrapolate")
-    cm_int_0 = sp.interpolate.interp1d(ylst0, cmlst0, kind='cubic', fill_value="extrapolate")
-    #below takes y as parameter and yields the spanwise cl, cdi and cm
-    cl_int_10 = sp.interpolate.interp1d(ylst10, cllst10, kind='cubic', fill_value="extrapolate")
-    cd_int_10 = sp.interpolate.interp1d(ylst10, cdlst10, kind='cubic', fill_value="extrapolate")
-    cm_int_10 = sp.interpolate.interp1d(ylst10, cmlst10, kind='cubic', fill_value="extrapolate")
-
     cly = (cl_int_10(y)-cl_int_0(y))*aoa/10 + cl_int_0(y)
     LperSpan = cly*q*c(y)
     return LperSpan
@@ -121,15 +101,6 @@ def MperSpan1(y):
     L = n_ult*W
     cL = L/q/S
     aoa =  (cL-cL0)/(cL10-cL0)*10
-    #below takes y as parameter and yields the spanwise cl, cdi and cm
-    cl_int_0 = sp.interpolate.interp1d(ylst0, cllst0, kind='cubic', fill_value="extrapolate")
-    cd_int_0 = sp.interpolate.interp1d(ylst0, cdlst0, kind='cubic', fill_value="extrapolate")
-    cm_int_0 = sp.interpolate.interp1d(ylst0, cmlst0, kind='cubic', fill_value="extrapolate")
-    #below takes y as parameter and yields the spanwise cl, cdi and cm
-    cl_int_10 = sp.interpolate.interp1d(ylst10, cllst10, kind='cubic', fill_value="extrapolate")
-    cd_int_10 = sp.interpolate.interp1d(ylst10, cdlst10, kind='cubic', fill_value="extrapolate")
-    cm_int_10 = sp.interpolate.interp1d(ylst10, cmlst10, kind='cubic', fill_value="extrapolate")
-
     cmy = (cm_int_10(y)-cm_int_0(y))*aoa/10 + cm_int_0(y)
     MperSpan = cmy*q*c(y)*c(y)
     return MperSpan
