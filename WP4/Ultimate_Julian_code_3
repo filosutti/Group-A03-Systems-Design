@@ -161,92 +161,9 @@ q = 1/2*1.225*V_inf*V_inf
 W = 27719*9.80665
 S = 62.8
 L = 11.89 # Semi-span
+from TL import c
+c = c(y)
 
-def c(y):
-    cr = 4.02
-    ct = 1.27
-    b = 23.78
-    c = ct + (cr - ct)*(b/2 - y)*2/b
-    return c
-
-def LoadXFLRData(filepath):
-    """Loads XFLR data (y, Cl, Cm) for a given angle of attack."""
-    try:
-        data = np.loadtxt(filepath, skiprows=10, usecols=(1, 2, 4)) # y/b, Cl, Cm
-        y_scaled = data[:, 0] * L
-        Cl_data = data[:, 1]
-        Cm_data = data[:, 2]
-        return y_scaled, Cl_data, Cm_data
-    except Exception as e:
-        print(f"Warning: Could not load XFLR file {filepath}. Using placeholder loads. Error: {e}")
-        return None, None, None
-
-def get_interpolator(alpha):
-    """Generates interpolation functions for Cl and Cm at a specific AoA."""
-    # Load data for 0 and 10 degrees AoA (or nearest available data)
-    y0, Cl0, Cm0 = LoadXFLRData('WP4/XFLR0.txt')
-    y10, Cl10, Cm10 = LoadXFLRData('WP4/XFLR10.txt')
-
-    if y0 is None or y10 is None:
-        return None # Return None if files failed to load
-
-    alpha0 = 0.0
-    alpha10 = 10.0
-    
-    # Simple linear interpolation for Cl and Cm across the two AoA states
-    def Cl_interp(y):
-        # Interpolate Cl at y for alpha=0 and alpha=10
-        Cl_y0 = interp1d(y0, Cl0, kind='linear', bounds_error=False, fill_value="extrapolate")(y)
-        Cl_y10 = interp1d(y10, Cl10, kind='linear', bounds_error=False, fill_value="extrapolate")(y)
-        
-        # Linearly interpolate between the two AoA based on the target alpha
-        Cl_target = Cl_y0 + (Cl_y10 - Cl_y0) * (alpha - alpha0) / (alpha10 - alpha0)
-        return Cl_target
-
-    def Cm_interp(y):
-        Cm_y0 = interp1d(y0, Cm0, kind='linear', bounds_error=False, fill_value="extrapolate")(y)
-        Cm_y10 = interp1d(y10, Cm10, kind='linear', bounds_error=False, fill_value="extrapolate")(y)
-        
-        Cm_target = Cm_y0 + (Cm_y10 - Cm_y0) * (alpha - alpha0) / (alpha10 - alpha0)
-        return Cm_target
-    
-    return Cl_interp, Cm_interp
-
-# ---------------------------------------------------------------------
-# Base functions for calculating AoA and Loads
-# ---------------------------------------------------------------------
-
-# Constants derived from XFLR analysis (used for calculating target AoA)
-# NOTE: These values must be consistent with the XFLR data.
-cL0_total = 0.304 * S # CL * S at AoA=0 (total lift coefficient * area)
-cL10_total = 1.15 * S # CL * S at AoA=10
-
-def CalculateAoA(n_target):
-    """Calculates the required angle of attack (AoA) for a given load factor."""
-    L_target = n_target * W
-    CL_target = L_target / q / S
-    
-    # Interpolate AoA based on the total CL from XFLR data (assuming linear relation)
-    # L_total = q * S * CL_total
-    
-    # AoA = (CL_target - CL_at_0) / (slope)
-    CL_at_0 = cL0_total * q / S 
-    CL_at_10 = cL10_total * q / S 
-    
-    # Slope = (CL_at_10 - CL_at_0) / 10
-    
-    if (CL_at_10 - CL_at_0) == 0:
-        # Avoid division by zero if CL doesn't change with AoA (unlikely)
-        return 0.0
-        
-    AoA = 10 * (CL_target - CL_at_0) / (CL_at_10 - CL_at_0)
-    return AoA
-
-# Get Interpolators for placeholder fallback
-AoA_pos = CalculateAoA(n_ult)
-AoA_neg = CalculateAoA(n_ult2)
-Interp_pos = get_interpolator(AoA_pos)
-Interp_neg = get_interpolator(AoA_neg)
 
 
 # Function LperSpan0 is for Positive ultimate load factor (n_ult = 3.75)
