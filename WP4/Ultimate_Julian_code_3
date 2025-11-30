@@ -162,7 +162,7 @@ W = 27719*9.80665
 S = 62.8
 L = 11.89 # Semi-span
 from TL import c
-c = c(y)
+
 
 
 
