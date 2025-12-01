@@ -60,5 +60,5 @@ plt.figure(figsize=(10, 6))   # wider figure
 plt.plot(xs, Ss)
 plt.xlabel("Spanwise position x [m]")
 plt.ylabel("Shear S(x) [N]")
-plt.title("Shear Force Diagram")
+plt.title("Shear Force with a POSITIVE load factor")
 plt.show()
