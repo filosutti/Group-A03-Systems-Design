@@ -184,8 +184,8 @@ G = 28e9
 E = 72.4e9 
 
 #Stringer geometry
-n_stringers_side = 10
-L_stringer = 1/25           #0.25 of this offset to inside for centroid of point area of stringer
+n_stringers_side = 8
+L_stringer = 1/50           #0.25 of this offset to inside for centroid of point area of stringer
 t_stringer = 2*(10**(-3))
 A_stringer = (L_stringer * t_stringer)*2 - (t_stringer**2)  #approx area of L shape stringer
 
@@ -197,7 +197,7 @@ x_engine  = 3.75
 T_thrust = 83.1e3
 
 # Harmonized Wingbox section properties
-t_skin = 0.001
+t_skin = 0.003
 rho_Al2024 = 2780
 coords_unscaled = [(0.2, -0.02723), (0.7, -0.0066), (0.7, 0.0666), (0.2, 0.08737)] # FB, RB, RT, FT
 
@@ -356,7 +356,7 @@ plt.show()
 from bendingdiagramnegativeload import M_neg_load
 
 # --- Deflection Calculation (Negative) ---
-z_grid = np.linspace(0, L, 500)
+z_grid = np.linspace(0, L, 100)
 M_grid = np.array([M_neg_load(z) for z in z_grid])
 Ixx_grid = np.array([inertia_calculation(z)[0] for z in z_grid]) 
 Curvature_grid = M_grid / (E * Ixx_grid)
