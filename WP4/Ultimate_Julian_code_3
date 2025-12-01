@@ -356,7 +356,7 @@ plt.show()
 from bendingdiagramnegativeload import M_neg_load
 
 # --- Deflection Calculation (Negative) ---
-z_grid = np.linspace(0, L, 500)
+z_grid = np.linspace(0, L, 100)
 M_grid = np.array([M_neg_load(z) for z in z_grid])
 Ixx_grid = np.array([inertia_calculation(z)[0] for z in z_grid]) 
 Curvature_grid = M_grid / (E * Ixx_grid)
