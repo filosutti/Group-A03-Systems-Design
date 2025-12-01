@@ -394,18 +394,12 @@ from bendingdiagrampositiveload import M_pos_load
 
 # --- Deflection Calculation (Positive) ---
 
-# 2. Calculate Moment and Inertia on grid
-M_grid_pos = np.array([M_pos_load(z) for z in z_grid])
-Ixx_grid_pos = np.array([inertia_calculation(z)[0] for z in z_grid]) 
-
-# 3. Calculate Curvature (d2v/dz2 = M / EI)
-Curvature_grid_pos = M_grid_pos / (E * Ixx_grid_pos)
-
-# 4. Integrate to get Slope (Theta)
-Slope_grid_pos = cumulative_trapezoid(Curvature_grid_pos, z_grid, initial=0)
-
-# 5. Integrate to get Deflection (v)
-Deflection_grid_pos = cumulative_trapezoid(Slope_grid_pos, z_grid, initial=0)
+z_grid = np.linspace(0, L, 500)
+M_grid = np.array([M_pos_load(z) for z in z_grid])
+Ixx_grid = np.array([inertia_calculation(z)[0] for z in z_grid]) 
+Curvature_grid = M_grid / (E * Ixx_grid)
+Slope_grid = cumulative_trapezoid(Curvature_grid, z_grid, initial=0)
+Deflection_grid_pos = cumulative_trapezoid(Slope_grid, z_grid, initial=0)
 
 # Plot Deflection Comparison
 plt.figure(figsize=(8,5))
