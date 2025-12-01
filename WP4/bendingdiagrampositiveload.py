@@ -17,17 +17,33 @@ x_vals = np.linspace(L, 0, 400) # integrate from tip
 V_vals = np.array([Shear(x) for x in x_vals])
 
 
+T = 81e3          # thrust load [kN or kN-equivalent]
+lambda_c = 3.3       # inflow angle [rad]
+h_engine = 2.32 + 0.3      # engine vertical offset [m]
+
+# Compute moment applied at engine
+M_T = T * np.sin(np.radians(lambda_c)) * h_engine   # [kN·m]
+
 # -----------------------------
 # Bending moment M(x) via cumulative trapezoidal integration
 # -----------------------------
 M_vals = cumulative_trapezoid(V_vals, x_vals, initial=0)
 
+# We integrated from tip → root, so x_vals decreases.
+# The moment jump must be added to all points root-wards from x_engine:
+M_vals += M_T * (x_vals <= x_engine)
 
 # Reverse arrays to plot from root to tip
 x_vals = x_vals[::-1]
 M_vals = M_vals[::-1]
 
-def M_pos_load(x):
+
+M_0 = M_vals[0]
+M_max = min(M_vals)
+print(f"Root bending moment M_0 = {M_0:.3f} kN·m")
+
+
+def M_neg_load(x):
     return float(np.interp(x, x_vals, M_vals))
 
 # -----------------------------------------
@@ -57,3 +73,4 @@ plt.title('Bending Moment Diagram (Zero at Tip)')
 plt.grid(True)
 plt.legend()
 plt.show()
+
