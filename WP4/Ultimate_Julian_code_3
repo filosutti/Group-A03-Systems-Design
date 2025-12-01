@@ -297,30 +297,7 @@ def inertia_calculation(z):
 # ---------------------------------------------------------------------
 # SECTION 2: TORQUE & TWIST (NEGATIVE Load Factor)
 # ---------------------------------------------------------------------
-Lift   = LperSpan1
-Moment = MperSpan1
-
-def tau_l(x):
-    return Lift(x) * d(x)
-
-def tau_m(x):
-    return Moment(x) 
-
-MomentPoint = (T_thrust * thrust_arm) - (w_engine * engine_arm) 
-
-def T0_calc():
-    tl, _ = quad(tau_l, 0, L)
-    tm, _ = quad(tau_m, 0, L)
-    return tl + tm + MomentPoint
-
-T0 = T0_calc()
-
-def torque_neg_loadfactor(x):
-    tl, _ = quad(tau_l, 0, x)
-    tm, _ = quad(tau_m, 0, x)
-    tpoint = MomentPoint if x >= x_engine else 0.0
-    return -T0 + tl + tm + tpoint 
-
+from torquediagramnegativeloadfactor import torque_neg_loadfactor
 # Twist Calculation (Integration Split)
 def integrand_twist(z_val):
     return torque_neg_loadfactor(z_val) / inertia_calculation(z_val)[3] / G
@@ -381,23 +358,7 @@ Lift_pos = LperSpan0 # Use the LperSpan0 function for positive lift
 Moment_pos = MperSpan0
 
 # Define functions using the positive lift/moment distribution
-def tau_l_pos(x):
-    # LperSpan0 (upward lift) * d(x)
-    return Lift_pos(x) * d(x)
-
-def T0_calc_pos():
-    tl, _ = quad(tau_l_pos, 0, L)
-    tm, _ = quad(Moment_pos, 0, L) 
-    return tl + tm + MomentPoint 
-
-T0_pos = T0_calc_pos()
-
-def torque_pos_loadfactor(x):
-    tl, _ = quad(tau_l_pos, 0, x)
-    tm, _ = quad(Moment_pos, 0, x)
-    tpoint = MomentPoint if x >= x_engine else 0.0
-    return -T0_pos + tl + tm + tpoint 
-
+from torquediagrampositiveloadfactor import torque_pos_loadfactor
 # Twist Calculation (Integration Split)
 def integrand_twist_pos(z_val):
     return torque_pos_loadfactor(z_val) / inertia_calculation(z_val)[3] / G
