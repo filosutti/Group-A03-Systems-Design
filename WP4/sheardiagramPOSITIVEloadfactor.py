@@ -43,14 +43,14 @@ V0 = V0_calc()
 #Distributed Loading
 #-------------------------------------------------------------------------------------
 def w(x):
-    return - LiftDistribution(x) - WeightDistribution(x) - FuelDistribution(x) 
+    return  - LiftDistribution(x) + WeightDistribution(x) + FuelDistribution(x) 
 
 #Shear
 #-------------------------------------------------------------------------------------
 def Shear(x):
     ShearIntegral, ShearError = scipy.integrate.quad(w, x, winghalfspan)
-    Engine_PointLoad_Shear = W_engine_NOLOAD * (Heaviside(x,x_engine))
-    Root_Internal_Shear = V0 * (Heaviside(x,0))
+    Engine_PointLoad_Shear = W_engine_NOLOAD * (1-Heaviside(x,x_engine))
+    Root_Internal_Shear = V0 * (1-Heaviside(x,0))
     return - ShearIntegral - Engine_PointLoad_Shear + Root_Internal_Shear
 
 
