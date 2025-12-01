@@ -25,7 +25,7 @@ def LiftDistribution(x):
     return LperSpan1(x)
 
 def WeightDistribution(x):
-    return ((7*x)-821.693393608074) #integral from 0 to 11.89 equals 909.4474900737*g
+    return -10*x+809.9966
 
 def FuelDistribution(x):
     return 10*x-9148.6175 
@@ -50,7 +50,7 @@ def w(x):
 def Shear(x):
     ShearIntegral, ShearError = scipy.integrate.quad(w, x, winghalfspan)
     Engine_PointLoad_Shear = W_engine_NOLOAD * (Heaviside(x,x_engine))
-    Root_Internal_Shear = V0 * (Heaviside(x,0))
+    Root_Internal_Shear = V0 * (1-Heaviside(x,0))
     return - ShearIntegral - Engine_PointLoad_Shear + Root_Internal_Shear
 
 

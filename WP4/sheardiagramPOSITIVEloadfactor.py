@@ -25,7 +25,7 @@ def LiftDistribution(x):
     return LperSpan0(x)
 
 def WeightDistribution(x):
-    return ((7*x)-821.693393608074) #integral from 0 to 11.89 equals 909.4474900737*g
+    return -10*x+809.9966
 
 def FuelDistribution(x):
     return 10*x-9148.6175 
