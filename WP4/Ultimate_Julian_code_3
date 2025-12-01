@@ -291,7 +291,7 @@ def inertia_calculation(z):
         Ixxtot += A_str * d_x2**2
         Iyytot += A_str * d_y2**2
         Ixytot += A_str * d_x2 * d_y2
-
+    print(Ixxtot)
     return Ixxtot, Iyytot, Ixytot, J
 
 # ---------------------------------------------------------------------
