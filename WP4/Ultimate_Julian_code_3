@@ -409,7 +409,6 @@ Deflection_grid_pos = cumulative_trapezoid(Slope_grid_pos, z_grid, initial=0)
 
 # Plot Deflection Comparison
 plt.figure(figsize=(8,5))
-plt.plot(z_grid, Deflection_grid * 1000, linestyle='--', label='Negative Load Factor (Upward Deflection)')
 plt.plot(z_grid, Deflection_grid_pos * 1000, color='g', label='Positive Load Factor (Downward Deflection)')
 
 plt.xlabel('Spanwise Location z (m)')
