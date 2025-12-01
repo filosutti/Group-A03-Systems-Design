@@ -20,8 +20,8 @@ def calculate_wingbox_centroid(corners, skin_thickness, skin_density, n_str, A_s
     moment_x = 0
     moment_y = 0
 
-    print(f"{'Component':<15} {'Len/Area':<12} {'Mass (kg)':<12} {'Centroid (x,y)'}")
-    print("-" * 65)
+    # print(f"{'Component':<15} {'Len/Area':<12} {'Mass (kg)':<12} {'Centroid (x,y)'}")
+    # print("-" * 65)
 
     # --- 1. SKINS ---
     num_points = len(corners)
@@ -38,9 +38,9 @@ def calculate_wingbox_centroid(corners, skin_thickness, skin_density, n_str, A_s
         moment_x += m_seg * xc_seg
         moment_y += m_seg * yc_seg
 
-        print(f"Skin {i+1}-{((i+1)%4)+1:<9} {L:<12.4f} {m_seg:<12.4f} ({xc_seg:.3f}, {yc_seg:.3f})")
+        # print(f"Skin {i+1}-{((i+1)%4)+1:<9} {L:<12.4f} {m_seg:<12.4f} ({xc_seg:.3f}, {yc_seg:.3f})")
 
-    print("-" * 65)
+    # print("-" * 65)
 
     # --- 2. STRINGERS ---
     # Top Skin: corners[3] -> corners[2]
@@ -76,7 +76,7 @@ def calculate_wingbox_centroid(corners, skin_thickness, skin_density, n_str, A_s
             moment_y += m_str * sy
             
             stringer_coords.append((sx, sy))
-            print(f"Stringer {count:<6} {A_str:<12.6f} {m_str:<12.4f} ({sx:.3f}, {sy:.3f})")
+            # print(f"Stringer {count:<6} {A_str:<12.6f} {m_str:<12.4f} ({sx:.3f}, {sy:.3f})")
             count += 1
 
     # --- 3. FINAL CALCULATION ---
