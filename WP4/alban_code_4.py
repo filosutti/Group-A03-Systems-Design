@@ -75,9 +75,9 @@ def calculate_wingbox_centroid(corners, skin_thickness, skin_density, n_str, A_s
             moment_x += m_str * sx
             moment_y += m_str * sy
             
-            # stringer_coords.append((sx, sy))
+            stringer_coords.append((sx, sy))
             # print(f"Stringer {count:<6} {A_str:<12.6f} {m_str:<12.4f} ({sx:.3f}, {sy:.3f})")
-            # count += 1
+            count += 1
 
     # --- 3. FINAL CALCULATION ---
     if total_mass == 0: return 0, 0, []
