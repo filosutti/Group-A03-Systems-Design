@@ -237,8 +237,8 @@ def inertia_calculation(z):
     c_z = c(z)
     
     # Centroid Calculation (Uses UNIFIED stringer list)
-    Cx, Cy, stringer_coords = calculate_wingbox_centroid(coords_unscaled, t_skin, rho_Al2024, n_stringers_side, A_stringer, L_stringer)
-    ce = (c_z * Cx, c_z * Cy)
+    cx, cy, stringer_coords = calculate_wingbox_centroid(coords_unscaled, t_skin, rho_Al2024, n_stringers_side, A_stringer, L_stringer)
+    ce = (c_z * cx, c_z * cy)
     
     x_frac = [0.2, 0.7, 0.7, 0.2]
     y_frac = [-0.02723, -0.0066, 0.0666, 0.08737]
@@ -356,7 +356,7 @@ plt.show()
 from bendingdiagramnegativeload import M_neg_load
 
 # --- Deflection Calculation (Negative) ---
-z_grid = np.linspace(0, L, 100)
+z_grid = np.linspace(0, L, 500)
 M_grid = np.array([M_neg_load(z) for z in z_grid])
 Ixx_grid = np.array([inertia_calculation(z)[0] for z in z_grid]) 
 Curvature_grid = M_grid / (E * Ixx_grid)
