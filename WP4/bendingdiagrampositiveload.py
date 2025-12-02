@@ -43,7 +43,7 @@ M_max = min(M_vals)
 print(f"Root bending moment M_0 = {M_0:.3f} kN·m")
 
 
-def M_neg_load(x):
+def M_pos_load(x):
     return float(np.interp(x, x_vals, M_vals))
 
 # -----------------------------------------
