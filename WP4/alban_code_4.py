@@ -110,10 +110,10 @@ plt.fill(x_box, y_box, alpha=0.1)
 
 if str_coords:
     sx_list, sy_list = zip(*str_coords)
-    plt.scatter(sx_list, sy_list, color='red', s=50, label='Offset Stringers')
+    plt.scatter(sx_list, sy_list, color='red', s=50, label='Stringers')
 
 plt.scatter(cx, cy, color='green', marker='x', s=200, linewidth=3, label='Centroid')
-plt.title(f'Wing Box Centroid (Offset Stringers)\n({cx:.4f}, {cy:.4f})')
+plt.title(f'Wing Box Centroid\n({cx:.4f}, {cy:.4f})')
 plt.axis('equal')
 plt.grid(True)
 plt.legend()
