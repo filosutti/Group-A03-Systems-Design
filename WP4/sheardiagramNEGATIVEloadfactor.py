@@ -54,6 +54,7 @@ def Shear(x):
     return - ShearIntegral - Engine_PointLoad_Shear + Root_Internal_Shear
 
 
+<<<<<<< Updated upstream
 xs = np.linspace(0,winghalfspan,200) #200 datapoints 
 Ss = [Shear(x)/10**3 for x in xs]
 
@@ -79,4 +80,13 @@ plt.ylabel('Shear Force V(y) [kN]')
 plt.axhline(0, color='black', linewidth=0.8, linestyle='--')
 plt.legend()
 plt.grid()
+=======
+xs = np.linspace(0,winghalfspan, 200) #200 datapoints 
+Ss = [Shear(x) for x in xs]
+plt.figure(figsize=(10, 6))   # wider figure
+plt.plot(xs, Ss)
+plt.xlabel("Spanwise position x [m]")
+plt.ylabel("Shear S(x) [N]")
+plt.title("Shear Force with a NEGATIVE load factor")
+>>>>>>> Stashed changes
 plt.show()
