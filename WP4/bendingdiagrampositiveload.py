@@ -37,6 +37,9 @@ M_vals += M_T * (x_vals <= x_engine)
 x_vals = x_vals[::-1]
 M_vals = M_vals[::-1]
 
+x_vals=np.insert(x_vals, 0, 0.0)
+M_vals=np.insert(M_vals, 0, 0.0)
+
 
 M_0 = M_vals[0]
 M_max = min(M_vals)
