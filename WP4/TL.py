@@ -118,25 +118,25 @@ M1_vals = np.array([MperSpan1(y) for y in y_vals])
 # -------------------------------
 # Plot Lift distributions
 # -------------------------------
-plt.figure(figsize=(10,5))
-plt.plot(y_vals, L0_vals, label='L per span (n=3.75)')
-plt.plot(y_vals, L1_vals, label='L per span (n=-1.5)')
-plt.title("Lift Distribution Along the Span")
-plt.xlabel("Spanwise position y [m]")
-plt.ylabel("Lift per span [N/m]")
-plt.grid(True)
-plt.legend()
+#plt.figure(figsize=(10,5))
+#plt.plot(y_vals, L0_vals, label='L per span (n=3.75)')
+#plt.plot(y_vals, L1_vals, label='L per span (n=-1.5)')
+#plt.title("Lift Distribution Along the Span")
+#plt.xlabel("Spanwise position y [m]")
+#plt.ylabel("Lift per span [N/m]")
+#plt.grid(True)
+#plt.legend()
 
 # -------------------------------
 # Plot Moment distributions
 # -------------------------------
-plt.figure(figsize=(10,5))
-plt.plot(y_vals, M0_vals, label='M per span (n=3.75)')
-plt.plot(y_vals, M1_vals, label='M per span (n=-1.5)')
-plt.title("Moment Distribution Along the Span")
-plt.xlabel("Spanwise position y [m]")
-plt.ylabel("Moment per span [Nm/m]")
-plt.grid(True)
-plt.legend()
+#plt.figure(figsize=(10,5))sw
+#plt.plot(y_vals, M0_vals, label='M per span (n=3.75)')
+#plt.plot(y_vals, M1_vals, label='M per span (n=-1.5)')
+#plt.title("Moment Distribution Along the Span")
+#plt.xlabel("Spanwise position y [m]")
+#plt.ylabel("Moment per span [Nm/m]")
+#plt.grid(True)
+#plt.legend()
 
-plt.show()
+#plt.show()
