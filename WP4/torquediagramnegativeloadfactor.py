@@ -109,7 +109,7 @@ plt.plot([x_engine, x_engine], [T_before / 1e3, T_after / 1e3],
          color='red', linestyle='--', label='Engine Point Torque')
 plt.scatter([x_engine], [T_after / 1e3], color='red')
 
-plt.title('Internal Torque Distribution Along Wing Span (-1g Load Factor)')
+plt.title('Internal Torque Distribution Along Wing Span (-1.5g Load Factor)')
 plt.xlabel('Spanwise Location x (m)')
 plt.ylabel('Internal Torque (kN·m)')
 plt.axhline(0, color='black', linewidth=0.8, linestyle='--')
