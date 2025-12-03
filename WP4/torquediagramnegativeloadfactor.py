@@ -107,14 +107,14 @@ T_after  = torque_neg_loadfactor(x_engine + 1e-6)
 # Plot
 # -----------------------------
 plt.figure(figsize=(10, 6))
-plt.plot(x_vals, T_vals / 1e3, label='Internal Torque (Negative Load Factor)', color='blue')
+plt.plot(x_vals, T_vals / 1e3, label='Internal Torque T(y)', color='blue')
 plt.plot([x_engine, x_engine], [T_before / 1e3, T_after / 1e3],
          color='red', linestyle='--', label='Engine Point Torque')
 plt.scatter([x_engine], [T_after / 1e3], color='red')
 
 plt.title('Internal Torque Distribution Along Wingspan (-1.5g Load Factor)')
 plt.xlabel('Spanwise Location y (m)')
-plt.ylabel('Internal Torque (kN·m)')
+plt.ylabel('Internal Torque T(y) (kN·m)')
 plt.axhline(0, color='black', linewidth=0.8, linestyle='--')
 plt.legend()
 plt.grid()

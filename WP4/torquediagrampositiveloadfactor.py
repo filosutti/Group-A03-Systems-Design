@@ -92,19 +92,22 @@ print("Check: T0 + tl + tm + Mpt = ",
 x_vals = np.linspace(0, L, 400)
 T_vals = np.array([torque_pos_loadfactor(xi) for xi in x_vals])
 
+x_vals = np.insert(x_vals, 0, 0.0)
+T_vals = np.insert(T_vals, 0, 0.0)
+
 print(f"\nT(L) = {T_vals[-1]:.6f}   (should be 0)\n")
 
 T_before = torque_pos_loadfactor(x_engine - 1e-6)
 T_after  = torque_pos_loadfactor(x_engine + 1e-6)
 
 plt.figure(figsize=(10, 6))
-plt.plot(x_vals, T_vals / 1e3, label='Internal Torque T(x)', color='blue')
+plt.plot(x_vals, T_vals / 1e3, label='Internal Torque T(y)', color='blue')
 plt.plot([x_engine, x_engine], [T_before / 1e3, T_after / 1e3],
          color='red', linestyle='--', label='Engine Point Torque')
 plt.scatter([x_engine], [T_after / 1e3], color='red')
-plt.title('Internal Torque Distribution Along Wing Span')
-plt.xlabel('Spanwise Location x (m)')
-plt.ylabel('Internal Torque T(x) (kN·m)')
+plt.title('Internal Torque Distribution Along Wingspan (+3.75g Load Factor)')
+plt.xlabel('Spanwise Location y (m)')
+plt.ylabel('Internal Torque T(y) (kN·m)')
 plt.axhline(0, color='black', linewidth=0.8, linestyle='--')
 plt.legend()
 plt.grid()
