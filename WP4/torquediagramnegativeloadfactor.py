@@ -94,6 +94,9 @@ print("Check: T0 + tl + tm + Mpt = ",
 x_vals = np.linspace(0, L, 200)
 T_vals = np.array([torque_neg_loadfactor(xi) for xi in x_vals])
 
+x_vals = np.insert(x_vals, 0, 0.0)
+T_vals = np.insert(T_vals, 0, 0.0)
+
 print(f"\nTorque at tip = {T_vals[-1]:.6f}   (should be 0)\n")
 
 # Engine jump for plotting
@@ -109,8 +112,8 @@ plt.plot([x_engine, x_engine], [T_before / 1e3, T_after / 1e3],
          color='red', linestyle='--', label='Engine Point Torque')
 plt.scatter([x_engine], [T_after / 1e3], color='red')
 
-plt.title('Internal Torque Distribution Along Wing Span (-1.5g Load Factor)')
-plt.xlabel('Spanwise Location x (m)')
+plt.title('Internal Torque Distribution Along Wingspan (-1.5g Load Factor)')
+plt.xlabel('Spanwise Location y (m)')
 plt.ylabel('Internal Torque (kN·m)')
 plt.axhline(0, color='black', linewidth=0.8, linestyle='--')
 plt.legend()
