@@ -28,7 +28,7 @@ def WeightDistribution(x):
     return -10*x+809.9966
 
 def FuelDistribution(x):
-    return 10*x-9148.6175 
+    return -10*x+4582.681836
 
 
 #Finding Root Internal reaction shear 
@@ -54,8 +54,6 @@ def Shear(x):
     return - ShearIntegral - Engine_PointLoad_Shear + Root_Internal_Shear
 
 
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
 xs = np.linspace(0,winghalfspan,200) #200 datapoints 
 Ss = [Shear(x)/10**3 for x in xs]
 
@@ -81,15 +79,3 @@ plt.ylabel('Shear Force V(y) [kN]')
 plt.axhline(0, color='black', linewidth=0.8, linestyle='--')
 plt.legend()
 plt.grid()
-=======
-=======
->>>>>>> Stashed changes
-xs = np.linspace(0,winghalfspan, 200) #200 datapoints 
-Ss = [Shear(x) for x in xs]
-plt.figure(figsize=(10, 6))   # wider figure
-plt.plot(xs, Ss)
-plt.xlabel("Spanwise position x [m]")
-plt.ylabel("Shear S(x) [N]")
-plt.title("Shear Force with a NEGATIVE load factor")
->>>>>>> Stashed changes
-plt.show()

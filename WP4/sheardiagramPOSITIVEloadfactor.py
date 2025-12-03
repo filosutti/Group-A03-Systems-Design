@@ -29,7 +29,7 @@ def WeightDistribution(x):
     return -10*x+809.9966
 
 def FuelDistribution(x):
-    return 10*x-9148.6175 
+    return -10*x+4582.681836
 
 
 #Finding Root Internal reaction shear 
