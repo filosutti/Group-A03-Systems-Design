@@ -63,14 +63,45 @@ print(M_poly)
 # -----------------------------
 # Plot Bending Moment
 # -----------------------------
-plt.figure(figsize=(10,5))
-plt.plot(x_vals, M_vals, linewidth=2, label='Bending Moment M(x)')
-plt.axhline(0, color='black', linewidth=0.8)
-plt.axvline(x_engine, color='red', linestyle='--', label='Engine Location')
-plt.xlabel('x [m] from root')
-plt.ylabel('Bending Moment for positive load factor M(x) [N·m]')
-plt.title('Bending Moment Diagram (Zero at Tip)')
-plt.grid(True)
+label=plt.figure(figsize=(10, 6))
+
+# Main bending moment curve (blue)
+plt.figure(figsize=(10, 6))
+
+# Main bending moment curve (blue), scaled to kN·m
+plt.plot(
+    x_vals,
+    M_vals / 1e3,
+    label='Bending Moment M(x) (Positive Load Factor)',
+    color='blue'
+)
+
+# Engine moment value in kN·m
+M_engine = float(np.interp(x_engine, x_vals, M_vals)) / 1e3
+
+# Engine vertical line (red dashed)
+plt.plot(
+    [x_engine, x_engine],
+    [0, M_engine],
+    color='red',
+    linestyle='--',
+    label='Engine Location'
+)
+
+# Scatter point at engine moment
+plt.scatter([x_engine], [M_engine], color='red')
+
+# Formatting
+plt.title('Bending Moment Distribution Along Wingspan (+3.75g Load Factor)')
+plt.xlabel('Spanwise Location y (m)')
+plt.ylabel('Bending Moment M(y) [kN·m]')
+plt.axhline(0, color='black', linewidth=0.8, linestyle='--')
 plt.legend()
+plt.grid()
+
+# Disable scientific notation + force proper scaling
+plt.ticklabel_format(style='plain', axis='y', useOffset=False)
+plt.autoscale(enable=True, axis='y', tight=True)
+
 plt.show()
 

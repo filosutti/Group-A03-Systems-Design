@@ -37,6 +37,9 @@ M_vals += M_T * (x_vals <= x_engine)
 x_vals = x_vals[::-1]
 M_vals = M_vals[::-1]
 
+x_vals=np.insert(x_vals, 0, 0.0)
+M_vals=np.insert(M_vals, 0, 0.0)
+
 
 M_0 = M_vals[0]
 M_max = min(M_vals)
@@ -63,14 +66,29 @@ print(M_poly)
 # -----------------------------
 # Plot Bending Moment
 # -----------------------------
-plt.figure(figsize=(10,5))
-plt.plot(x_vals, M_vals, linewidth=2, label='Bending Moment M(x)')
-plt.axhline(0, color='black', linewidth=0.8)
-plt.axvline(x_engine, color='red', linestyle='--', label='Engine Location')
-plt.xlabel('x [m] from root')
-plt.ylabel('Bending Moment for negatuve load factor M(x) [N·m]')
-plt.title('Bending Moment Diagram (Zero at Tip)')
-plt.grid(True)
+plt.figure(figsize=(10, 6))
+
+# Main bending moment curve (blue)
+plt.plot(x_vals, M_vals / 1e3,
+         label='Bending Moment M(y) (Negative Load Factor)',
+         color='blue')
+
+# Engine point torque / location (red dashed line)
+plt.plot([x_engine, x_engine],
+         [0, float(np.interp(x_engine, x_vals, M_vals / 1e3))],
+         color='red', linestyle='--', label='Engine Location')
+
+# Scatter point at engine location
+plt.scatter([x_engine],
+            [float(np.interp(x_engine, x_vals, M_vals / 1e3))],
+            color='red')
+
+# Formatting
+plt.title('Bending Moment Distribution Along Wingspan (-1.5g Load Factor)')
+plt.xlabel('Spanwise Location y (m)')
+plt.ylabel('Bending Moment M(y) [kN·m]')
+plt.axhline(0, color='black', linewidth=0.8, linestyle='--')
 plt.legend()
+plt.grid()
 plt.show()
 
