@@ -66,33 +66,27 @@ print(M_poly)
 # -----------------------------
 # Plot Bending Moment
 # -----------------------------
-label=plt.figure(figsize=(10, 6))
-
-# Main bending moment curve (blue)
 plt.figure(figsize=(10, 6))
 
 # Main bending moment curve (blue), scaled to kN·m
 plt.plot(
     x_vals,
     M_vals / 1e3,
-    label='Bending Moment M(x) (Positive Load Factor)',
+    label='Bending Moment M(y)',
     color='blue'
 )
 
 # Engine moment value in kN·m
 M_engine = float(np.interp(x_engine, x_vals, M_vals)) / 1e3
 
-# Engine vertical line (red dashed)
+# Engine vertical dotted line from axis to function
 plt.plot(
     [x_engine, x_engine],
     [0, M_engine],
     color='red',
-    linestyle='--',
+    linestyle=':',
     label='Engine Location'
 )
-
-# Scatter point at engine moment
-plt.scatter([x_engine], [M_engine], color='red')
 
 # Formatting
 plt.title('Bending Moment Distribution Along Wingspan (+3.75g Load Factor)')

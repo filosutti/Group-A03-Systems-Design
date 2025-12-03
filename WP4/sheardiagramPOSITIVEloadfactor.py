@@ -67,11 +67,10 @@ plt.figure(figsize=(10, 6))
 # Main shear curve (blue)
 plt.plot(xs, Ss, label='Shear Force V(y) (Positive Load Factor)', color='blue')
 
-# Engine vertical line (red dashed)
-plt.plot([x_engine, x_engine], [0, S_engine], color='red', linestyle='--', label='Engine Location')
-
-# Scatter at engine point
-plt.scatter([x_engine], [S_engine], color='red')
+# Engine vertical dotted line from axis to function
+plt.plot([x_engine, x_engine],
+         [0, S_engine],
+         color='red', linestyle=':', label='Engine Location')
 
 # Formatting
 plt.title('Shear Force Distribution Along Wingspan (+3.75g Load Factor)')
