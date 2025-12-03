@@ -230,7 +230,7 @@ def d(x):
 # SECTION 1: CENTROID & INERTIA CALCULATION (UPDATED)
 # ---------------------------------------------------------------------
 # Re-using the provided calculate_wingbox_centroid (though it's complex)
-from alban_code_4 import calculate_wingbox_centroid
+from centroid import calculate_wingbox_centroid
 
 def inertia_calculation(z):
     from TL import c
