@@ -55,10 +55,29 @@ def Shear(x):
 
 
 xs = np.linspace(0,winghalfspan,200) #200 datapoints 
-Ss = [Shear(x) for x in xs]
-plt.figure(figsize=(10, 6))   # wider figure
-plt.plot(xs, Ss)
-plt.xlabel("Spanwise position x [m]")
-plt.ylabel("Shear S(x) [N]")
-plt.title("Shear Force with a POSITIVE load factor")
+Ss = [Shear(x)/10**3 for x in xs]
+
+xs = np.insert(xs, 0, 0.0)
+Ss = np.insert(Ss, 0, 0.0)
+
+S_engine = float(np.interp(x_engine, xs, Ss))
+
+plt.figure(figsize=(10, 6))
+
+# Main shear curve (blue)
+plt.plot(xs, Ss, label='Shear Force V(y) (Positive Load Factor)', color='blue')
+
+# Engine vertical line (red dashed)
+plt.plot([x_engine, x_engine], [0, S_engine], color='red', linestyle='--', label='Engine Location')
+
+# Scatter at engine point
+plt.scatter([x_engine], [S_engine], color='red')
+
+# Formatting
+plt.title('Shear Force Distribution Along Wingspan (+3.75g Load Factor)')
+plt.xlabel('Spanwise Location y (m)')
+plt.ylabel('Shear Force V(y) [kN]')
+plt.axhline(0, color='black', linewidth=0.8, linestyle='--')
+plt.legend()
+plt.grid()
 plt.show()
