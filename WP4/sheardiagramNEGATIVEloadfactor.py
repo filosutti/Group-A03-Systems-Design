@@ -55,6 +55,7 @@ def Shear(x):
 
 
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 xs = np.linspace(0,winghalfspan,200) #200 datapoints 
 Ss = [Shear(x)/10**3 for x in xs]
 
@@ -81,6 +82,8 @@ plt.axhline(0, color='black', linewidth=0.8, linestyle='--')
 plt.legend()
 plt.grid()
 =======
+=======
+>>>>>>> Stashed changes
 xs = np.linspace(0,winghalfspan, 200) #200 datapoints 
 Ss = [Shear(x) for x in xs]
 plt.figure(figsize=(10, 6))   # wider figure
