@@ -5,7 +5,7 @@ import numpy as np
 
 from vn_diagram import n_ult
 
-V_inf = 106.39
+V_inf = 158.58
 q = 1/2*1.225*V_inf*V_inf
 W = 27719*9.80665
 S = 62.8
