@@ -4,10 +4,10 @@ coords = [
     (0.2, -0.02723), (0.7, -0.0066),   
     (0.7, 0.0666),   (0.2, 0.08737)    
 ]
-t_skin = 0.001
+t_skin = 0.0015
 rho_Al2024 = 2780
-n_stringers_side = 10 #change this for wing box geometry 
-L_stringer = 1/25           #0.25 of this offset to inside for centroid of point area of stringer
+n_stringers_side = 6 #change this for wing box geometry 
+L_stringer = 0.02
 t_stringer = 2*(10**(-3))
 A_stringer = ((L_stringer * t_stringer)*2) - (t_stringer**2)  #approx area of L shape stringer
 
