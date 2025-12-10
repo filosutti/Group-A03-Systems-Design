@@ -4,6 +4,77 @@ import matplotlib.pyplot as plt
 from bendingdiagrampositiveload import M_pos_load
 from centroid import calculate_wingbox_centroid
 
+from TL import c
+
+
+
+
+# Function LperSpan0 is for Positive ultimate load factor (n_ult = 3.75)
+from TL import LperSpan0
+
+# Function MperSpan0 is for Positive ultimate load factor (Pitching Moment)
+from TL import MperSpan0
+
+# Function LperSpan1 is for Negative ultimate load factor (n_ult = -1.5)
+from TL import LperSpan1
+# Function MperSpan1 is for Negative ultimate load factor (Pitching Moment)
+from TL import MperSpan1
+
+# ---------------------------------------------------------------------
+# CONSTANTS & GEOMETRY (UPDATED FOR HARMONIZATION)
+# ---------------------------------------------------------------------
+G = 28e9 
+E = 72.4e9 
+
+#Stringer geometry
+n_stringers_side = 8
+L_stringer = 1/50           #0.25 of this offset to inside for centroid of point area of stringer
+t_stringer = 2*(10**(-3))
+A_stringer = (L_stringer * t_stringer)*2 - (t_stringer**2)  #approx area of L shape stringer
+
+# Engine parameters (UNCHANGED)
+w_engine  = 4800 * 0.45359237 * 9.81 
+thrust_arm = 2.32 + 0.3
+engine_arm = 2.495
+x_engine  = 3.75 
+T_thrust = 83.1e3
+
+# Harmonized Wingbox section properties
+t_skin = 0.003
+rho_Al2024 = 2780
+coords_unscaled = [(0.2, -0.02723), (0.7, -0.0066), (0.7, 0.0666), (0.2, 0.08737)] # FB, RB, RT, FT
+
+
+
+
+# Distributed Weight/Fuel Loads (UNCHANGED)
+g = 9.81
+W_engine_NOLOAD = 2177.243 * g
+
+def Heaviside(x, x0):
+ return 1.0 if x >= x0 else 0.0
+
+def WeightDistribution(x): # Negative value means downward force
+    return ((7*x)-821.693393608074)
+
+def FuelDistribution(x):
+ return 10*x-9148.6175 
+
+# Aerodynamic moment arm (UNCHANGED)
+def d(x):
+    c_r = 4.02
+    span = L
+    taper = 0.316
+    c_t = c_r * taper
+    chord = c_r - (c_r - c_t) * (x / span)
+    return 0.20 * chord
+
+# ---------------------------------------------------------------------
+# SECTION 1: CENTROID & INERTIA CALCULATION (UPDATED)
+# ---------------------------------------------------------------------
+# Re-using the provided calculate_wingbox_centroid (though it's complex)
+from centroid import calculate_wingbox_centroid
+
 def inertia_calculation(z):
     from TL import c
     c_z = c(z)
