@@ -2,6 +2,7 @@ from TL import c
 import numpy as np 
 import scipy as sp
 from scipy import interpolate
+from compressivestrength_and_otherfunctions import calculate_Ixx
 #general geometry and constant parameters
 wingspan = 23.78    #[m]
 E = 72.4e9          #[Pa]
@@ -56,5 +57,6 @@ def crit_buckling_stress(nr_ribs, case):
         b = c(y)*0.5/(n_stringers + 1)
         t = t_skin * c(y)
         crit_stres.append(np.pi*np.pi*6*E/(12*(1-poratio*poratio))*(t/b)*(t/b))
+    our_sigma = M_x * 0.0573 * c(y) / I_xx
     return crit_stres
-print(crit_buckling_stress(8, 1))
+
