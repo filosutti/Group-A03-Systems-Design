@@ -54,22 +54,20 @@ def calculate_Ixx(y, design_params):
     I_spar = 2 * (t_spar * h_box**3 / 12.0)
     
     # 3. Stringers (Top + Bottom)
-    # Using Flat Bar assumption (w*t) as per previous feedback
+    # Using Flat Bar assumption (w*t)
     A_str_single = w_str * t_str 
     A_str_total = 2 * n_str * A_str_single 
     I_str = A_str_total * (h_box / 2.0)**2
     
     return I_skin + I_spar + I_str
 
-def compressive_strength_only(y_locations, M_distribution, design_params, N_distribution=None):
+def compressive_strength_only(y_locations, M_distribution, design_params):
     """
     Calculates margins for components based on signed Moment.
     - Checks Top components if M > 0 (Compression on Top)
     - Checks Bottom components if M < 0 (Compression on Bottom)
+    - NO Axial Force (N) included.
     """
-    if N_distribution is None:
-        N_distribution = np.zeros_like(M_distribution)
-    
     skin_mos = []
     spar_mos = []
     str_mos = []
@@ -79,97 +77,68 @@ def compressive_strength_only(y_locations, M_distribution, design_params, N_dist
         b_box, h_box = get_box_dims(y)
         I_xx = calculate_Ixx(y, design_params)
         
-        # Dimensions
-        t_skin = design_params['t_skin']
-        t_spar = design_params['t_spar']
-        n_str = design_params['n_str']
-        w_str = design_params['w_str']
-        t_str = design_params['t_str']
-        
-        # Areas for Axial Stress
-        A_str_single = w_str * t_str
-        A_skin_total = 2 * b_box * t_skin
-        A_spar_total = 2 * t_spar * h_box
-        A_str_total = 2 * n_str * A_str_single
-        A_section = A_skin_total + A_spar_total + A_str_total
-        
-        # Loads
+        # Load (Bending Moment Only)
         M = M_distribution[i] # KEEP SIGN
-        N = N_distribution[i] # KEEP SIGN (assume + is tension)
-        
-        # Axial Stress (Uniform) - Negative N increases compression
-        # Note: If N is tension (+), it reduces compressive stress.
-        # We need to check if the combined stress is compressive (negative).
-        sigma_axial = N / A_section if A_section > 0 else 0.0
         
         # --- DETERMINE CRITICAL SIDE ---
-        # Bending Stress = - (M * z) / I
         # If M > 0 (Smile): Top (z > 0) is Compression (-).
         # If M < 0 (Frown): Bottom (z < 0) is Compression (-).
-        
         if M >= 0:
-            # Check TOP Side (z = +h/2)
             z_check = h_box / 2.0
         else:
-            # Check BOTTOM Side (z = -h/2)
             z_check = -h_box / 2.0
             
         # --- 1. SKIN CHECK ---
         # Bending Stress at critical skin
         # Formula: sigma = - (M * z) / I (Standard beam sign convention)
         sigma_b_skin = -(M * z_check) / I_xx
-        sigma_skin_total = sigma_b_skin + sigma_axial
         
         # --- 2. STRINGER CHECK ---
-        # Stringers are attached to skin, assume same z
-        sigma_str_total = sigma_skin_total
+        # Stringers attached to skin -> Same Bending Stress
+        sigma_b_str = sigma_b_skin
         
         # --- 3. SPAR CHECK ---
-        # FIX ISSUE 2: Check spar at same z as skin (top/bottom edge)
-        # The spar web extends from -h/2 to +h/2. The max stress is at the edge.
-        sigma_spar_total = sigma_skin_total
+        # Spar check at top edge (same z as skin) per feedback
+        sigma_b_spar = sigma_b_skin
         
         # --- Margins of Safety ---
-        # We only care if the stress is COMPRESSIVE (Negative in standard convention)
-        # Margin = Yield / abs(Compressive Stress)
-        
+        # We only care if the stress is COMPRESSIVE (Negative)
         def get_ms(stress_val):
-            # If stress is positive (Tension), margin is infinite for Compressive Failure
+            # If stress is positive (Tension), infinite margin for Compressive Failure
             if stress_val >= 0: 
                 return 100.0
             # If stress is negative (Compression), check magnitude against yield
             return sigma_yield / abs(stress_val)
             
-        skin_mos.append(get_ms(sigma_skin_total))
-        str_mos.append(get_ms(sigma_str_total))
-        spar_mos.append(get_ms(sigma_spar_total))
+        skin_mos.append(get_ms(sigma_b_skin))
+        str_mos.append(get_ms(sigma_b_str))
+        spar_mos.append(get_ms(sigma_b_spar))
         
         # Minimum margin
         min_mos_per_station.append(min(skin_mos[-1], str_mos[-1], spar_mos[-1]))
         
     return {
-        'y': y_locations,
+        'y': np.array(y_locations),
         'min_mos': np.array(min_mos_per_station)
     }
 
 # ==========================================
 # 3. PLOTTING
 # ==========================================
+# REPLACE THESE WITH YOUR ACTUAL WP4 DATA ARRAYS
 y_vals = np.linspace(0, half_span, 100)
-# Example Loads (REPLACE WITH YOUR WP4 DATA)
-M_dist = 3000000 * (1 - y_vals/half_span)**2 # Positive M -> Top Compression
-N_dist = np.zeros_like(M_dist)
+M_dist = 3000000 * (1 - y_vals/half_span)**2 # Example Moment
 
 plt.figure(figsize=(10, 6))
 for name, params in designs.items():
-    res = compressive_strength_only(y_vals, M_dist, params, N_dist)
+    res = compressive_strength_only(y_vals, M_dist, params)
     plt.plot(res['y'], res['min_mos'], label=name)
 
 plt.axhline(1.0, color='r', linestyle='--', label='Failure')
 plt.ylim(0, 5)
 plt.xlabel('Span [m]')
 plt.ylabel('Margin of Safety')
-plt.title('Compressive Strength (Yield) - Signed Check')
+plt.title('Compressive Strength (Yield) - Bending Only')
 plt.legend()
 plt.grid(True)
 plt.show()
