@@ -9,7 +9,8 @@ half_wing_span = 11.89  # meters
 c_r = 4.02
 taper = 0.316
 c_t = c_r * taper
-n_ribs = 22  # THIS IS AN INPUT
+n_ribs = int(input("Enter the number of ribs: "))
+
 t_front = 0.00603  # front spar thickness [m]
 t_rear = 0.00603  # rear spar thickness [m]
 spar_height_fraction_front = 1.5
@@ -44,7 +45,7 @@ def Mean_Area(y):
     area_enclosed = 0.5 * np.abs(np.dot(x, np.roll(y_arr, -1)) - np.dot(y_arr, np.roll(x, -1)))
     return area_enclosed
 
-# Shear force and torque functions
+# Shear force and torque functions (ABSOLUTE VALUE APPLIED)
 from sheardiagramPOSITIVEloadfactor import Shear
 from torquediagrampositiveloadfactor import torque_pos_loadfactor
 
@@ -132,12 +133,10 @@ def compute_spar_buckling(n_ribs):
             "fails": (util_f < 1.0) or (util_r < 1.0)
         })
 
-        # Plot margin of safety
         y_plot.extend(y_samples)
         MoS_front_plot.extend([util_f - 1] * len(y_samples))
         MoS_rear_plot.extend([util_r - 1] * len(y_samples))
 
-    # Plot
     plt.figure(figsize=(10,5))
     plt.plot(y_plot, MoS_front_plot, label="Front spar MoS")
     plt.plot(y_plot, MoS_rear_plot, label="Rear spar MoS")
