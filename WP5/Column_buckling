@@ -1,4 +1,4 @@
-@ -0,0 +1,85 @@
+
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -78,5 +78,5 @@ def calculate_Ixx(y, design_params):
     I_strcrosssection=w_str*t_str*y_centroid**2+t_str*w_str**3*(1/12)+w_str*t_str*(w_str-y_centroid)**2
     
     return I_strcrosssection, A_str
-appropriate
+
 
