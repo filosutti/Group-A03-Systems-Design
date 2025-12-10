@@ -131,7 +131,7 @@ def compute_spar_buckling(n_ribs):
         A_min = np.min(A_samples)
 
         # Shear stresses
-        tau_transverse = V_max / (b_f_min * t_ + b_r_min * t_rear)
+        tau_transverse = V_max / (b_f_min * t_front + b_r_min * t_rear)
         q_T = T_max / (2 * A_min)
         tau_torque_front = q_T / t_front
         tau_torque_rear  = q_T / t_rear
