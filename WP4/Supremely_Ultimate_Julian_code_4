@@ -9,16 +9,6 @@ from TL import c
 
 
 
-# Function LperSpan0 is for Positive ultimate load factor (n_ult = 3.75)
-from TL import LperSpan0
-
-# Function MperSpan0 is for Positive ultimate load factor (Pitching Moment)
-from TL import MperSpan0
-
-# Function LperSpan1 is for Negative ultimate load factor (n_ult = -1.5)
-from TL import LperSpan1
-# Function MperSpan1 is for Negative ultimate load factor (Pitching Moment)
-from TL import MperSpan1
 
 # ---------------------------------------------------------------------
 # CONSTANTS & GEOMETRY (UPDATED FOR HARMONIZATION)
