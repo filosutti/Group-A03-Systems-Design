@@ -145,16 +145,16 @@ def inertia_calculation(z, design_params):
     return Ixxtot, Iyytot, Ixytot, J
 
 def sigma_crit(y):
-    I, A, y_max = calculate_Ixx(y, designs["Design 1"])
+    I, A, y_max = calculate_Ixx(y, designs["Design 3"])
     sigma_crit = math.pi**2*E*I/(half_span**2*A)
     return sigma_crit
 
 def sigma_distribution(y):
-    Ixx, Iyy, Ixy, J = inertia_calculation(y)
-    I, A, y_max = calculate_Ixx(y, designs["Design 1"])
+    Ixx, Iyy, Ixy, J = inertia_calculation(y, designs["Design 3"])
+    I, A, y_max = calculate_Ixx(y, designs["Design 3"])
     Mx = M_pos_load(y)
 
-    sigma_comp = Mx*y_max/Ixx
+    sigma_comp = abs(Mx*y_max/Ixx)
     return sigma_comp
 
 
