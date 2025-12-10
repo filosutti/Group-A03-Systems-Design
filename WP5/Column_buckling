@@ -1,0 +1,82 @@
+@ -0,0 +1,85 @@
+import numpy as np
+import matplotlib.pyplot as plt
+
+
+# Material Properties: Al2024-T81
+E = 72.4e9            # Young's Modulus [Pa]
+nu = 0.33             # Poisson's ratio
+sigma_yield = 450e6   # Compressive Yield Strength [Pa]
+
+# Wing Geometry
+b = 23.78        # Full Span [m]
+half_span = 11.89
+c_root = 4.02    # Root chord [m]
+c_tip = 1.27     # Tip chord [m]
+taper = c_tip / c_root
+
+# Front/Rear Spar locations (fraction of chord)
+loc_front = 0.20
+loc_rear = 0.70
+box_width_frac = loc_rear - loc_front
+
+# Designs WP4
+designs = {
+    "Design 1": {'n_str': 12, 'w_str': 0.015, 't_str': 0.001, 't_skin': 0.0015, 't_spar': 0.0015},
+    "Design 2": {'n_str': 6,  'w_str': 0.020, 't_str': 0.002, 't_skin': 0.0015, 't_spar': 0.0015},
+    "Design 3": {'n_str': 6,  'w_str': 0.015, 't_str': 0.001, 't_skin': 0.0030, 't_spar': 0.0030}
+}
+
+# Calculate chord length at spanwise location y
+def get_chord(y):
+    """Returns chord length at spanwise location y."""
+    return c_root * (1 - (1 - taper) * (y / half_span))
+
+# Calculate wingbox dimensions at spanwise location y
+def get_box_dims(y):
+    """
+    Returns wingbox width (b_box) and average height (h_box) at y.
+    Based on front/rear spar locations (0.2c and 0.7c).
+    """
+    c = get_chord(y)
+    b_box = c * (0.7 - 0.2) # Box width is 50% of chord [cite: 1759]
+    
+    # Height approximation (Refine with actual airfoil thickness if available)
+    # Using NACA 4412 ~12% thickness as a baseline estimate
+    h_box = c * 0.12 * 0.9 
+    return b_box, h_box
+
+# Calculate Area Moment of Inertia (Ixx) at location y with actual stringer Area (no longer just point mass).
+def calculate_Ixx(y, design_params):
+    b_box, h_box = get_box_dims(y)
+    
+    # Design Parameters
+    n_str = design_params['n_str']
+    t_skin = design_params['t_skin']
+    t_spar = design_params['t_spar']
+    w_str = design_params['w_str']
+    t_str = design_params['t_str']
+    
+    # 1. Skin Contribution (Top & Bottom)
+    # I = 2 * (Area * distance^2) -> ignoring negligible self-inertia about centroid
+    A_skin_flange = b_box * t_skin
+    I_skin = 2 * (A_skin_flange * (h_box / 2)**2)
+    
+    # 2. Spar Contribution (Webs)
+    # I = 2 * (b * h^3 / 12)
+    I_spar = 2 * (t_spar * h_box**3 / 12)
+    
+    # 3. Stringer Contribution
+    # Area of one L-stringer (approximate as two rectangles)
+    A_str = (w_str * t_str) + ((w_str - t_str) * t_str)
+    # Total stringer area (Top + Bottom)
+    A_str_total = 2 * n_str * A_str
+    # Steiner term: A * d^2
+    I_str = A_str_total * (h_box / 2)**2
+    y_centroid=((t_str/2)*w_str*t_str+((w_str - t_str) * t_str)*(w_str - t_str)/2)/A_str
+    x_centroid=y_centroid
+    I_strcrosssection=w_str*t_str*y_centroid**2+t_str*w_str**3*(1/12)+w_str*t_str*(w_str-y_centroid)**2
+    
+    return I_strcrosssection, A_str
+appropriate
+
