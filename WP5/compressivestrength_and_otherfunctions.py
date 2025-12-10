@@ -1,9 +1,9 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-# ==========================================
-# 1. SETUP & INPUTS
-# ==========================================
+# ==============
+# SETUP & INPUTS
+# ==============
 # Material Properties: Al2024-T81
 E = 72.4e9            # Young's Modulus [Pa]
 nu = 0.33             # Poisson's ratio
@@ -24,9 +24,9 @@ designs = {
     "Design 3": {'n_str': 6,  'w_str': 0.015, 't_str': 0.001, 't_skin': 0.0030, 't_spar': 0.0030}
 }
 
-# ==========================================
-# 2. HELPER FUNCTIONS
-# ==========================================
+# =========
+# FUNCTIONS
+# =========
 
 def get_chord(y):
     return c_root * (1 - (1 - taper) * (y / half_span))
@@ -152,9 +152,9 @@ def compressive_strength_only(y_locations, M_distribution, design_params, N_dist
         'min_mos': np.array(min_mos_per_station)
     }
 
-# ==========================================
-# 3. PLOTTING
-# ==========================================
+# ========
+# PLOTTING
+# ========
 y_vals = np.linspace(0, half_span, 100)
 # Example Loads (REPLACE WITH YOUR WP4 DATA)
 M_dist = 3000000 * (1 - y_vals/half_span)**2 # Positive M -> Top Compression
