@@ -43,7 +43,7 @@ M_vals=np.insert(M_vals, 0, 0.0)
 
 M_0 = M_vals[0]
 M_max = min(M_vals)
-print(f"Root bending moment M_0 = {M_0:.3f} kN·m")
+#print(f"Root bending moment M_0 = {M_0:.3f} kN·m")
 
 
 def M_pos_load(x):
@@ -63,6 +63,11 @@ print(coeffs)
 
 print("\nM(x) = ")
 print(M_poly)
+
+
+
+
+"""
 # -----------------------------
 # Plot Bending Moment
 # -----------------------------
@@ -89,6 +94,7 @@ plt.plot(
 )
 
 # Formatting
+
 plt.title('Bending Moment Distribution Along Wingspan (+3.75g Load Factor)')
 plt.xlabel('Spanwise Location y (m)')
 plt.ylabel('Bending Moment M(y) [kN·m]')
@@ -101,4 +107,4 @@ plt.ticklabel_format(style='plain', axis='y', useOffset=False)
 plt.autoscale(enable=True, axis='y', tight=True)
 
 plt.show()
-
+"""
