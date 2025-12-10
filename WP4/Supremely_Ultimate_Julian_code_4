@@ -17,9 +17,9 @@ G = 28e9
 E = 72.4e9 
 
 #Stringer geometry
-n_stringers_side = 8
-L_stringer = 1/50           #0.25 of this offset to inside for centroid of point area of stringer
-t_stringer = 2*(10**(-3))
+n_stringers_side = 14
+L_stringer = 0.015           #0.25 of this offset to inside for centroid of point area of stringer
+t_stringer = 1*(10**(-3))
 A_stringer = (L_stringer * t_stringer)*2 - (t_stringer**2)  #approx area of L shape stringer
 
 # Engine parameters (UNCHANGED)
