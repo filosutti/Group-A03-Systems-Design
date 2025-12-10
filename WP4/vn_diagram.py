@@ -79,7 +79,7 @@ while V2 < V_F and V2<V_int:
     v2_list.append(V2)
     n2_list.append(n2)
         
-  
+"""
 plt.figure(figsize=(10,6))
 plt.plot(v_list, n_list, label="No Flaps")
 plt.plot(v1_list, n1_list, label="Landing Flaps")
@@ -98,4 +98,4 @@ print(V_S1)
     
     
     
-    
+"""
