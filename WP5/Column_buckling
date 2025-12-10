@@ -73,14 +73,10 @@ def calculate_Ixx(y, design_params):
     A_str_total = 2 * n_str * A_str
     # Steiner term: A * d^2
     I_str = A_str_total * (h_box / 2)**2
+    y_centroid=((t_str/2)*w_str*t_str+((w_str - t_str) * t_str)*(w_str - t_str)/2)/A_str
+    x_centroid=y_centroid
+    I_strcrosssection=w_str*t_str*y_centroid**2+t_str*w_str**3*(1/12)+w_str*t_str*(w_str-y_centroid)**2
     
-    return I_skin + I_spar + I_str
+    return I_strcrosssection, A_str
 appropriate
 
-
-def compressive_str(ribs):
-
-    
-
-
-    return 
