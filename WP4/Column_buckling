@@ -49,7 +49,8 @@ def get_box_dims(y):
 # Calculate Area Moment of Inertia (Ixx) at location y with actual stringer Area (no longer just point mass).
 def calculate_Ixx(y, design_params):
     b_box, h_box = get_box_dims(y)
-    
+    c = get_chord(y)
+
     # Design Parameters
     n_str = design_params['n_str']
     t_skin = design_params['t_skin']
@@ -57,16 +58,7 @@ def calculate_Ixx(y, design_params):
     w_str = design_params['w_str']
     t_str = design_params['t_str']
     
-    # 1. Skin Contribution (Top & Bottom)
-    # I = 2 * (Area * distance^2) -> ignoring negligible self-inertia about centroid
-    A_skin_flange = b_box * t_skin
-    I_skin = 2 * (A_skin_flange * (h_box / 2)**2)
-    
-    # 2. Spar Contribution (Webs)
-    # I = 2 * (b * h^3 / 12)
-    I_spar = 2 * (t_spar * h_box**3 / 12)
-    
-    # 3. Stringer Contribution
+    # 1. Stringer Contribution
     # Area of one L-stringer (approximate as two rectangles)
     A_str = (w_str * t_str) + ((w_str - t_str) * t_str)
     # Total stringer area (Top + Bottom)
@@ -79,4 +71,9 @@ def calculate_Ixx(y, design_params):
     
     return I_strcrosssection, A_str
 
+def geo(y, w_str):
+    
+    A_str = (w_str*c * t_str*c) + ((w_str - t_str)*c * t_str)*c
+def sigma_crit(y)
+    
 
