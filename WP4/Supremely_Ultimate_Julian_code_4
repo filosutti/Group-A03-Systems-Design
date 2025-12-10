@@ -126,11 +126,9 @@ def inertia_calculation(z):
         Ixytot += A_str * d_x2 * d_y2
     return Ixxtot, Iyytot, Ixytot, J
 
-def sigma_distribution(y):
+def sigma_distribution(y,h):
     Ixx, Iyy, Ixy, J = inertia_calculation(y)
     Mx = M_pos_load(y)
 
-    sigma_comp = Mx*y/Ixx
+    sigma_comp = Mx*h/Ixx
     return sigma_comp
-
-sigma_distribution(0.5)
