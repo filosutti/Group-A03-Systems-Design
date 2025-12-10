@@ -2,12 +2,19 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import math
+from centroid import calculate_wingbox_centroid
+from bendingdiagrampositiveload import M_pos_load
 
 
 # Material Properties: Al2024-T81
 E = 72.4e9            # Young's Modulus [Pa]
 nu = 0.33             # Poisson's ratio
 sigma_yield = 450e6   # Compressive Yield Strength [Pa]
+
+# Harmonized Wingbox section properties
+t_skin = 0.003
+rho_Al2024 = 2780
+coords_unscaled = [(0.2, -0.02723), (0.7, -0.0066), (0.7, 0.0666), (0.2, 0.08737)] # FB, RB, RT, FT
 
 # Wing Geometry
 b = 23.78        # Full Span [m]
@@ -23,9 +30,9 @@ box_width_frac = loc_rear - loc_front
 
 # Designs WP4
 designs = {
-    "Design 1": {'n_str': 12, 'w_str': 0.015, 't_str': 0.001, 't_skin': 0.0015, 't_spar': 0.0015},
-    "Design 2": {'n_str': 6,  'w_str': 0.020, 't_str': 0.002, 't_skin': 0.0015, 't_spar': 0.0015},
-    "Design 3": {'n_str': 6,  'w_str': 0.015, 't_str': 0.001, 't_skin': 0.0030, 't_spar': 0.0030}
+    "Design 1": {'n_str': 12, 'w_str': 0.015, 't_str': 0.001, 't_skin': 0.0015, 't_spar': 0.0015, 'h_max': 0.0820},
+    "Design 2": {'n_str': 6,  'w_str': 0.020, 't_str': 0.002, 't_skin': 0.0015, 't_spar': 0.0015, 'h_max': 0.0794},
+    "Design 3": {'n_str': 6,  'w_str': 0.015, 't_str': 0.001, 't_skin': 0.0030, 't_spar': 0.0030, 'h_max': 0.0807}
 }
 
 # Calculate chord length at spanwise location y
@@ -58,6 +65,7 @@ def calculate_Ixx(y, design_params):
     t_spar = design_params['t_spar']
     w_str = design_params['w_str']
     t_str = design_params['t_str']
+    h_max= design_params['h_max']
     
     # 1. Stringer Contribution
     # Area of one L-stringer (approximate as two rectangles)
@@ -65,22 +73,115 @@ def calculate_Ixx(y, design_params):
     y_centroid=((c*t_str/2)*c*w_str*c*t_str+((c*w_str - c*t_str) * c*t_str)*(c*w_str - c*t_str)/2)/A_str
     x_centroid=y_centroid
     I_strcrosssection=c*w_str*c*t_str*y_centroid**2+c*t_str*c*w_str**3*(1/12)+c*w_str*c*t_str*(c*w_str-y_centroid)**2
+
+    # y_max location
+    y_max=h_max*c
     
-    return I_strcrosssection, A_str
+    return I_strcrosssection, A_str, y_max
+
+def inertia_calculation(z, design_params):
+    c_z = get_chord(z)
+    
+    # Centroid Calculation (Uses UNIFIED stringer list)
+    n_stringers_side = design_params['n_str']
+    t_skin = design_params['t_skin']
+    L_stringer = design_params['w_str']
+    t_stringer = design_params['t_str']
+    A_stringer = (L_stringer * t_stringer)*2 - (t_stringer**2)
+    cx, cy, stringer_coords = calculate_wingbox_centroid(coords_unscaled, t_skin, rho_Al2024, n_stringers_side, A_stringer, L_stringer)
+    ce = (c_z * cx, c_z * cy)
+    
+    x_frac = [0.2, 0.7, 0.7, 0.2]
+    y_frac = [-0.02723, -0.0066, 0.0666, 0.08737]
+    x_scaled = [xf * c_z for xf in x_frac]
+    y_scaled = [yf * c_z for yf in y_frac]
+    
+    # Torsional Constant J (Bredt's Theory) - UNCHANGED
+    Am = 0.5 * np.abs(np.sum(np.array(x_scaled) * np.roll(np.array(y_scaled), -1) - 
+                             np.roll(np.array(x_scaled), -1) * np.array(y_scaled)))
+    perimeter_integral = 0
+    t = t_skin*c_z
+    for i in range(len(x_scaled)):
+        x1, y1 = x_scaled[i], y_scaled[i]
+        x2, y2 = x_scaled[(i + 1) % len(x_scaled)], y_scaled[(i + 1) % len(x_scaled)]
+        l = np.sqrt((x2 - x1)**2 + (y2 - y1)**2)
+        perimeter_integral += l / t 
+    J = (4 * Am**2) / perimeter_integral
+
+    # Bending Inertias
+    x_temp, y_temp = x_scaled + [x_scaled[0]], y_scaled + [y_scaled[0]]
+    Ixxtot = Iyytot = Ixytot = 0
+    
+    # 1. Skin Contributions
+    for i in range(len(x_temp)-1):
+        dx, dy = x_temp[i+1]-x_temp[i], y_temp[i+1]-y_temp[i]
+        l = np.sqrt(dx**2 + dy**2)
+        A = l*t
+        d_y = x_temp[i] + dx/2 - ce[0]
+        d_x = y_temp[i] + dy/2 - ce[1]
+        
+        Ixx = (t*(l**3)*(dy/l)**2)/12 + A*(d_x**2)
+        Iyy = (t*(l**3)*(dx/l)**2)/12 + A*(d_y**2)
+        Ixy = (t*(l**3)*(dx*dy)/(l**2))/12 + A*(d_x*d_y)
+
+        Ixxtot += Ixx
+        Iyytot += Iyy
+        Ixytot += Ixy
+    
+    # 2. Harmonized Stringer Contributions
+    for sx_f, sy_f in stringer_coords:
+        sx, sy = sx_f * c_z, sy_f * c_z
+        A_str = A_stringer * (c_z)**2
+        
+        # NOTE: Stringer area should be considered constant or scale by (chord/chord_root)^2
+        # For this context, let's keep A_str_f constant, only coordinates scale:
+        
+        d_y2 = sx - ce[0] # Horizontal distance from centroid
+        d_x2 = sy - ce[1] # Vertical distance from centroid
+        
+        Ixxtot += A_str * d_x2**2
+        Iyytot += A_str * d_y2**2
+        Ixytot += A_str * d_x2 * d_y2
+    return Ixxtot, Iyytot, Ixytot, J
 
 def sigma_crit(y):
-    I, A = calculate_Ixx(y, designs["Design 1"])
+    I, A, y_max = calculate_Ixx(y, designs["Design 1"])
     sigma_crit = math.pi**2*E*I/(half_span**2*A)
     return sigma_crit
-c, d = calculate_Ixx(0, designs["Design 1"])
-print(c, d)
+
+def sigma_distribution(y):
+    Ixx, Iyy, Ixy, J = inertia_calculation(y)
+    I, A, y_max = calculate_Ixx(y, designs["Design 1"])
+    Mx = M_pos_load(y)
+
+    sigma_comp = Mx*y_max/Ixx
+    return sigma_comp
+
+
 position=0
 positions=[]
+critical_stresses=[]
+stresses=[]
+
 while position <=half_span:
-    stress=sigma_crit(position)
-    positions.append(stress)
+    stresscr=sigma_crit(position)
+    stress=sigma_distribution(position)
+    positions.append(position)
+    critical_stresses.append(stresscr)
+    stresses.append(stress)
     position = position + 0.01
-print(positions)
+
+plt.figure(figsize=(10,6))              # nice large figure
+plt.plot(positions, stresses, label="Stress distribution")
+plt.plot(positions, critical_stresses, label="Critical stress", linestyle="--")
+
+plt.xlabel("Position along span [m]")
+plt.ylabel("Stress [Pa]")
+plt.title("Stress vs. Position")
+plt.grid(True)
+plt.legend()
+
+plt.show()
 
     
 
