@@ -3,6 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import math
 from centroid import calculate_wingbox_centroid
+from bendingdiagrampositiveload import M_pos_load
 
 
 # Material Properties: Al2024-T81
@@ -144,26 +145,43 @@ def inertia_calculation(z, design_params):
     return Ixxtot, Iyytot, Ixytot, J
 
 def sigma_crit(y):
-    I, A, h_max = calculate_Ixx(y, designs["Design 1"])
+    I, A, y_max = calculate_Ixx(y, designs["Design 1"])
     sigma_crit = math.pi**2*E*I/(half_span**2*A)
     return sigma_crit
 
 def sigma_distribution(y):
     Ixx, Iyy, Ixy, J = inertia_calculation(y)
+    I, A, y_max = calculate_Ixx(y, designs["Design 1"])
     Mx = M_pos_load(y)
 
-    sigma_comp = Mx*h/Ixx
+    sigma_comp = Mx*y_max/Ixx
     return sigma_comp
 
-c, d = calculate_Ixx(0, designs["Design 1"])
-print(c, d)
+
 position=0
 positions=[]
+critical_stresses=[]
+stresses=[]
+
 while position <=half_span:
-    stress=sigma_crit(position)
-    positions.append(stress)
+    stresscr=sigma_crit(position)
+    stress=sigma_distribution(position)
+    positions.append(position)
+    critical_stresses.append(stresscr)
+    stresses.append(stress)
     position = position + 0.01
-print(positions)
+
+plt.figure(figsize=(10,6))              # nice large figure
+plt.plot(positions, stresses, label="Stress distribution")
+plt.plot(positions, critical_stresses, label="Critical stress", linestyle="--")
+
+plt.xlabel("Position along span [m]")
+plt.ylabel("Stress [Pa]")
+plt.title("Stress vs. Position")
+plt.grid(True)
+plt.legend()
+
+plt.show()
 
     
 
