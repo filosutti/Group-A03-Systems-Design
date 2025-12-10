@@ -1,0 +1,5 @@
+
+from Ultimate_code_3 import inertia_calculations
+Ixx, Iyy, J = 
+def 
+sigma_comp = Mx*y/Ixx+My*x/Iyy
