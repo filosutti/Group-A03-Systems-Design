@@ -1,0 +1,429 @@
+import numpy as np
+from scipy.integrate import quad, cumulative_trapezoid
+import matplotlib.pyplot as plt
+import scipy.integrate
+import math as m
+from scipy.interpolate import interp1d
+import time
+start_time = time.perf_counter()
+# ---------------------------------------------------------------------
+# ENVIRONMENT & GEOMETRY (UNCHANGED)
+# ---------------------------------------------------------------------
+h_cruise=10668
+M_cr=0.77
+CL_maxcr=1.56
+CL_maxto=2.4344
+CL_maxap=2.653
+
+# ISA Functions (Assumed Correct)
+def ISA(h):
+    T=288.15-0.0065*h
+    P=101325*(T/288.15)**(9.80665/(0.0065*287))
+    Rho=P/(287*T)
+    a=(1.4*287*T)**0.5
+    return(T, P, Rho, a)
+
+a_cruise = ISA(h_cruise)[3]
+V_ct = a_cruise * M_cr
+
+# Veq and VEAS (Assumed Correct)
+def Veq(CL, m, h):
+    T, P, Rho, a=ISA(h)
+    v=((2*9.80665*m)/(Rho*CL*62.8299727939332))**0.5
+    return(v)
+
+def VEAS(v, h):
+    T0, P0, Rho0, a0=ISA(0)
+    T, P, Rho, a=ISA(h)
+    v_eas=v*(Rho/Rho0)**0.5
+    return(v_eas)
+
+V_C=VEAS(V_ct, h_cruise)
+V_D = V_C * 1.25
+
+# n-V Diagram functions (Assumed Correct)
+def nvdiagram(h, m, n_max):
+    V_S0ap=Veq(CL_maxap, m, h)
+    V_S0to=Veq(CL_maxto, m, h)
+    V_S1=Veq(CL_maxcr, m, h)
+    V_a = V_S1*(n_max)**0.5 
+    V_F1 = V_S1 * 1.6 # with the wing-flaps in take-off position at maximum take-off weight
+    V_F2 = V_S1 * 1.8 #with the wing-flaps in approach position at maximum landing weight
+    V_F3 = V_S0ap * 1.8 # with the wing-flaps in landing position at maximum landing weight
+    V_F = max(V_F1, V_F2, V_F3)
+    V_S0apeas = VEAS(V_S0ap, h)
+    V_S0toeas = VEAS(V_S0to, h)
+    V_S1eas = VEAS(V_S1, h)
+    V_aeas= VEAS(V_a, h)
+    V_F1eas= VEAS(V_F1, h)
+    V_F2eas= VEAS(V_F2, h)
+    V_F3eas= VEAS(V_F3, h)
+    V_Feas= VEAS(V_F, h)
+    return (V_S0apeas, V_S0toeas, V_S1eas, V_aeas, V_F1eas, V_F2eas, V_F3eas, V_Feas)
+
+m_maxto=27719.34119
+oem=14477
+m_nofuel=oem+9302
+n_max=max((2.1+24000/(9.80665*m_maxto*0.2248+10000)), 2.5)
+n_ult=1.5*n_max
+n_min=-1
+n_ult2=n_min*1.5
+
+# V-n diagram calculation and plot (Assumed Correct)
+def VEAS(v, h):
+    T0, P0, Rho0, a0=ISA(0)
+    T, P, Rho, a=ISA(h)
+    v_eas=v*(Rho/Rho0)**0.5 # Corrected V_eas formula
+    return(v_eas)
+
+v_list=[0]
+v1_list=[0]
+n1_list=[0]
+n_list=[0]
+v2_list=[0]
+n2_list=[0]
+v3_list=[0]
+n3_list=[0]
+V=0
+V1 = 0
+V2=0
+V_S0ap, V_S0to, V_S1, V_A, V_F1, V_F2, V_F3, V_F=nvdiagram(0, oem, n_max)
+V_int=(2*V_S1**2)**0.5
+while V<V_A:
+    V=min(V+1, V_A)
+    n=(V/V_S1)**2
+    v_list.append(V)
+    n_list.append(n)
+while V_A<=V<V_D:
+    n=n_max
+    V=min(V+1, V_D)
+    v_list.append(V)
+    n_list.append(n)
+
+while 0<n<=n_max:
+    n = round(n - 0.1, 2)
+    v_list.append(V)
+    n_list.append(n)
+while V_C<V<=V_D:
+    V=V-1
+    n=max((-n_min/(V_D-V_C))*V+n_min*V_D/(V_D-V_C), n_min)
+    v_list.append(V)
+    n_list.append(n)
+while V_S1<V<=V_C:
+    V=V-1
+    n=n_min
+    v_list.append(V)
+    n_list.append(n)
+while 0<V<=V_S1:
+    V=max(V-1, 0)
+    n=-(V/V_S1)**2
+    v_list.append(V)
+    n_list.append(n)
+
+v_arr = np.array(v_list)
+n_arr = np.array(n_list)
+
+while V1 < V_F and V1<V_int:
+    V1 = min(V1 + 1, V_F, V_int)
+    n1 = min((V1 / V_S0ap)**2, 2)
+
+    v1_list.append(V1)
+    n1_list.append(n1)
+
+while V2 < V_F and V2<V_int:
+    V2 = min(V2 + 1, V_F, V_int)
+    n2 = min((V2 / V_S0to)**2, 2)
+
+    v2_list.append(V2)
+    n2_list.append(n2)
+         
+plt.figure(figsize=(10,6))
+plt.plot(v_list, n_list, label="No Flaps")
+plt.plot(v1_list, n1_list, label="Landing Flaps")
+plt.plot(v2_list, n2_list, label="Take-off Flaps")
+plt.xlabel("Equivalent Airspeed V (m/s)")
+plt.ylabel("Load Factor n [-]")
+plt.title("V–n Diagram Sea-Level No Fuel Weight")
+plt.grid(True)
+plt.legend()
+plt.show()
+
+print(f"V_A (Maneuvering Speed): {V_A:.2f} m/s")
+print(f"V_C (Cruise Speed): {V_C:.2f} m/s")
+print(f"V_D (Design Dive Speed): {V_D:.2f} m/s")
+print(f"V_S1 (Stall Speed): {V_S1:.2f} m/s")
+
+# ---------------------------------------------------------------------
+# AERODYNAMIC LOADS (IMPLEMENTED XFLR READING)
+# ---------------------------------------------------------------------
+V_inf = 158.84
+q = 1/2*1.225*V_inf*V_inf
+W = 27719*9.80665
+S = 62.8
+L = 11.89 # Semi-span
+from TL import c
+
+
+
+
+# Function LperSpan0 is for Positive ultimate load factor (n_ult = 3.75)
+from TL import LperSpan0
+
+# Function MperSpan0 is for Positive ultimate load factor (Pitching Moment)
+from TL import MperSpan0
+
+# Function LperSpan1 is for Negative ultimate load factor (n_ult = -1.5)
+from TL import LperSpan1
+# Function MperSpan1 is for Negative ultimate load factor (Pitching Moment)
+from TL import MperSpan1
+
+# ---------------------------------------------------------------------
+# CONSTANTS & GEOMETRY (UPDATED FOR HARMONIZATION)
+# ---------------------------------------------------------------------
+G = 28e9 
+E = 72.4e9 
+
+#Stringer geometry
+n_stringers_side = 8
+L_stringer = 1/50           #0.25 of this offset to inside for centroid of point area of stringer
+t_stringer = 2*(10**(-3))
+A_stringer = (L_stringer * t_stringer)*2 - (t_stringer**2)  #approx area of L shape stringer
+
+# Engine parameters (UNCHANGED)
+w_engine  = 4800 * 0.45359237 * 9.81 
+thrust_arm = 2.32 + 0.3
+engine_arm = 2.495
+x_engine  = 3.75 
+T_thrust = 83.1e3
+
+# Harmonized Wingbox section properties
+t_skin = 0.003
+rho_Al2024 = 2780
+coords_unscaled = [(0.2, -0.02723), (0.7, -0.0066), (0.7, 0.0666), (0.2, 0.08737)] # FB, RB, RT, FT
+
+
+
+
+# Distributed Weight/Fuel Loads (UNCHANGED)
+g = 9.81
+W_engine_NOLOAD = 2177.243 * g
+
+def Heaviside(x, x0):
+ return 1.0 if x >= x0 else 0.0
+
+def WeightDistribution(x): # Negative value means downward force
+    return ((7*x)-821.693393608074)
+
+def FuelDistribution(x):
+ return 10*x-9148.6175 
+
+# Aerodynamic moment arm (UNCHANGED)
+def d(x):
+    c_r = 4.02
+    span = L
+    taper = 0.316
+    c_t = c_r * taper
+    chord = c_r - (c_r - c_t) * (x / span)
+    return 0.20 * chord
+
+# ---------------------------------------------------------------------
+# SECTION 1: CENTROID & INERTIA CALCULATION (UPDATED)
+# ---------------------------------------------------------------------
+# Re-using the provided calculate_wingbox_centroid (though it's complex)
+from alban_code_4 import calculate_wingbox_centroid
+
+def inertia_calculation(z):
+    from TL import c
+    c_z = c(z)
+    
+    # Centroid Calculation (Uses UNIFIED stringer list)
+    cx, cy, stringer_coords = calculate_wingbox_centroid(coords_unscaled, t_skin, rho_Al2024, n_stringers_side, A_stringer, L_stringer)
+    ce = (c_z * cx, c_z * cy)
+    
+    x_frac = [0.2, 0.7, 0.7, 0.2]
+    y_frac = [-0.02723, -0.0066, 0.0666, 0.08737]
+    x_scaled = [xf * c_z for xf in x_frac]
+    y_scaled = [yf * c_z for yf in y_frac]
+    
+    # Torsional Constant J (Bredt's Theory) - UNCHANGED
+    Am = 0.5 * np.abs(np.sum(np.array(x_scaled) * np.roll(np.array(y_scaled), -1) - 
+                             np.roll(np.array(x_scaled), -1) * np.array(y_scaled)))
+    perimeter_integral = 0
+    t = t_skin*c_z
+    for i in range(len(x_scaled)):
+        x1, y1 = x_scaled[i], y_scaled[i]
+        x2, y2 = x_scaled[(i + 1) % len(x_scaled)], y_scaled[(i + 1) % len(x_scaled)]
+        l = np.sqrt((x2 - x1)**2 + (y2 - y1)**2)
+        perimeter_integral += l / t 
+    J = (4 * Am**2) / perimeter_integral
+
+    # Bending Inertias
+    x_temp, y_temp = x_scaled + [x_scaled[0]], y_scaled + [y_scaled[0]]
+    Ixxtot = Iyytot = Ixytot = 0
+    
+    # 1. Skin Contributions
+    for i in range(len(x_temp)-1):
+        dx, dy = x_temp[i+1]-x_temp[i], y_temp[i+1]-y_temp[i]
+        l = np.sqrt(dx**2 + dy**2)
+        A = l*t
+        d_y = x_temp[i] + dx/2 - ce[0]
+        d_x = y_temp[i] + dy/2 - ce[1]
+        
+        Ixx = (t*(l**3)*(dy/l)**2)/12 + A*(d_x**2)
+        Iyy = (t*(l**3)*(dx/l)**2)/12 + A*(d_y**2)
+        Ixy = (t*(l**3)*(dx*dy)/(l**2))/12 + A*(d_x*d_y)
+
+        Ixxtot += Ixx
+        Iyytot += Iyy
+        Ixytot += Ixy
+    
+    # 2. Harmonized Stringer Contributions
+    for sx_f, sy_f in stringer_coords:
+        sx, sy = sx_f * c_z, sy_f * c_z
+        A_str = A_stringer * (c_z)**2
+        
+        # NOTE: Stringer area should be considered constant or scale by (chord/chord_root)^2
+        # For this context, let's keep A_str_f constant, only coordinates scale:
+        
+        d_y2 = sx - ce[0] # Horizontal distance from centroid
+        d_x2 = sy - ce[1] # Vertical distance from centroid
+        
+        Ixxtot += A_str * d_x2**2
+        Iyytot += A_str * d_y2**2
+        Ixytot += A_str * d_x2 * d_y2
+    print(Ixxtot)
+    return Ixxtot, Iyytot, Ixytot, J
+
+# ---------------------------------------------------------------------
+# SECTION 2: TORQUE & TWIST (NEGATIVE Load Factor)
+# ---------------------------------------------------------------------
+from torquediagramnegativeloadfactor import torque_neg_loadfactor
+# Twist Calculation (Integration Split)
+def integrand_twist(z_val):
+    return torque_neg_loadfactor(z_val) / inertia_calculation(z_val)[3] / G
+
+def firstint_twist(z_val):
+    x_split = x_engine
+    if z_val <= x_split:
+        return quad(lambda s: integrand_twist(s), 0, z_val)[0]
+    else:
+        integral_part1 = quad(lambda s: integrand_twist(s), 0, x_split)[0]
+        integral_part2 = quad(lambda s: integrand_twist(s), x_split, z_val)[0]
+        return integral_part1 + integral_part2
+
+# Compute and Plot Twist
+z_vals = np.linspace(0, L, 100)
+T_vals = np.array([torque_neg_loadfactor(xi) for xi in z_vals])
+phi_values_neg = np.array([firstint_twist(z_val) for z_val in z_vals]) * (180/np.pi) 
+
+# Plot Twist (Single case, will be replaced by comparison later)
+plt.figure(figsize=(8,5))
+plt.plot(z_vals, phi_values_neg, label='Negative Load Factor')
+plt.xlabel('Spanwise Location z (m)')
+plt.ylabel('Wing Twist $\\nu(z)$ (degrees)')
+plt.title('Wing Twist Distribution (Negative Load Factor)')
+plt.grid(True)
+plt.legend()
+plt.show()
+
+# ---------------------------------------------------------------------
+# SECTION 3: BENDING MOMENT & DEFLECTION (NEGATIVE Load Factor - CORRECTED)
+# ---------------------------------------------------------------------
+
+from bendingdiagramnegativeload import M_neg_load
+
+# --- Deflection Calculation (Negative) ---
+z_grid = np.linspace(0, L, 500)
+M_grid = np.array([M_neg_load(z) for z in z_grid])
+Ixx_grid = np.array([inertia_calculation(z)[0] for z in z_grid]) 
+Curvature_grid = M_grid / (-1*E * Ixx_grid)
+Slope_grid = cumulative_trapezoid(Curvature_grid, z_grid, initial=0)
+Deflection_grid = cumulative_trapezoid(Slope_grid, z_grid, initial=0)
+
+# Plot Deflection (Single case)
+plt.figure(figsize=(8,5))
+plt.plot(z_grid, Deflection_grid * 1000, label='Negative Load Factor') # Convert to mm
+plt.xlabel('Spanwise Location z (m)')
+plt.ylabel('Vertical Deflection $v(z)$ (mm)')
+plt.title('Wing Vertical Deflection (Negative Load Factor)')
+plt.axvline(x_engine, color='red', linestyle='--', label='Engine Location')
+plt.grid(True)
+plt.legend()
+plt.show()
+
+# ---------------------------------------------------------------------
+# SECTION 4: TORQUE & TWIST (POSITIVE Load Factor)
+# ---------------------------------------------------------------------
+Lift_pos = LperSpan0 # Use the LperSpan0 function for positive lift
+Moment_pos = MperSpan0
+
+# Define functions using the positive lift/moment distribution
+from torquediagrampositiveloadfactor import torque_pos_loadfactor
+# Twist Calculation (Integration Split)
+def integrand_twist_pos(z_val):
+    return torque_pos_loadfactor(z_val) / inertia_calculation(z_val)[3] / G
+
+def firstint_twist_pos(z_val):
+    x_split = x_engine
+    if z_val <= x_split:
+        # COMPLETED THE MISSING RETURN
+        return quad(lambda s: integrand_twist_pos(s), 0, z_val)[0] 
+    else:
+        integral_part1 = quad(lambda s: integrand_twist_pos(s), 0, x_split)[0]
+        integral_part2 = quad(lambda s: integrand_twist_pos(s), x_split, z_val)[0]
+        return integral_part1 + integral_part2
+
+# Compute and Plot Twist
+phi_values_pos = np.array([firstint_twist_pos(z_val) for z_val in z_vals]) * (180/np.pi) 
+
+# Plot Twist Comparison
+plt.figure(figsize=(10,6))
+plt.plot(z_vals, phi_values_neg, label='Negative Load Factor', linestyle='--')
+plt.plot(z_vals, phi_values_pos, label='Positive Load Factor', color='g')
+plt.xlabel('Spanwise Location z (m)')
+plt.ylabel('Wing Twist $\\phi(z)$ (degrees)')
+plt.title('Wing Twist Distribution Comparison (Positive vs. Negative)')
+plt.grid(True)
+plt.legend()
+plt.show()
+
+# ---------------------------------------------------------------------
+# SECTION 5: BENDING MOMENT & DEFLECTION (POSITIVE Load Factor)
+# ---------------------------------------------------------------------
+from bendingdiagrampositiveload import M_pos_load
+
+# --- Deflection Calculation (Positive) ---
+
+# 2. Calculate Moment and Inertia on grid
+M_grid_pos = np.array([M_pos_load(z) for z in z_grid])
+Ixx_grid_pos = np.array([inertia_calculation(z)[0] for z in z_grid]) 
+
+# 3. Calculate Curvature (d2v/dz2 = M / EI)
+Curvature_grid_pos = M_grid_pos / (-1*E * Ixx_grid_pos)
+
+# 4. Integrate to get Slope (Theta)
+Slope_grid_pos = cumulative_trapezoid(Curvature_grid_pos, z_grid, initial=0)
+
+# 5. Integrate to get Deflection (v)
+Deflection_grid_pos = cumulative_trapezoid(Slope_grid_pos, z_grid, initial=0)
+
+# Plot Deflection Comparison
+plt.figure(figsize=(8,5))
+plt.plot(z_grid, Deflection_grid * 1000, linestyle='--', label='Negative Load Factor ')
+plt.plot(z_grid, Deflection_grid_pos * 1000, color='g', label='Positive Load Factor ')
+
+plt.xlabel('Spanwise Location z (m)')
+plt.ylabel('Vertical Deflection $v(z)$ (mm)')
+plt.title('Wing Vertical Deflection Comparison')
+plt.axvline(x_engine, color='red', linestyle='--', label='Engine Location')
+plt.grid(True)
+plt.legend()
+plt.show()
+end_time = time.perf_counter()
+elapsed_time = end_time - start_time
+
+print(f"Execution time: {elapsed_time:.6f} seconds")
+
+
+
+print
