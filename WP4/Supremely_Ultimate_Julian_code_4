@@ -1,5 +1,13 @@
+import numpy as np
+import matplotlib.pyplot as plt
+from Ultimate_code_3 import inertia_calculation
+from bendingdiagrampositiveload import M_pos_load
 
-from Ultimate_code_3 import inertia_calculations
-Ixx, Iyy, J = 
-def 
-sigma_comp = Mx*y/Ixx+My*x/Iyy
+def sigma_distribution(y):
+    Ixx, Iyy, J = inertia_calculation(y)
+    Mx = M_pos_load(y)
+
+    sigma_comp = Mx*y/Ixx
+    return sigma_comp
+
+sigma_distribution(0.5)
