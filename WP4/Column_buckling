@@ -7,7 +7,7 @@ from bendingdiagrampositiveload import M_pos_load
 
 
 # Material Properties: Al2024-T81
-E = 72.4e9            # Young's Modulus [Pa]
+E = 72.4*10**9            # Young's Modulus [Pa]
 nu = 0.33             # Poisson's ratio
 sigma_yield = 450e6   # Compressive Yield Strength [Pa]
 
@@ -144,9 +144,9 @@ def inertia_calculation(z, design_params):
         Ixytot += A_str * d_x2 * d_y2
     return Ixxtot, Iyytot, Ixytot, J
 
-def sigma_crit(y):
+def sigma_crit(y, n):
     I, A, y_max = calculate_Ixx(y, designs["Design 3"])
-    sigma_crit = math.pi**2*E*I/(half_span**2*A)
+    sigma_crit = math.pi**2*E*I/((half_span/(n+1))**2*A)
     return sigma_crit
 
 def sigma_distribution(y):
@@ -164,8 +164,8 @@ critical_stresses=[]
 stresses=[]
 
 while position <=half_span:
-    stresscr=sigma_crit(position)
-    stress=sigma_distribution(position)
+    stresscr=sigma_crit(position, 15)
+    stress =sigma_distribution(position)
     positions.append(position)
     critical_stresses.append(stresscr)
     stresses.append(stress)
