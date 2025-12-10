@@ -1,0 +1,86 @@
+
+import numpy as np
+import matplotlib.pyplot as plt
+import math
+
+
+# Material Properties: Al2024-T81
+E = 72.4e9            # Young's Modulus [Pa]
+nu = 0.33             # Poisson's ratio
+sigma_yield = 450e6   # Compressive Yield Strength [Pa]
+
+# Wing Geometry
+b = 23.78        # Full Span [m]
+half_span = 11.89
+c_root = 4.02    # Root chord [m]
+c_tip = 1.27     # Tip chord [m]
+taper = c_tip / c_root
+
+# Front/Rear Spar locations (fraction of chord)
+loc_front = 0.20
+loc_rear = 0.70
+box_width_frac = loc_rear - loc_front
+
+# Designs WP4
+designs = {
+    "Design 1": {'n_str': 12, 'w_str': 0.015, 't_str': 0.001, 't_skin': 0.0015, 't_spar': 0.0015},
+    "Design 2": {'n_str': 6,  'w_str': 0.020, 't_str': 0.002, 't_skin': 0.0015, 't_spar': 0.0015},
+    "Design 3": {'n_str': 6,  'w_str': 0.015, 't_str': 0.001, 't_skin': 0.0030, 't_spar': 0.0030}
+}
+
+# Calculate chord length at spanwise location y
+def get_chord(y):
+    """Returns chord length at spanwise location y."""
+    return c_root * (1 - (1 - taper) * (y / half_span))
+
+# Calculate wingbox dimensions at spanwise location y
+def get_box_dims(y):
+    """
+    Returns wingbox width (b_box) and average height (h_box) at y.
+    Based on front/rear spar locations (0.2c and 0.7c).
+    """
+    c = get_chord(y)
+    b_box = c * (0.7 - 0.2) # Box width is 50% of chord [cite: 1759]
+    
+    # Height approximation (Refine with actual airfoil thickness if available)
+    # Using NACA 4412 ~12% thickness as a baseline estimate
+    h_box = c * 0.12 * 0.9 
+    return b_box, h_box
+
+# Calculate Area Moment of Inertia (Ixx) at location y with actual stringer Area (no longer just point mass).
+def calculate_Ixx(y, design_params):
+    b_box, h_box = get_box_dims(y)
+    c = get_chord(y)
+
+    # Design Parameters
+    n_str = design_params['n_str']
+    t_skin = design_params['t_skin']
+    t_spar = design_params['t_spar']
+    w_str = design_params['w_str']
+    t_str = design_params['t_str']
+    
+    # 1. Stringer Contribution
+    # Area of one L-stringer (approximate as two rectangles)
+    A_str = (c*w_str * c*t_str) + ((c*w_str - c*t_str) * c*t_str)
+    y_centroid=((c*t_str/2)*c*w_str*c*t_str+((c*w_str - c*t_str) * c*t_str)*(c*w_str - c*t_str)/2)/A_str
+    x_centroid=y_centroid
+    I_strcrosssection=c*w_str*c*t_str*y_centroid**2+c*t_str*c*w_str**3*(1/12)+c*w_str*c*t_str*(c*w_str-y_centroid)**2
+    
+    return I_strcrosssection, A_str
+
+def sigma_crit(y):
+    I, A = calculate_Ixx(y, designs["Design 1"])
+    sigma_crit = math.pi**2*E*I/(half_span**2*A)
+    return sigma_crit
+c, d = calculate_Ixx(0, designs["Design 1"])
+print(c, d)
+position=0
+positions=[]
+while position <=half_span:
+    stress=sigma_crit(position)
+    positions.append(stress)
+    position = position + 0.01
+print(positions)
+
+    
+

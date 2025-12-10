@@ -4,6 +4,7 @@ from matplotlib import pyplot as plt
 from TL import LperSpan1, LperSpan0
 
 
+
 #Constants 
 #-------------------------------------------------------------------------------------
 g = 9.81
@@ -28,7 +29,7 @@ def WeightDistribution(x):
     return -10*x+809.9966
 
 def FuelDistribution(x):
-    return 10*x-9148.6175 
+    return -10*x+4582.681836
 
 
 #Finding Root Internal reaction shear 
@@ -55,10 +56,28 @@ def Shear(x):
 
 
 xs = np.linspace(0,winghalfspan,200) #200 datapoints 
-Ss = [Shear(x) for x in xs]
-plt.figure(figsize=(10, 6))   # wider figure
-plt.plot(xs, Ss)
-plt.xlabel("Spanwise position x [m]")
-plt.ylabel("Shear S(x) [N]")
-plt.title("Shear Force with a POSITIVE load factor")
+Ss = [Shear(x)/10**3 for x in xs]
+
+xs = np.insert(xs, 0, 0.0)
+Ss = np.insert(Ss, 0, 0.0)
+
+S_engine = float(np.interp(x_engine, xs, Ss))
+
+plt.figure(figsize=(10, 6))
+
+# Main shear curve (blue)
+plt.plot(xs, Ss, label='Shear Force V(y) (Positive Load Factor)', color='blue')
+
+# Engine vertical dotted line from axis to function
+plt.plot([x_engine, x_engine],
+         [0, S_engine],
+         color='red', linestyle=':', label='Engine Location')
+
+# Formatting
+plt.title('Shear Force Distribution Along Wingspan (+3.75g Load Factor)')
+plt.xlabel('Spanwise Location y (m)')
+plt.ylabel('Shear Force V(y) [kN]')
+plt.axhline(0, color='black', linewidth=0.8, linestyle='--')
+plt.legend()
+plt.grid()
 plt.show()
