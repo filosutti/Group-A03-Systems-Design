@@ -23,9 +23,9 @@ box_width_frac = loc_rear - loc_front
 
 # Designs WP4
 designs = {
-    "Design 1": {'n_str': 12, 'w_str': 0.015, 't_str': 0.001, 't_skin': 0.0015, 't_spar': 0.0015},
-    "Design 2": {'n_str': 6,  'w_str': 0.020, 't_str': 0.002, 't_skin': 0.0015, 't_spar': 0.0015},
-    "Design 3": {'n_str': 6,  'w_str': 0.015, 't_str': 0.001, 't_skin': 0.0030, 't_spar': 0.0030}
+    "Design 1": {'n_str': 12, 'w_str': 0.015, 't_str': 0.001, 't_skin': 0.0015, 't_spar': 0.0015, 'h_max': 0.0820},
+    "Design 2": {'n_str': 6,  'w_str': 0.020, 't_str': 0.002, 't_skin': 0.0015, 't_spar': 0.0015, 'h_max': 0.0794},
+    "Design 3": {'n_str': 6,  'w_str': 0.015, 't_str': 0.001, 't_skin': 0.0030, 't_spar': 0.0030, 'h_max': 0.0807}
 }
 
 # Calculate chord length at spanwise location y
@@ -58,6 +58,7 @@ def calculate_Ixx(y, design_params):
     t_spar = design_params['t_spar']
     w_str = design_params['w_str']
     t_str = design_params['t_str']
+    h_max= design_params['h_max']
     
     # 1. Stringer Contribution
     # Area of one L-stringer (approximate as two rectangles)
@@ -65,13 +66,24 @@ def calculate_Ixx(y, design_params):
     y_centroid=((c*t_str/2)*c*w_str*c*t_str+((c*w_str - c*t_str) * c*t_str)*(c*w_str - c*t_str)/2)/A_str
     x_centroid=y_centroid
     I_strcrosssection=c*w_str*c*t_str*y_centroid**2+c*t_str*c*w_str**3*(1/12)+c*w_str*c*t_str*(c*w_str-y_centroid)**2
+
+    # y_max location
+    y_max=h_max*c
     
-    return I_strcrosssection, A_str
+    return I_strcrosssection, A_str, y_max
 
 def sigma_crit(y):
-    I, A = calculate_Ixx(y, designs["Design 1"])
+    I, A, h_max = calculate_Ixx(y, designs["Design 1"])
     sigma_crit = math.pi**2*E*I/(half_span**2*A)
     return sigma_crit
+
+def sigma_distribution(y):
+    Ixx, Iyy, Ixy, J = inertia_calculation(y)
+    Mx = M_pos_load(y)
+
+    sigma_comp = Mx*h/Ixx
+    return sigma_comp
+
 c, d = calculate_Ixx(0, designs["Design 1"])
 print(c, d)
 position=0
