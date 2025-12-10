@@ -2,11 +2,17 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 # ==========================================
-# 1. SETUP & INPUTS
+# 1. IMPORT LOAD FUNCTION
+# ==========================================
+# This imports the M_pos_load function from your existing file.
+# Ensure 'bendingdiagrampositiveload.py' is in the same directory.
+from WP4WP5.bendingdiagrampositiveload import M_pos_load
+
+# ==========================================
+# 2. SETUP & INPUTS
 # ==========================================
 # Material Properties: Al2024-T81
 E = 72.4e9            # Young's Modulus [Pa]
-nu = 0.33             # Poisson's ratio
 sigma_yield = 450e6   # Compressive Yield Strength [Pa]
 
 # Wing Geometry
@@ -17,7 +23,7 @@ taper = c_tip / c_root
 loc_front = 0.20
 loc_rear = 0.70
 
-# Designs (WP4)
+# Designs (from WP4 Report)
 designs = {
     "Design 1": {'n_str': 12, 'w_str': 0.015, 't_str': 0.001, 't_skin': 0.0015, 't_spar': 0.0015},
     "Design 2": {'n_str': 6,  'w_str': 0.020, 't_str': 0.002, 't_skin': 0.0015, 't_spar': 0.0015},
@@ -25,7 +31,7 @@ designs = {
 }
 
 # ==========================================
-# 2. HELPER FUNCTIONS
+# 3. HELPER FUNCTIONS
 # ==========================================
 
 def get_chord(y):
@@ -61,61 +67,46 @@ def calculate_Ixx(y, design_params):
     
     return I_skin + I_spar + I_str
 
-def compressive_strength_only(y_locations, M_distribution, design_params):
+def compressive_strength_only(y_locations, moment_function, design_params):
     """
-    Calculates margins for components based on signed Moment.
-    - Checks Top components if M > 0 (Compression on Top)
-    - Checks Bottom components if M < 0 (Compression on Bottom)
-    - NO Axial Force (N) included.
+    Calculates margins for components based on Positive Moment (Top Compression).
     """
     skin_mos = []
     spar_mos = []
     str_mos = []
     min_mos_per_station = []
     
-    for i, y in enumerate(y_locations):
+    for y in y_locations:
         b_box, h_box = get_box_dims(y)
         I_xx = calculate_Ixx(y, design_params)
         
-        # Load (Bending Moment Only)
-        M = M_distribution[i] # KEEP SIGN
+        # Load from imported function
+        M = abs(moment_function(y)) # Magnitude of positive moment
         
-        # --- DETERMINE CRITICAL SIDE ---
-        # If M > 0 (Smile): Top (z > 0) is Compression (-).
-        # If M < 0 (Frown): Bottom (z < 0) is Compression (-).
-        if M >= 0:
-            z_check = h_box / 2.0
-        else:
-            z_check = -h_box / 2.0
-            
-        # --- 1. SKIN CHECK ---
-        # Bending Stress at critical skin
-        # Formula: sigma = - (M * z) / I (Standard beam sign convention)
-        sigma_b_skin = -(M * z_check) / I_xx
+        # --- STRESS CALCULATION ---
+        # For Positive Load, Top Skin is in Compression.
+        # Max distance from neutral axis z = h/2
+        z_max = h_box / 2.0
         
-        # --- 2. STRINGER CHECK ---
-        # Stringers attached to skin -> Same Bending Stress
-        sigma_b_str = sigma_b_skin
+        # Calculate compressive stress magnitude
+        sigma_compressive = (M * z_max) / I_xx
         
-        # --- 3. SPAR CHECK ---
-        # Spar check at top edge (same z as skin) per feedback
-        sigma_b_spar = sigma_b_skin
+        # --- MARGIN OF SAFETY ---
+        # MS = Yield Stress / Applied Stress
+        # 1. Skin (Top)
+        ms_skin = sigma_yield / sigma_compressive if sigma_compressive > 1e-6 else 100.0
+        skin_mos.append(ms_skin)
         
-        # --- Margins of Safety ---
-        # We only care if the stress is COMPRESSIVE (Negative)
-        def get_ms(stress_val):
-            # If stress is positive (Tension), infinite margin for Compressive Failure
-            if stress_val >= 0: 
-                return 100.0
-            # If stress is negative (Compression), check magnitude against yield
-            return sigma_yield / abs(stress_val)
-            
-        skin_mos.append(get_ms(sigma_b_skin))
-        str_mos.append(get_ms(sigma_b_str))
-        spar_mos.append(get_ms(sigma_b_spar))
+        # 2. Stringer (Top - Attached to Skin)
+        # Experiences same stress as skin
+        str_mos.append(ms_skin)
+        
+        # 3. Spar (Top Edge)
+        # Checking spar web at the top edge (same stress as skin)
+        spar_mos.append(ms_skin)
         
         # Minimum margin
-        min_mos_per_station.append(min(skin_mos[-1], str_mos[-1], spar_mos[-1]))
+        min_mos_per_station.append(ms_skin)
         
     return {
         'y': np.array(y_locations),
@@ -123,22 +114,28 @@ def compressive_strength_only(y_locations, M_distribution, design_params):
     }
 
 # ==========================================
-# 3. PLOTTING
+# 4. PLOTTING
 # ==========================================
-# REPLACE THESE WITH YOUR ACTUAL WP4 DATA ARRAYS
-y_vals = np.linspace(0, half_span, 100)
-M_dist = 3000000 * (1 - y_vals/half_span)**2 # Example Moment
+# Resolution for the plot
+y_plot_vals = np.linspace(0, half_span, 200)
 
 plt.figure(figsize=(10, 6))
-for name, params in designs.items():
-    res = compressive_strength_only(y_vals, M_dist, params)
-    plt.plot(res['y'], res['min_mos'], label=name)
 
-plt.axhline(1.0, color='r', linestyle='--', label='Failure')
-plt.ylim(0, 5)
+for name, params in designs.items():
+    # Pass the imported M_pos_load function directly
+    res = compressive_strength_only(y_plot_vals, M_pos_load, params)
+    
+    plt.plot(res['y'], res['min_mos'], label=name)
+    
+    # Print critical margin
+    idx_worst = np.argmin(res['min_mos'])
+    print(f"{name} Critical MoS: {res['min_mos'][idx_worst]:.2f} at y={res['y'][idx_worst]:.2f}m")
+
+plt.axhline(1.0, color='r', linestyle='--', label='Failure Threshold')
+plt.ylim(0, 5) # Zoom in on the critical range
 plt.xlabel('Span [m]')
 plt.ylabel('Margin of Safety')
-plt.title('Compressive Strength (Yield) - Bending Only')
+plt.title('Compressive Strength (Yield) - Positive Load Case')
 plt.legend()
 plt.grid(True)
 plt.show()
