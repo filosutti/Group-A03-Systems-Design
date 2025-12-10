@@ -1,10 +1,72 @@
 import numpy as np
 import matplotlib.pyplot as plt
-from Ultimate_code_3 import inertia_calculation
+
 from bendingdiagrampositiveload import M_pos_load
+from centroid import calculate_wingbox_centroid
+
+def inertia_calculation(z):
+    from TL import c
+    c_z = c(z)
+    
+    # Centroid Calculation (Uses UNIFIED stringer list)
+    cx, cy, stringer_coords = calculate_wingbox_centroid(coords_unscaled, t_skin, rho_Al2024, n_stringers_side, A_stringer, L_stringer)
+    ce = (c_z * cx, c_z * cy)
+    
+    x_frac = [0.2, 0.7, 0.7, 0.2]
+    y_frac = [-0.02723, -0.0066, 0.0666, 0.08737]
+    x_scaled = [xf * c_z for xf in x_frac]
+    y_scaled = [yf * c_z for yf in y_frac]
+    
+    # Torsional Constant J (Bredt's Theory) - UNCHANGED
+    Am = 0.5 * np.abs(np.sum(np.array(x_scaled) * np.roll(np.array(y_scaled), -1) - 
+                             np.roll(np.array(x_scaled), -1) * np.array(y_scaled)))
+    perimeter_integral = 0
+    t = t_skin*c_z
+    for i in range(len(x_scaled)):
+        x1, y1 = x_scaled[i], y_scaled[i]
+        x2, y2 = x_scaled[(i + 1) % len(x_scaled)], y_scaled[(i + 1) % len(x_scaled)]
+        l = np.sqrt((x2 - x1)**2 + (y2 - y1)**2)
+        perimeter_integral += l / t 
+    J = (4 * Am**2) / perimeter_integral
+
+    # Bending Inertias
+    x_temp, y_temp = x_scaled + [x_scaled[0]], y_scaled + [y_scaled[0]]
+    Ixxtot = Iyytot = Ixytot = 0
+    
+    # 1. Skin Contributions
+    for i in range(len(x_temp)-1):
+        dx, dy = x_temp[i+1]-x_temp[i], y_temp[i+1]-y_temp[i]
+        l = np.sqrt(dx**2 + dy**2)
+        A = l*t
+        d_y = x_temp[i] + dx/2 - ce[0]
+        d_x = y_temp[i] + dy/2 - ce[1]
+        
+        Ixx = (t*(l**3)*(dy/l)**2)/12 + A*(d_x**2)
+        Iyy = (t*(l**3)*(dx/l)**2)/12 + A*(d_y**2)
+        Ixy = (t*(l**3)*(dx*dy)/(l**2))/12 + A*(d_x*d_y)
+
+        Ixxtot += Ixx
+        Iyytot += Iyy
+        Ixytot += Ixy
+    
+    # 2. Harmonized Stringer Contributions
+    for sx_f, sy_f in stringer_coords:
+        sx, sy = sx_f * c_z, sy_f * c_z
+        A_str = A_stringer * (c_z)**2
+        
+        # NOTE: Stringer area should be considered constant or scale by (chord/chord_root)^2
+        # For this context, let's keep A_str_f constant, only coordinates scale:
+        
+        d_y2 = sx - ce[0] # Horizontal distance from centroid
+        d_x2 = sy - ce[1] # Vertical distance from centroid
+        
+        Ixxtot += A_str * d_x2**2
+        Iyytot += A_str * d_y2**2
+        Ixytot += A_str * d_x2 * d_y2
+    return Ixxtot, Iyytot, Ixytot, J
 
 def sigma_distribution(y):
-    Ixx, Iyy, J = inertia_calculation(y)
+    Ixx, Iyy, Ixy, J = inertia_calculation(y)
     Mx = M_pos_load(y)
 
     sigma_comp = Mx*y/Ixx
