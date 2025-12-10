@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 # ==========================================
 # This imports the M_pos_load function from your existing file.
 # Ensure 'bendingdiagrampositiveload.py' is in the same directory.
-from WP4.bendingdiagrampositiveload import M_pos_load
+from WP4WP5.bendingdiagrampositiveload import M_pos_load
 
 # ==========================================
 # 2. SETUP & INPUTS
