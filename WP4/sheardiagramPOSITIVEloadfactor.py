@@ -81,3 +81,5 @@ plt.axhline(0, color='black', linewidth=0.8, linestyle='--')
 plt.legend()
 plt.grid()
 plt.show()
+
+print(Shear(5))

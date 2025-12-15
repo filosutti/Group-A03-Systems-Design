@@ -70,3 +70,5 @@ def torque_pos_loadfactor(x):
     tpoint = MomentPoint if x >= x_engine else 0.0
     return -T0 + tl - tm + tpoint
 
+
+print(torque_pos_loadfactor(5))

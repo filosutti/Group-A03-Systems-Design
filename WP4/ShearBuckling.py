@@ -12,7 +12,7 @@ c_t = c_r * taper
 n_ribs = int(input("Enter the number of ribs: "))
 
 t_front = 0.00603  # front spar thickness [m]
-t_rear = 0.00603  # rear spar thickness [m]
+t_rear = 0.00603   # rear spar thickness [m]
 spar_height_fraction_front = 1.5
 spar_height_fraction_rear = 1.5
 
@@ -45,11 +45,11 @@ def Mean_Area(y):
     area_enclosed = 0.5 * np.abs(np.dot(x, np.roll(y_arr, -1)) - np.dot(y_arr, np.roll(x, -1)))
     return area_enclosed
 
-# Shear force and torque functions (ABSOLUTE VALUE APPLIED)
+# Shear force and torque functions (imported from your modules)
 from sheardiagramPOSITIVEloadfactor import Shear
 from torquediagrampositiveloadfactor import torque_pos_loadfactor
 
-# k_s curves
+# k_s curves (kept as provided)
 _ab_clamped = np.array([1 , 1.1 , 1.2 , 1.3 , 1.4 , 1.5 , 1.6 , 1.7 , 2 , 2.25 , 2.5 , 3 , 3.25 , 3.5 , 3.75 , 4 , 4.25 , 4.5 , 4.75 , 5])
 _k_s_clamped = np.array([15 , 14 , 13 , 12 , 11.8 , 11.6 , 11.2, 11 , 10.3 , 10 , 9.9 , 9.8 , 9.7 , 9.6 , 9.5 , 9.5 , 9.5 , 9.5 , 9.5 , 9.5])
 _ab_hinged = np.array([1 , 1.1 , 1.2 , 1.3 , 1.4 , 1.5 , 1.6 , 1.7 , 2 , 2.25 , 2.5 , 3 , 3.25 , 3.5 , 3.75 , 4 , 4.25 , 4.5 , 4.75 , 5])
@@ -57,111 +57,123 @@ _k_s_hinged = np.array([10.7 , 9 , 8.4 , 7.5 , 7.3 , 7.1 , 6.8 , 6.6 , 6.3 , 6.2
 k_s_clamped_interp = PchipInterpolator(_ab_clamped, _k_s_clamped, extrapolate=True)
 k_s_hinged_interp = PchipInterpolator(_ab_hinged, _k_s_hinged, extrapolate=True)
 
-def k_s_clamped_from_ab(ab):
-    return k_s_clamped_interp(ab)
-
-def k_s_hinged_from_ab(ab):
-    return k_s_hinged_interp(ab)
-
 def tau_critical(k_s, E, nu, t, b):
     return (k_s * (np.pi**2) * E * t**2) / (12 * (1 - nu**2) * b**2)
 
 # MAIN FUNCTION
+# MAIN BUCKLING ANALYSIS
+# -------------------------
 def compute_spar_buckling(n_ribs):
-    n_bays = n_ribs - 1
-    panel_edges = np.linspace(0.0, half_wing_span, n_bays + 1)
-    results = []
 
+    n_panels = n_ribs - 1
+    panel_edges = np.linspace(0, half_wing_span, n_panels+1)
+
+    results = []
     y_plot = []
     MoS_front_plot = []
-    MoS_rear_plot = []
+    MoS_rear_plot  = []
 
-    for i in range(n_bays):
-        y0, y1 = panel_edges[i], panel_edges[i + 1]
-        a_bay = y1 - y0
+    for i in range(n_panels):
 
-        y_samples = np.linspace(y0, y1, 20)
-        V_samples = np.array([Shear(y) for y in y_samples])
-        V_max = np.max(V_samples)
-        T_samples = np.array([torque_pos_loadfactor(y) for y in y_samples])
+        y0, y1 = panel_edges[i], panel_edges[i+1]
+        a = y1 - y0
+
+        y_samples = np.linspace(y0, y1, 150)
+
+        # loads
+        V_samples = abs(np.array([Shear(y) for y in y_samples]))
+        T_samples = abs(np.array([torque_pos_loadfactor(y) for y in y_samples]))
+
+        # internal torque = counterclockwise
+        # → positive torsional shear flow rotates CCW
+        # → shear flow is upward on front spar → subtract
+        # → downward on rear spar → add
         T_max = np.max(T_samples)
+        V_max = np.max(V_samples)
 
-        b_f_min = np.min([spar_height_front(y) for y in y_samples])
-        b_r_min = np.min([spar_height_rear(y) for y in y_samples])
+        # geometry
+        b_f = np.min(spar_height_front(y_samples))
+        b_r = np.min(spar_height_rear(y_samples))
+        A_min = np.min([Mean_Area(y) for y in y_samples])
 
-        ab_f = a_bay / b_f_min
-        ab_r = a_bay / b_r_min
+        # buckling coefficients
+        ab_f = a / b_f
+        ab_r = a / b_r
 
         if i == 0:
+            # clamped-hinged
+            k_s_f = 8.98 + 5.61/ab_f*2 - 1.99/ab_f*3
+            k_s_r = 8.98 + 5.61/ab_r*2 - 1.99/ab_r*3
             bc = "clamped"
-            k_s_f = 8.98 + 5.61 / (ab_f*2) - 1.99/ (ab_f*3)
-            k_s_r = 8.98 + 5.61 / (ab_r*2) - 1.99/ (ab_r*3)
         else:
+            # pinned-pinned
+            k_s_f = 5.34 + 4.0/ab_f**2
+            k_s_r = 5.34 + 4.0/ab_r**2
             bc = "hinged"
-            k_s_f = 5.34 + 4.0 / (ab_f**2)
-            k_s_r = 5.34 + 4.0 / (ab_r**2)
 
-        A_samples = [Mean_Area(y) for y in y_samples]
-        A_min = np.min(A_samples)
+        # shear stresses
+        tau_trans = V_max / (b_f*t_front + b_r*t_rear)
+        q_T = T_max / (2*A_min)
 
-        tau_transverse = V_max / (b_f_min * t_front + b_r_min * t_rear)
-        q_T = T_max / (2 * A_min)
-        tau_torque_front = q_T / t_front
-        tau_torque_rear = q_T / t_rear
-        tau_max_front = 1.5 * tau_transverse + abs(tau_torque_front)
-        tau_max_rear = 1.5 * tau_transverse + abs(tau_torque_rear)
+        tau_t_front = q_T / t_front
+        tau_t_rear  = q_T / t_rear
 
-        tau_cr_f = tau_critical(k_s_f, E, nu, t_front, b_f_min)
-        tau_cr_r = tau_critical(k_s_r, E, nu, t_rear, b_r_min)
+        # correct sign logic for CCW torque
+        tau_max_front = 1.5*tau_trans - abs(tau_t_front)
+        tau_max_rear  = 1.5*tau_trans + abs(tau_t_rear)
+
+        # critical buckling
+        tau_cr_f = tau_critical(k_s_f, E, nu, t_front, b_f)
+        tau_cr_r = tau_critical(k_s_r, E, nu, t_rear, b_r)
 
         util_f = tau_cr_f / tau_max_front
         util_r = tau_cr_r / tau_max_rear
 
+        # store results
         results.append({
-            "panel": i + 1,
+            "panel": i+1,
             "bc": bc,
-            "a/b_front": ab_f,
-            "a/b_rear": ab_r,
-            "k_s_front": k_s_f,
-            "k_s_rear": k_s_r,
             "tau_max_front": tau_max_front,
-            "tau_max_rear": tau_max_rear,
+            "tau_max_rear":  tau_max_rear,
             "tau_cr_front": tau_cr_f,
-            "tau_cr_rear": tau_cr_r,
+            "tau_cr_rear":  tau_cr_r,
             "util_front": util_f,
-            "util_rear": util_r,
-            "fails": (util_f < 1.0) or (util_r < 1.0)
+            "util_rear":  util_r,
+            "fails": (abs(util_f) < 1.0) or (abs(util_r) < 1.0)
         })
 
-        y_plot.extend(y_samples)
-        MoS_front_plot.extend([util_f - 1] * len(y_samples))
-        MoS_rear_plot.extend([util_r - 1] * len(y_samples))
+        # margin of safety (constant per panel)
+        MoS_front = abs(util_f - 1)
+        MoS_rear  = abs(util_r - 1)
 
+        y_plot.extend(y_samples)
+        MoS_front_plot.extend([MoS_front]*len(y_samples))
+        MoS_rear_plot.extend([MoS_rear]*len(y_samples))
+
+    # ---- Plot ----
     plt.figure(figsize=(10,5))
-    plt.plot(y_plot, MoS_front_plot, label="Front spar MoS")
-    plt.plot(y_plot, MoS_rear_plot, label="Rear spar MoS")
+    plt.plot(y_plot, MoS_front_plot, label="Front Spar MoS")
+    plt.plot(y_plot, MoS_rear_plot,  label="Rear Spar MoS")
     plt.axhline(0, color='k', linestyle='--')
-    plt.xlabel("Spanwise position y [m]")
-    plt.ylabel("Margin of Safety")
-    plt.title("Discretized Margin of Safety along Half-Span")
-    plt.legend()
+    plt.xlabel("Spanwise Position y [m]")
+    plt.ylabel("Margin of Safety (MoS)")
+    plt.title("Shear Buckling Margin of Safety Along Half Span")
     plt.grid(True)
+    plt.legend()
     plt.show()
 
     return results
 
+
+# -------------------------
 # RUN
+# -------------------------
 if __name__ == "__main__":
     R = compute_spar_buckling(n_ribs)
     for r in R:
         print(f"\nPanel {r['panel']} ({r['bc']})")
-        print(f" a/b front = {r['a/b_front']:.3f}, k_s front = {r['k_s_front']:.3f}")
-        print(f" a/b rear = {r['a/b_rear']:.3f}, k_s rear = {r['k_s_rear']:.3f}")
-        print(f" tau_max front = {r['tau_max_front']:.1f} Pa")
-        print(f" tau_max rear = {r['tau_max_rear']:.1f} Pa")
-        print(f" tau_cr_front = {r['tau_cr_front']:.1f}, util_front = {r['util_front']:.3f}")
-        print(f" tau_cr_rear = {r['tau_cr_rear']:.1f}, util_rear = {r['util_rear']:.3f}")
-        if r["fails"]:
-            print(" *FAILS: τ_max exceeds critical shear buckling stress*")
-        else:
-            print(" OK: Panel is safe")
+        print(f"  tau_max_front = {r['tau_max_front']:.1f} Pa")
+        print(f"  tau_max_rear  = {r['tau_max_rear']:.1f} Pa")
+        print(f"  tau_cr_front  = {r['tau_cr_front']:.1f}, util_front = {r['util_front']:.3f}")
+        print(f"  tau_cr_rear   = {r['tau_cr_rear']:.1f}, util_rear  = {r['util_rear']:.3f}")
+        print("  Status:", "FAIL" if r["fails"] else "OK")
