@@ -11,10 +11,10 @@ taper = 0.316
 c_t = c_r * taper
 n_ribs = int(input("Enter the number of ribs: "))
 
-t_front = 0.00603  # front spar thickness [m]
-t_rear = 0.00603   # rear spar thickness [m]
-spar_height_fraction_front = 0.015
-spar_height_fraction_rear = 0.015
+t_front = 0.012  # front spar thickness [m]
+t_rear = 0.012   # rear spar thickness [m]
+spar_height_fraction_front = 0.115
+spar_height_fraction_rear = 0.0743
 
 # Normalized spar corner coordinates
 c_1 = [0.25, 0.10399434]
@@ -99,16 +99,9 @@ def compute_spar_buckling(n_ribs):
         # -------------------------------
         # Buckling coefficient from curves
         # -------------------------------
-        if i == 0:
-            # Clamped–Hinged (root panel)
-            k_s_f = k_s_clamped_interp(ab_f)
-            k_s_r = k_s_clamped_interp(ab_r)
-            bc = "clamped–hinged"
-        else:
-            # Pinned–Pinned (interior panels)
-            k_s_f = k_s_hinged_interp(ab_f)
-            k_s_r = k_s_hinged_interp(ab_r)
-            bc = "pinned–pinned"
+        k_s_f = k_s_hinged_interp(ab_f)
+        k_s_r = k_s_hinged_interp(ab_r)
+        bc = "pinned–pinned"
 
         # Shear stresses
         tau_trans = V_max / (b_f * t_front + b_r * t_rear)
@@ -118,8 +111,8 @@ def compute_spar_buckling(n_ribs):
         tau_t_rear = q_T / t_rear
 
         # CCW torque sign convention
-        tau_max_front = 1.5 * tau_trans - abs(tau_t_front)
-        tau_max_rear  = 1.5 * tau_trans + abs(tau_t_rear)
+        tau_max_front = abs(abs(1.5 * tau_trans) + abs(tau_t_front))
+        tau_max_rear  = abs(abs(1.5 * tau_trans) - abs(tau_t_rear))
 
         # Critical buckling stresses
         tau_cr_f = tau_critical(k_s_f, E, nu, t_front, b_f)
