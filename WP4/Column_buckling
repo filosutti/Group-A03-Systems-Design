@@ -7,6 +7,8 @@ from compressivestrength_and_otherfunctions import calculate_centroid_trapezoid
 from compressivestrength_and_otherfunctions import calculate_stringer_Ixx_local
 from compressivestrength_and_otherfunctions import calculate_Ixx
 from bendingdiagrampositiveload import M_pos_load
+from Spacing_Functions import rib_places
+from Spacing_Functions import spacing_at_position
 
 
 # Material Properties: Al2024-T81
@@ -81,27 +83,6 @@ def calculate_Ixx_str(y, design_params):
     y_max=h_max*c
     
     return I_strcrosssection, A_str, y_max
-
-def rib_positions_from_length(initial_spacing, total_length, number_of_ribs):
-    n = number_of_ribs - 1                   # number of spacings
-    
-    delta = 2 * (total_length - n * initial_spacing) / (n * (n - 1))
-    
-    spacings = initial_spacing + delta * np.arange(n)
-    
-    positions = np.zeros(number_of_ribs)
-    positions[1:] = np.cumsum(spacings)
-    
-    return positions, spacings
-
-
-def spacing_at_position(initial_spacing, total_length, number_of_ribs, position):
-    positions, spacings = rib_positions_from_length(initial_spacing, total_length, number_of_ribs)
-    for i in range(len(spacings)):
-        if positions[i] <= position < positions[i + 1]:
-            return spacings[i]
-    # If position is exactly at the tip
-    return spacings[-1]
 
 def sigma_crit(y, n):
     L= spacing_at_position(0.5, half_span, n, y)
