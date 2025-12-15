@@ -220,7 +220,7 @@ def compressive_strength_only(y_locations, moment_function, design_params):
         
         # --- STRESS CALCULATION ---
         # Find max distance from neutral axis (Cy) to the Top Skin (Compression side)
-        # Top corners are indices 2 and 3
+        # Top corners are indices 2 and 3 in the provided list
         z_top_rear = corners[2][1]
         z_top_front = corners[3][1]
         
@@ -256,13 +256,16 @@ for name, params in designs.items():
     
     # Print critical margin
     idx_worst = np.argmin(res['min_mos'])
-    print(f"{name} Critical MoS: {res['min_mos'][idx_worst]:.2f} at y={res['y'][idx_worst]:.2f}m")
+    print(f"{name} Min Safety Factor: {res['min_mos'][idx_worst]:.2f} at y={res['y'][idx_worst]:.2f}m")
 
-plt.axhline(1.0, color='r', linestyle='--', label='Failure Threshold')
+plt.axhline(1.0, color='r', linestyle='--', label='Failure Threshold (SF = 1.0)')
 plt.ylim(0, 5) 
-plt.xlabel('Span [m]')
-plt.ylabel('Margin of Safety')
-plt.title('Compressive Strength (Trapezoidal Wingbox) - Positive Load Case')
+
+# --- UPDATED AXIS LABELS FOR CLARITY ---
+plt.xlabel('Distance from Wing Root [m]')
+plt.ylabel('Safety Factor (Yield Strength / Applied Stress)')
+plt.title('Compressive Strength Validation (Positive Load Case)')
+
 plt.legend()
 plt.grid(True)
 plt.show()
