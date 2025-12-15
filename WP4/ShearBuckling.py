@@ -13,8 +13,8 @@ n_ribs = int(input("Enter the number of ribs: "))
 
 t_front = 0.00603  # front spar thickness [m]
 t_rear = 0.00603   # rear spar thickness [m]
-spar_height_fraction_front = 0.0015
-spar_height_fraction_rear = 0.0015
+spar_height_fraction_front = 0.015
+spar_height_fraction_rear = 0.015
 
 # Normalized spar corner coordinates
 c_1 = [0.25, 0.10399434]
@@ -66,63 +66,62 @@ def tau_critical(k_s, E, nu, t, b):
 def compute_spar_buckling(n_ribs):
 
     n_panels = n_ribs - 1
-    panel_edges = np.linspace(0, half_wing_span, n_panels+1)
+    panel_edges = np.linspace(0, half_wing_span, n_panels + 1)
 
     results = []
     y_plot = []
     MoS_front_plot = []
-    MoS_rear_plot  = []
+    MoS_rear_plot = []
 
     for i in range(n_panels):
 
-        y0, y1 = panel_edges[i], panel_edges[i+1]
+        y0, y1 = panel_edges[i], panel_edges[i + 1]
         a = y1 - y0
 
         y_samples = np.linspace(y0, y1, 150)
 
-        # loads
+        # Loads
         V_samples = abs(np.array([Shear(y) for y in y_samples]))
         T_samples = abs(np.array([torque_pos_loadfactor(y) for y in y_samples]))
 
-        # internal torque = counterclockwise
-        # → positive torsional shear flow rotates CCW
-        # → shear flow is upward on front spar → subtract
-        # → downward on rear spar → add
-        T_max = np.max(T_samples)
         V_max = np.max(V_samples)
+        T_max = np.max(T_samples)
 
-        # geometry
+        # Geometry
         b_f = np.min(spar_height_front(y_samples))
         b_r = np.min(spar_height_rear(y_samples))
         A_min = np.min([Mean_Area(y) for y in y_samples])
 
-        # buckling coefficients
+        # Aspect ratios
         ab_f = a / b_f
         ab_r = a / b_r
 
+        # -------------------------------
+        # Buckling coefficient from curves
+        # -------------------------------
         if i == 0:
-            # clamped-hinged
-            k_s_f = 8.98 + 5.61/ab_f*2 - 1.99/ab_f*3
-            k_s_r = 8.98 + 5.61/ab_r*2 - 1.99/ab_r*3
-            bc = "clamped"
+            # Clamped–Hinged (root panel)
+            k_s_f = k_s_clamped_interp(ab_f)
+            k_s_r = k_s_clamped_interp(ab_r)
+            bc = "clamped–hinged"
         else:
-            # pinned-pinned
-            k_s_f = 5.34 + 4.0/ab_f**2
-            k_s_r = 5.34 + 4.0/ab_r**2
-            bc = "hinged"
+            # Pinned–Pinned (interior panels)
+            k_s_f = k_s_hinged_interp(ab_f)
+            k_s_r = k_s_hinged_interp(ab_r)
+            bc = "pinned–pinned"
 
-        # shear stresses
-        tau_trans = V_max / (b_f*t_front + b_r*t_rear)
-        q_T = T_max / (2*A_min)
+        # Shear stresses
+        tau_trans = V_max / (b_f * t_front + b_r * t_rear)
+        q_T = T_max / (2 * A_min)
 
         tau_t_front = q_T / t_front
-        tau_t_rear  = q_T / t_rear
+        tau_t_rear = q_T / t_rear
 
-        # correct sign logic for CCW torque
-        tau_max_front = 1.5*tau_trans - abs(tau_t_front)
-        tau_max_rear  = 1.5*tau_trans + abs(tau_t_rear)
+        # CCW torque sign convention
+        tau_max_front = 1.5 * tau_trans - abs(tau_t_front)
+        tau_max_rear  = 1.5 * tau_trans + abs(tau_t_rear)
 
-        # critical buckling
+        # Critical buckling stresses
         tau_cr_f = tau_critical(k_s_f, E, nu, t_front, b_f)
         tau_cr_r = tau_critical(k_s_r, E, nu, t_rear, b_r)
 
@@ -131,34 +130,34 @@ def compute_spar_buckling(n_ribs):
 
         print('Panel:', i+1, 'V_max:', V_max, 'T_max:', T_max, 'b_f:', b_f, 'b_r:', b_r, 'A_min:', A_min)
 
-        # store results
+        # Store results
         results.append({
-            "panel": i+1,
+            "panel": i + 1,
             "bc": bc,
             "tau_max_front": tau_max_front,
-            "tau_max_rear":  tau_max_rear,
+            "tau_max_rear": tau_max_rear,
             "tau_cr_front": tau_cr_f,
-            "tau_cr_rear":  tau_cr_r,
+            "tau_cr_rear": tau_cr_r,
             "util_front": util_f,
-            "util_rear":  util_r,
+            "util_rear": util_r,
             "fails": (abs(util_f) < 1.0) or (abs(util_r) < 1.0)
         })
 
-        # margin of safety (constant per panel)
+        # Margin of safety
         MoS_front = abs(util_f - 1)
         MoS_rear  = abs(util_r - 1)
 
         y_plot.extend(y_samples)
-        MoS_front_plot.extend([MoS_front]*len(y_samples))
-        MoS_rear_plot.extend([MoS_rear]*len(y_samples))
+        MoS_front_plot.extend([MoS_front] * len(y_samples))
+        MoS_rear_plot.extend([MoS_rear] * len(y_samples))
 
     # ---- Plot ----
-    plt.figure(figsize=(10,5))
+    plt.figure(figsize=(10, 5))
     plt.plot(y_plot, MoS_front_plot, label="Front Spar MoS")
-    plt.plot(y_plot, MoS_rear_plot,  label="Rear Spar MoS")
+    plt.plot(y_plot, MoS_rear_plot, label="Rear Spar MoS")
     plt.axhline(0, color='k', linestyle='--')
     plt.xlabel("Spanwise Position y [m]")
-    plt.ylabel("Margin of Safety (MoS)")
+    plt.ylabel("Margin of Safety")
     plt.title("Shear Buckling Margin of Safety Along Half Span")
     plt.grid(True)
     plt.legend()
