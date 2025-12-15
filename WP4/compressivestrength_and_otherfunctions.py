@@ -27,7 +27,6 @@ taper = c_tip / c_root
 
 # NORMALIZED CORNER COORDINATES (at Unit Chord c=1)
 # Order: Bottom-Front -> Bottom-Rear -> Top-Rear -> Top-Front
-# Segments: 0=BotSkin, 1=RearSpar, 2=TopSkin, 3=FrontSpar
 UNIT_CORNERS = [
     (0.2, -0.02723), 
     (0.7, -0.0066),   
@@ -60,9 +59,7 @@ def get_scaled_corners(y):
 
 def calculate_centroid_trapezoid(corners, t_skin, n_str, A_str, L_str_dim):
     """
-    Calculates Cy (neutral axis z-height) using the exact WP4 logic:
-    - Inclined segments for skins
-    - Offset stringers
+    Calculates Cy (neutral axis z-height) using correct mass properties.
     """
     total_mass = 0
     moment_z = 0 
@@ -76,7 +73,6 @@ def calculate_centroid_trapezoid(corners, t_skin, n_str, A_str, L_str_dim):
         L_seg = np.sqrt((p2[0] - p1[0])**2 + (p2[1] - p1[1])**2)
         z_avg = (p1[1] + p2[1]) / 2
         
-        # Mass = L * t * rho
         m_seg = L_seg * t_skin * rho_Al2024
         
         total_mass += m_seg
@@ -90,7 +86,6 @@ def calculate_centroid_trapezoid(corners, t_skin, n_str, A_str, L_str_dim):
     ]
     
     str_coords = []
-    # 25% offset logic from WP4
     offset_dist = L_str_dim * 0.25 
 
     for p_start, p_end, side in segments:
@@ -115,12 +110,38 @@ def calculate_centroid_trapezoid(corners, t_skin, n_str, A_str, L_str_dim):
     Cy = moment_z / total_mass
     return Cy, str_coords
 
+def calculate_stringer_Ixx_local(w, t):
+    """
+    Calculates local Ixx of an L-stringer about its own horizontal centroidal axis.
+    Assuming Equal-Leg Angle (width = height = w).
+    """
+    # 1. Define sub-rectangles
+    # Vertical Leg: dimensions t (width) x w (height)
+    h1 = w; b1 = t
+    A1 = h1 * b1
+    y1 = h1 / 2.0  # Centroid height from bottom
+    I1 = (b1 * h1**3) / 12.0
+
+    # Horizontal Leg: dimensions (w-t) (width) x t (height)
+    h2 = t; b2 = w - t
+    A2 = h2 * b2
+    y2 = h2 / 2.0  # Centroid height from bottom
+    I2 = (b2 * h2**3) / 12.0
+
+    # 2. Find Combined Centroid (y_c)
+    A_total = A1 + A2
+    y_c = (A1*y1 + A2*y2) / A_total
+
+    # 3. Parallel Axis Theorem for Local Ixx
+    I_local = (I1 + A1*(y1 - y_c)**2) + (I2 + A2*(y2 - y_c)**2)
+    
+    return I_local
+
 def calculate_Ixx(y, design_params):
     """
     Calculates Ixx using the scaled Trapezoidal geometry.
-    Maintains original function name and inputs.
+    INCLUDES LOCAL INERTIA OF STRINGERS (No point-mass simplification).
     """
-    # Unpack Design Parameters
     n_str = design_params['n_str']
     t_skin = design_params['t_skin']
     t_spar = design_params.get('t_spar', t_skin)
@@ -128,13 +149,13 @@ def calculate_Ixx(y, design_params):
     w_str = design_params['w_str']
     t_str = design_params['t_str']
     
-    # Calculate Stringer Area (L-shape approx)
+    # Calculate Stringer Area
     A_str = (w_str * t_str * 2) - (t_str**2)
 
     # 1. Get Scaled Geometry
     corners = get_scaled_corners(y)
     
-    # 2. Find Neutral Axis (Centroid) using w_str as characteristic length
+    # 2. Find Neutral Axis (Centroid)
     Cy, str_coords = calculate_centroid_trapezoid(corners, t_skin, n_str, A_str, w_str)
     
     Ixx_total = 0
@@ -150,14 +171,12 @@ def calculate_Ixx(y, design_params):
         dz = p2[1] - p1[1]
         z_avg = (p1[1] + p2[1]) / 2
         
-        # Determine thickness based on segment index:
-        # 0: Bot Skin (t_skin), 1: Rear Spar (t_spar), 2: Top Skin (t_skin), 3: Front Spar (t_spar)
+        # Determine thickness (Spars are indices 1 and 3)
         t_curr = t_spar if (i == 1 or i == 3) else t_skin
         
         area = L_seg * t_curr
         
-        # Local Ixx of inclined segment: (t * L^3 * sin^2(theta)) / 12
-        # sin(theta) = dz / L
+        # Local Ixx of inclined segment
         I_local = (t_curr * (L_seg**3) * ((dz/L_seg)**2)) / 12.0
         
         # Parallel Axis Theorem
@@ -165,9 +184,13 @@ def calculate_Ixx(y, design_params):
         Ixx_total += I_local + (area * dist_sq)
 
     # 4. Calculate Ixx - Stringers
+    # --- UPDATE: Explicitly calculating local Ixx for stringers ---
+    I_str_local = calculate_stringer_Ixx_local(w_str, t_str)
+    
     for _, sz in str_coords:
         dist_sq = (sz - Cy)**2
-        Ixx_total += A_str * dist_sq
+        # Sum of Local Inertia + Steiner Term (Ad^2)
+        Ixx_total += I_str_local + (A_str * dist_sq)
         
     return Ixx_total
 
@@ -197,7 +220,7 @@ def compressive_strength_only(y_locations, moment_function, design_params):
         
         # --- STRESS CALCULATION ---
         # Find max distance from neutral axis (Cy) to the Top Skin (Compression side)
-        # Top corners are indices 2 and 3 in the provided list
+        # Top corners are indices 2 and 3
         z_top_rear = corners[2][1]
         z_top_front = corners[3][1]
         
