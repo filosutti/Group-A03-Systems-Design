@@ -13,8 +13,8 @@ n_ribs = int(input("Enter the number of ribs: "))
 
 t_front = 0.00603  # front spar thickness [m]
 t_rear = 0.00603   # rear spar thickness [m]
-spar_height_fraction_front = 1.5e-3
-spar_height_fraction_rear = 1.5e-3
+spar_height_fraction_front = 0.0015
+spar_height_fraction_rear = 0.0015
 
 # Normalized spar corner coordinates
 c_1 = [0.25, 0.10399434]

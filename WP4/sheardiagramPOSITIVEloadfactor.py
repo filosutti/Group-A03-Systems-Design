@@ -82,4 +82,3 @@ plt.legend()
 plt.grid()
 plt.show()
 
-print(Shear(5))
