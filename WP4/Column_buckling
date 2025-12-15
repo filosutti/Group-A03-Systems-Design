@@ -211,7 +211,7 @@ def rib_positions_from_length(initial_spacing, total_length, number_of_ribs):
     return positions, spacings
 
 
- positionsstuff, spacingstuff = rib_positions_from_length(0.4, b/2, 10)
+positionsstuff, spacingstuff = rib_positions_from_length(0.4, b/2, 10)
 
 #def spacing(initial_spacing, number_of_ribs, position)
     #if position<=initial_spacing:
