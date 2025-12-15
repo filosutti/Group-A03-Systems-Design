@@ -13,8 +13,8 @@ n_ribs = int(input("Enter the number of ribs: "))
 
 t_front = 0.00603  # front spar thickness [m]
 t_rear = 0.00603   # rear spar thickness [m]
-spar_height_fraction_front = 1.5
-spar_height_fraction_rear = 1.5
+spar_height_fraction_front = 1.5e-3
+spar_height_fraction_rear = 1.5e-3
 
 # Normalized spar corner coordinates
 c_1 = [0.25, 0.10399434]
@@ -128,6 +128,8 @@ def compute_spar_buckling(n_ribs):
 
         util_f = tau_cr_f / tau_max_front
         util_r = tau_cr_r / tau_max_rear
+
+        print('Panel:', i+1, 'V_max:', V_max, 'T_max:', T_max, 'b_f:', b_f, 'b_r:', b_r, 'A_min:', A_min)
 
         # store results
         results.append({
