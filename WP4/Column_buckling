@@ -35,7 +35,7 @@ box_width_frac = loc_rear - loc_front
 
 # Designs WP4
 designs = {
-    "Design 1": {'n_str': 12, 'w_str': 0.015, 't_str': 0.001, 't_skin': 0.0015, 't_spar': 0.0015, 'h_max': 0.0820},
+    "Design 1": {'n_str': 12, 'w_str': 0.015, 't_str': 0.008, 't_skin': 0.012, 't_spar': 0.012, 'h_max': 0.0820},
     "Design 2": {'n_str': 6,  'w_str': 0.020, 't_str': 0.002, 't_skin': 0.0015, 't_spar': 0.0015, 'h_max': 0.0794},
     "Design 3": {'n_str': 6,  'w_str': 0.015, 't_str': 0.001, 't_skin': 0.0030, 't_spar': 0.0030, 'h_max': 0.0807}
 }
@@ -85,7 +85,7 @@ def calculate_Ixx_str(y, design_params):
     return I_strcrosssection, A_str, y_max
 
 def sigma_crit(y, n):
-    L= spacing_at_position(0.5, half_span, n, y)
+    L= spacing_at_position(1.2, half_span, n, y)
     I, A, y_max = calculate_Ixx_str(y, designs["Design 1"])
     sigma_crit = math.pi**2*E*I/((L)**2*A)
     return sigma_crit
@@ -108,7 +108,7 @@ stresses=[]
 margins_of_error=[]
 
 while position <=half_span:
-    stresscr=sigma_crit(position, 10)
+    stresscr=sigma_crit(position, 12)
     stress =sigma_distribution(position)
     margin_of_error=stresscr/stress
     positions.append(position)
@@ -141,6 +141,3 @@ plt.legend()
 
 plt.show()
 
-L= spacing_at_position(0.5, half_span, 10, 0.2)
-
-print(L)
