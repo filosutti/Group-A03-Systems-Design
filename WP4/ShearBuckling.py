@@ -15,6 +15,7 @@ taper = 0.316
 c_t = c_r * taper
 
 n_ribs = int(input("Enter the number of ribs: "))
+initial_spacing = float(input("Enter the initial rib spacing at the root [m]: "))
 
 # -------------------------------------------------
 # Spar geometry
@@ -35,7 +36,7 @@ corners_norm = np.array([c_1, c_3, c_4, c_2])
 # -------------------------------------------------
 # Material properties
 # -------------------------------------------------
-E = 70e9
+E = 72.4e9
 nu = 0.33
 
 # -------------------------------------------------
@@ -92,20 +93,16 @@ def tau_critical(k_s, E, nu, t, b):
 # -------------------------------------------------
 # MAIN BUCKLING ANALYSIS
 # -------------------------------------------------
-def compute_spar_buckling(n_ribs):
+def compute_spar_buckling(n_ribs, initial_spacing):
 
-    # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-    # LINEAR RIB SPACING (YOUR FUNCTION USED HERE)
-    # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-    initial_spacing = 0.25  # [m] – user-defined
     rib_positions, spacings = rib_places(
         initial_spacing,
         half_wing_span,
         n_ribs
     )
+
     panel_edges = rib_positions
     n_panels = n_ribs - 1
-    # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
     results = []
     y_plot = []
@@ -158,6 +155,9 @@ def compute_spar_buckling(n_ribs):
         results.append({
             "panel": i + 1,
             "bc": bc,
+            "y_start": y0,
+            "y_end": y1,
+            "panel_length": a,
             "tau_max_front": tau_max_front,
             "tau_max_rear": tau_max_rear,
             "tau_cr_front": tau_cr_f,
@@ -192,12 +192,15 @@ def compute_spar_buckling(n_ribs):
 # RUN
 # -------------------------------------------------
 if __name__ == "__main__":
-    R = compute_spar_buckling(n_ribs)
+    R = compute_spar_buckling(n_ribs, initial_spacing)
 
     for r in R:
         print(f"\nPanel {r['panel']} ({r['bc']})")
+        print(f" Span range = {r['y_start']:.3f} → {r['y_end']:.3f} m")
+        print(f" Rib spacing (panel length) = {r['panel_length']:.3f} m")
         print(f" tau_max_front = {r['tau_max_front']:.1f} Pa")
         print(f" tau_max_rear = {r['tau_max_rear']:.1f} Pa")
         print(f" tau_cr_front = {r['tau_cr_front']:.1f}, util_front = {r['util_front']:.3f}")
         print(f" tau_cr_rear = {r['tau_cr_rear']:.1f}, util_rear = {r['util_rear']:.3f}")
         print(" Status:", "FAIL" if r["fails"] else "OK")
+
