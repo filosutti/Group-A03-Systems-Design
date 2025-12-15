@@ -162,13 +162,16 @@ position=0
 positions=[]
 critical_stresses=[]
 stresses=[]
+margins_of_error=[]
 
 while position <=half_span:
-    stresscr=sigma_crit(position, 15)
+    stresscr=sigma_crit(position, 10)
     stress =sigma_distribution(position)
+    margin_of_error=stresscr/stress
     positions.append(position)
     critical_stresses.append(stresscr)
     stresses.append(stress)
+    margins_of_error.append(margin_of_error)
     position = position + 0.01
 
 plt.figure(figsize=(10,6))              # nice large figure
@@ -183,5 +186,37 @@ plt.legend()
 
 plt.show()
 
+plt.figure(figsize=(10,6))              # nice large figure
+plt.plot(positions, margins_of_error, label="Margin of Safety Column Buckling")
+
+plt.xlabel("Position along span [m]")
+plt.ylabel("Margin of Safety [-]")
+plt.title("Margin of Safety vs. Position")
+plt.ylim(0, 5)  
+plt.grid(True)
+plt.legend()
+
+plt.show()
+
+def rib_positions_from_length(initial_spacing, total_length, number_of_ribs):
+    n = number_of_ribs - 1                   # number of spacings
+    
+    delta = 2 * (total_length - n * initial_spacing) / (n * (n - 1))
+    
+    spacings = initial_spacing + delta * np.arange(n)
+    
+    positions = np.zeros(number_of_ribs)
+    positions[1:] = np.cumsum(spacings)
+    
+    return positions, spacings
+
+
+ positionsstuff, spacingstuff = rib_positions_from_length(0.4, b/2, 10)
+
+#def spacing(initial_spacing, number_of_ribs, position)
+    #if position<=initial_spacing:
+        #spacing=initial_spacing
+    #elif initial_spacing<position<=initial_spacing:
+        #spacing=
     
 
