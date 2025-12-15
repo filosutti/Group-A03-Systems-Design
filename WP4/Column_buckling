@@ -144,9 +144,31 @@ def inertia_calculation(z, design_params):
         Ixytot += A_str * d_x2 * d_y2
     return Ixxtot, Iyytot, Ixytot, J
 
+def rib_positions_from_length(initial_spacing, total_length, number_of_ribs):
+    n = number_of_ribs - 1                   # number of spacings
+    
+    delta = 2 * (total_length - n * initial_spacing) / (n * (n - 1))
+    
+    spacings = initial_spacing + delta * np.arange(n)
+    
+    positions = np.zeros(number_of_ribs)
+    positions[1:] = np.cumsum(spacings)
+    
+    return positions, spacings
+
+
+def spacing_at_position(initial_spacing, total_length, number_of_ribs, position):
+    positions, spacings = rib_positions_from_length(initial_spacing, total_length, number_of_ribs)
+    for i in range(len(spacings)):
+        if positions[i] <= position < positions[i + 1]:
+            return spacings[i]
+    # If position is exactly at the tip
+    return spacings[-1]
+
 def sigma_crit(y, n):
+    L= spacing_at_position(0.5, half_span, n, y)
     I, A, y_max = calculate_Ixx(y, designs["Design 3"])
-    sigma_crit = math.pi**2*E*I/((half_span/(n+1))**2*A)
+    sigma_crit = math.pi**2*E*I/((L)**2*A)
     return sigma_crit
 
 def sigma_distribution(y):
@@ -156,6 +178,8 @@ def sigma_distribution(y):
 
     sigma_comp = abs(Mx*y_max/Ixx)
     return sigma_comp
+
+
 
 
 position=0
@@ -198,25 +222,6 @@ plt.legend()
 
 plt.show()
 
-def rib_positions_from_length(initial_spacing, total_length, number_of_ribs):
-    n = number_of_ribs - 1                   # number of spacings
-    
-    delta = 2 * (total_length - n * initial_spacing) / (n * (n - 1))
-    
-    spacings = initial_spacing + delta * np.arange(n)
-    
-    positions = np.zeros(number_of_ribs)
-    positions[1:] = np.cumsum(spacings)
-    
-    return positions, spacings
+L= spacing_at_position(0.5, half_span, 10, 0.2)
 
-
-positionsstuff, spacingstuff = rib_positions_from_length(0.4, b/2, 10)
-
-#def spacing(initial_spacing, number_of_ribs, position)
-    #if position<=initial_spacing:
-        #spacing=initial_spacing
-    #elif initial_spacing<position<=initial_spacing:
-        #spacing=
-    
-
+print(L)
