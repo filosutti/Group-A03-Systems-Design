@@ -88,13 +88,13 @@ def calculate_Ixx_str(y, design_params):
 
 def sigma_crit(y, n):
     L= spacing_at_position(1, half_span, n, y)
-    I, A, y_max = calculate_Ixx_str(y, designs["Design 2"])
+    I, A, y_max = calculate_Ixx_str(y, designs["Design 3"])
     sigma_crit = math.pi**2*E*I/((L)**2*A)
     return sigma_crit
 
 def sigma_distribution(y):
-    Ixx = calculate_Ixx(y, designs["Design 2"])
-    I, A, y_max = calculate_Ixx_str(y, designs["Design 2"])
+    Ixx = calculate_Ixx(y, designs["Design 3"])
+    I, A, y_max = calculate_Ixx_str(y, designs["Design 3"])
     Mx = M_pos_load(y)
 
     sigma_comp = abs(Mx*y_max/Ixx)
