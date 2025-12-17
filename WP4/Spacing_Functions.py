@@ -1,7 +1,6 @@
 import numpy as np
 
 
-
 #include root and tip as ribs
 def rib_places(initial_spacing, total_length, number_of_ribs):
     n = number_of_ribs - 1                   # number of spacings
