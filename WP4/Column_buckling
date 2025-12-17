@@ -66,14 +66,14 @@ designs = {
         'w_str': 0.015,     # 15 mm * c(y)
         't_str': 0.004,     # 4 mm (constant)
         't_skin': 0.006,    # 6 mm (constant)
-        't_spar': 0.006,    # assume same as skin
+        't_spar': 0.009,    # assume same as skin #changed from 0.006
         'h_max': 0.0820,
         'scaling_mode': 'width_only'
     },
 
     "Image Design 2": {
         'n_str': 6,
-        'w_str': 0.020,     # 20 mm * c(y)
+        'w_str': 0.020,     # 20 mm * c(y) 
         't_str': 0.008,     # 8 mm
         't_skin': 0.006,    # 6 mm
         't_spar': 0.006,
@@ -86,7 +86,7 @@ designs = {
         'w_str': 0.015,     # 15 mm * c(y)
         't_str': 0.004,     # 4 mm
         't_skin': 0.012,    # 12 mm
-        't_spar': 0.012,
+        't_spar': 0.012, #kept constant
         'h_max': 0.0807,
         'scaling_mode': 'width_only'
     }
@@ -136,8 +136,8 @@ def calculate_Ixx_str(y, design_params):
     
     return I_strcrosssection, A_str, y_max
 
-def sigma_crit(y, n):
-    L= spacing_at_position(1.6, half_span, n, y)
+def sigma_crit(y, n, inital_spacing):
+    L= spacing_at_position(inital_spacing, half_span, n, y)
     I, A, y_max = calculate_Ixx_str(y, designs["Image Design 3"])
     sigma_crit = math.pi**2*E*I/((L)**2*A)
     return sigma_crit
@@ -152,15 +152,16 @@ def sigma_distribution(y):
 
 
 
-
+number_of_ribs=12
+initial_spacing1=1.3
 position=0
 positions=[]
 critical_stresses=[]
 stresses=[]
 margins_of_error=[]
-
+i=0
 while position <=half_span:
-    stresscr=sigma_crit(position, 9)
+    stresscr=sigma_crit(position, number_of_ribs, initial_spacing1)
     stress =sigma_distribution(position)
     margin_of_error=stresscr/stress
     positions.append(position)
@@ -169,31 +170,80 @@ while position <=half_span:
     margins_of_error.append(margin_of_error)
     position = position + 0.01
 
-plt.figure(figsize=(10,6))              # nice large figure
-plt.plot(positions, stresses, label="Stress distribution")
-plt.plot(positions, critical_stresses, label="Critical stress", linestyle="--")
+rib_positions, rib_spacings = rib_places(initial_spacing1, half_span, number_of_ribs)
 
-plt.xlabel("Position along span [m]")
-plt.ylabel("Stress [Pa]")
-plt.title("Stress vs. Position")
-plt.grid(True)
-plt.legend()
+print(rib_positions, rib_spacings)
+#max actually means min
+max_mos_per_bay = []
+bay_centers = []
 
-plt.show()
+for i in range(len(rib_positions) - 1):
+    y_start = rib_positions[i]
+    y_end = rib_positions[i + 1]
 
-plt.figure(figsize=(10,6))              # nice large figure
-plt.plot(positions, margins_of_error, label="Margin of Safety Column Buckling")
+    # indices of points inside this rib bay
+    indices_in_bay = [
+        k for k, y in enumerate(positions)
+        if y_start <= y < y_end
+    ]
 
-plt.xlabel("Position along span [m]")
+    if indices_in_bay:
+        mos_values = [margins_of_error[k] for k in indices_in_bay]
+        max_mos = min(mos_values)
+
+        max_mos_per_bay.append(max_mos)
+        bay_centers.append(0.5 * (y_start + y_end))
+
+
+
+
+
+#plt.figure(figsize=(10,6))              # nice large figure
+#plt.plot(positions, stresses, label="Stress distribution")
+#plt.plot(positions, critical_stresses, label="Critical stress", linestyle="--")
+
+#plt.xlabel("Position along span [m]")
+#plt.ylabel("Stress [Pa]")
+#plt.title("Stress vs. Position")
+#plt.grid(True)
+#plt.legend()
+
+#plt.show()
+
+#plt.figure(figsize=(10,6))              # nice large figure
+#plt.plot(positions, margins_of_error, label="Margin of Safety Column Buckling")
+
+#plt.xlabel("Position along span [m]")
+#plt.ylabel("Margin of Safety [-]")
+#plt.title("Margin of Safety vs. Position")
+#plt.ylim(0, 5)  
+#plt.grid(True)
+#plt.legend()
+
+#plt.show()
+
+plt.figure(figsize=(10,6))
+plt.step(
+    rib_positions[:-1],
+    max_mos_per_bay,
+    where="post",
+    label="Max MoS per rib bay"
+)
+
+plt.xlabel("Spanwise position [m]")
 plt.ylabel("Margin of Safety [-]")
-plt.title("Margin of Safety vs. Position")
-plt.ylim(0, 5)  
+plt.title("Maximum Margin of Safety per Rib Bay")
+plt.ylim(0, 5) 
 plt.grid(True)
 plt.legend()
-
 plt.show()
 
 #Optimal design results for just column buckling:
 #design 1: 1.35, 11
 #design 2: 1.75, 8
 #design 3: 1.6, 9
+
+#after redesign
+
+#design 1: 1.05, 12
+#design 3: 1.31, 
