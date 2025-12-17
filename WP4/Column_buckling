@@ -33,11 +33,11 @@ loc_front = 0.20
 loc_rear = 0.70
 box_width_frac = loc_rear - loc_front
 
-# Designs WP4
+# Designs WP5 updated
 designs = {
-    "Design 1": {'n_str': 12, 'w_str': 0.015, 't_str': 0.008, 't_skin': 0.012, 't_spar': 0.012, 'h_max': 0.0820},
-    "Design 2": {'n_str': 6,  'w_str': 0.020, 't_str': 0.002, 't_skin': 0.0015, 't_spar': 0.0015, 'h_max': 0.0794},
-    "Design 3": {'n_str': 6,  'w_str': 0.015, 't_str': 0.001, 't_skin': 0.0030, 't_spar': 0.0030, 'h_max': 0.0807}
+    "Design 1": {'n_str': 12, 'w_str': 0.015, 't_str': 0.004, 't_skin': 0.006, 't_spar': 0.006, 'h_max': 0.0820},
+    "Design 2": {'n_str': 6,  'w_str': 0.020, 't_str': 0.008, 't_skin': 0.006, 't_spar': 0.006, 'h_max': 0.0794},
+    "Design 3": {'n_str': 6,  'w_str': 0.015, 't_str': 0.004, 't_skin': 0.012, 't_spar': 0.012, 'h_max': 0.0807}
 }
 
 # Calculate chord length at spanwise location y
