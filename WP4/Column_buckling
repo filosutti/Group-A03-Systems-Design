@@ -160,7 +160,7 @@ stresses=[]
 margins_of_error=[]
 
 while position <=half_span:
-    stresscr=sigma_crit(position, 8)
+    stresscr=sigma_crit(position, 9)
     stress =sigma_distribution(position)
     margin_of_error=stresscr/stress
     positions.append(position)
@@ -193,6 +193,7 @@ plt.legend()
 
 plt.show()
 
+#Optimal design results for just column buckling:
 #design 1: 1.35, 11
 #design 2: 1.75, 8
-#design 3: 1.6, 
+#design 3: 1.6, 9
