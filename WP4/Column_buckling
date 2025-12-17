@@ -34,6 +34,8 @@ loc_rear = 0.70
 box_width_frac = loc_rear - loc_front
 
 # Designs WP5 updated
+
+#w_str, h_max are per unit chord length
 designs = {
     "Design 1": {'n_str': 12, 'w_str': 0.015, 't_str': 0.004, 't_skin': 0.006, 't_spar': 0.006, 'h_max': 0.0820},
     "Design 2": {'n_str': 6,  'w_str': 0.020, 't_str': 0.008, 't_skin': 0.006, 't_spar': 0.006, 'h_max': 0.0794},
@@ -85,14 +87,14 @@ def calculate_Ixx_str(y, design_params):
     return I_strcrosssection, A_str, y_max
 
 def sigma_crit(y, n):
-    L= spacing_at_position(1.2, half_span, n, y)
-    I, A, y_max = calculate_Ixx_str(y, designs["Design 1"])
+    L= spacing_at_position(1, half_span, n, y)
+    I, A, y_max = calculate_Ixx_str(y, designs["Design 2"])
     sigma_crit = math.pi**2*E*I/((L)**2*A)
     return sigma_crit
 
 def sigma_distribution(y):
-    Ixx = calculate_Ixx(y, designs["Design 1"])
-    I, A, y_max = calculate_Ixx_str(y, designs["Design 1"])
+    Ixx = calculate_Ixx(y, designs["Design 2"])
+    I, A, y_max = calculate_Ixx_str(y, designs["Design 2"])
     Mx = M_pos_load(y)
 
     sigma_comp = abs(Mx*y_max/Ixx)
