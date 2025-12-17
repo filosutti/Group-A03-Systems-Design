@@ -20,8 +20,8 @@ initial_spacing = float(input("Enter the initial rib spacing at the root [m]: ")
 # -------------------------------------------------
 # Spar geometry
 # -------------------------------------------------
-t_front = 0.012
-t_rear = 0.012
+t_front = 0.006
+t_rear = 0.006
 
 spar_height_fraction_front = 0.115
 spar_height_fraction_rear = 0.0743
@@ -146,9 +146,9 @@ def compute_spar_buckling(n_ribs, initial_spacing):
         tau_max_rear = abs(1.5 * tau_trans - tau_t_rear)
 
         # Critical stresses
-        tau_cr_f = tau_critical(k_s_f, E, nu, t_front, b_f)
-        tau_cr_r = tau_critical(k_s_r, E, nu, t_rear, b_r)
-
+        tau_cr_f = abs(tau_critical(k_s_f, E, nu, t_front, b_f))
+        tau_cr_r = abs(tau_critical(k_s_r, E, nu, t_rear, b_r))
+        
         util_f = tau_cr_f / tau_max_front
         util_r = tau_cr_r / tau_max_rear
 
