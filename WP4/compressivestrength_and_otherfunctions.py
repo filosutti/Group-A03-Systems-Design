@@ -46,6 +46,32 @@ designs = {
     "Design 4": {
         'n_str': 12, 'w_str': 0.020, 't_str': 0.008, 't_skin': 0.0120, 't_spar': 0.0120, 
         'scaling_mode': 'width_only' # Only width scales, thickness constant
+    },
+    "Image Design 1": {
+        'n_str': 12,
+        'w_str': 0.015,     # 15 mm * c(y)
+        't_str': 0.004,     # 4 mm (constant)
+        't_skin': 0.006,    # 6 mm (constant)
+        't_spar': 0.006,    # assume same as skin
+        'scaling_mode': 'width_only'
+    },
+
+    "Image Design 2": {
+        'n_str': 6,
+        'w_str': 0.020,     # 20 mm * c(y)
+        't_str': 0.008,     # 8 mm
+        't_skin': 0.006,    # 6 mm
+        't_spar': 0.006,
+        'scaling_mode': 'width_only'
+    },
+
+    "Image Design 3": {
+        'n_str': 6,
+        'w_str': 0.015,     # 15 mm * c(y)
+        't_str': 0.004,     # 4 mm
+        't_skin': 0.012,    # 12 mm
+        't_spar': 0.012,
+        'scaling_mode': 'width_only'
     }
 }
 
