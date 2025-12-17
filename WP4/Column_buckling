@@ -136,8 +136,8 @@ def calculate_Ixx_str(y, design_params):
     
     return I_strcrosssection, A_str, y_max
 
-def sigma_crit(y, n, inital_spacing):
-    L= spacing_at_position(inital_spacing, half_span, n, y)
+def sigma_crit(y, n, inital_spacing, free_space):
+    L= spacing_at_position(inital_spacing, half_span, n, y, free_space)
     I, A, y_max = calculate_Ixx_str(y, designs["Image Design 3"])
     sigma_crit = math.pi**2*E*I/((L)**2*A)
     return sigma_crit
@@ -162,7 +162,7 @@ stresses=[]
 margins_of_error=[]
 i=0
 while position <=half_span:
-    stresscr=sigma_crit(position, number_of_ribs, initial_spacing1)
+    stresscr=sigma_crit(position, number_of_ribs, initial_spacing1, free_space_at_tip)
     stress =sigma_distribution(position)
     margin_of_error=stresscr/stress
     positions.append(position)
