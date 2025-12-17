@@ -21,9 +21,6 @@ def rib_places(initial_spacing, total_length, number_of_ribs, space_free_at_end)
     spacings = np.append(spacings, space_free_at_end)
 
     return positions, spacings
-
-print(positions, spacings)
-
 #include root and tip as ribs
 def spacing_at_position(initial_spacing, total_length, number_of_ribs, position, space_free_at_end):
     positions, spacings = rib_places(initial_spacing, total_length, number_of_ribs, space_free_at_end)
