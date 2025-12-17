@@ -35,11 +35,61 @@ box_width_frac = loc_rear - loc_front
 
 # Designs WP5 updated
 
-#w_str, h_max are per unit chord length
+# Normalized Coordinates (Unit Chord c=1)
+UNIT_CORNERS = [
+    (0.2, -0.02723), (0.7, -0.0066),   
+    (0.7, 0.0666),   (0.2, 0.08737)
+]
+
+# --- DESIGNS DICTIONARY ---
+# scaling_mode = 'full': Scale w_str, t_str, t_skin, t_spar with chord c(y)
+# scaling_mode = 'width_only': Scale w_str with c(y), keep t_str, t_skin, t_spar constant
 designs = {
-    "Design 1": {'n_str': 12, 'w_str': 0.015, 't_str': 0.004, 't_skin': 0.006, 't_spar': 0.006, 'h_max': 0.0820},
-    "Design 2": {'n_str': 6,  'w_str': 0.020, 't_str': 0.008, 't_skin': 0.006, 't_spar': 0.006, 'h_max': 0.0794},
-    "Design 3": {'n_str': 6,  'w_str': 0.015, 't_str': 0.004, 't_skin': 0.012, 't_spar': 0.012, 'h_max': 0.0807}
+    "Design 1": {
+        'n_str': 12, 'w_str': 0.015, 't_str': 0.001, 't_skin': 0.0015, 't_spar': 0.0015, 
+        'scaling_mode': 'full' 
+    },
+    "Design 2": {
+        'n_str': 6,  'w_str': 0.020, 't_str': 0.002, 't_skin': 0.0015, 't_spar': 0.0015, 
+        'scaling_mode': 'full'
+    },
+    "Design 3": {
+        'n_str': 6,  'w_str': 0.015, 't_str': 0.001, 't_skin': 0.0030, 't_spar': 0.0030, 
+        'scaling_mode': 'full'
+    },
+    "Design 4": {
+        'n_str': 12, 'w_str': 0.020, 't_str': 0.008, 't_skin': 0.0120, 't_spar': 0.0120, 
+        'scaling_mode': 'width_only' # Only width scales, thickness constant
+    },
+    "Image Design 1": {
+        'n_str': 12,
+        'w_str': 0.015,     # 15 mm * c(y)
+        't_str': 0.004,     # 4 mm (constant)
+        't_skin': 0.006,    # 6 mm (constant)
+        't_spar': 0.006,    # assume same as skin
+        'h_max': 0.0820,
+        'scaling_mode': 'width_only'
+    },
+
+    "Image Design 2": {
+        'n_str': 6,
+        'w_str': 0.020,     # 20 mm * c(y)
+        't_str': 0.008,     # 8 mm
+        't_skin': 0.006,    # 6 mm
+        't_spar': 0.006,
+        'h_max': 0.0794,
+        'scaling_mode': 'width_only'
+    },
+
+    "Image Design 3": {
+        'n_str': 6,
+        'w_str': 0.015,     # 15 mm * c(y)
+        't_str': 0.004,     # 4 mm
+        't_skin': 0.012,    # 12 mm
+        't_spar': 0.012,
+        'h_max': 0.0807,
+        'scaling_mode': 'width_only'
+    }
 }
 
 # Calculate chord length at spanwise location y
@@ -87,14 +137,14 @@ def calculate_Ixx_str(y, design_params):
     return I_strcrosssection, A_str, y_max
 
 def sigma_crit(y, n):
-    L= spacing_at_position(1, half_span, n, y)
-    I, A, y_max = calculate_Ixx_str(y, designs["Design 2"])
+    L= spacing_at_position(1.6, half_span, n, y)
+    I, A, y_max = calculate_Ixx_str(y, designs["Image Design 3"])
     sigma_crit = math.pi**2*E*I/((L)**2*A)
     return sigma_crit
 
 def sigma_distribution(y):
-    Ixx = calculate_Ixx(y, designs["Design 2"])
-    I, A, y_max = calculate_Ixx_str(y, designs["Design 2"])
+    Ixx = calculate_Ixx(y, designs["Image Design 3"])
+    I, A, y_max = calculate_Ixx_str(y, designs["Image Design 3"])
     Mx = M_pos_load(y)
 
     sigma_comp = abs(Mx*y_max/Ixx)
@@ -110,7 +160,7 @@ stresses=[]
 margins_of_error=[]
 
 while position <=half_span:
-    stresscr=sigma_crit(position, 12)
+    stresscr=sigma_crit(position, 9)
     stress =sigma_distribution(position)
     margin_of_error=stresscr/stress
     positions.append(position)
@@ -143,3 +193,7 @@ plt.legend()
 
 plt.show()
 
+#Optimal design results for just column buckling:
+#design 1: 1.35, 11
+#design 2: 1.75, 8
+#design 3: 1.6, 9

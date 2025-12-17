@@ -10,3 +10,4 @@ def k_c_value(a_b_value):
 
     f = sp.interpolate.interp1d(a_b, k_c, kind = "cubic", fill_value = "extrapolate")
     return f(a_b_value)
+

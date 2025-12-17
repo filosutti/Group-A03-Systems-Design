@@ -1,7 +1,6 @@
 import numpy as np
 
 
-
 #include root and tip as ribs
 def rib_places(initial_spacing, total_length, number_of_ribs):
     n = number_of_ribs - 1                   # number of spacings
@@ -15,6 +14,9 @@ def rib_places(initial_spacing, total_length, number_of_ribs):
     
     return positions, spacings
 
+positions, spacings = rib_places(1.189, 11.89, 11)
+print(positions, spacings)
+
 #include root and tip as ribs
 def spacing_at_position(initial_spacing, total_length, number_of_ribs, position):
     positions, spacings = rib_places(initial_spacing, total_length, number_of_ribs)
@@ -23,3 +25,4 @@ def spacing_at_position(initial_spacing, total_length, number_of_ribs, position)
             return spacings[i]
     # If position is exactly at the tip
     return spacings[-1]
+

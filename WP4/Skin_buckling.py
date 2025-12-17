@@ -18,8 +18,8 @@ poratio = 0.33
 #Run designs here by changing the 3 params below:
 #------------------------------------------------
 
-nr_ribs = 5
-case = 1
+nr_ribs = 10
+case = 3
 initial_spacing = 1
 
 #------------------------------------------------
@@ -63,15 +63,15 @@ def crit_buckling_stress1(nr_ribs, case):
     margin_of_safety1 = []
     if(case == 1):
         #Wing box design 1 geometry below
-        t_skin = 8/1000      #[m]
-        n_stringers = 8
-    elif(case == 2):  #THIS IS TBD DO NOT USE
+        t_skin = 6/1000      #[m]
+        n_stringers = 12
+    elif(case == 2):
         #Wing box design 2 geometry below
-        t_skin = 1.5/1000      #[m]
+        t_skin = 6/1000      #[m]
         n_stringers = 6
-    elif(case == 3):  #THIS IS TBD DO NOT USE
+    elif(case == 3):
         #Wing box design 3 geometry below
-        t_skin = 3/1000        #[m]
+        t_skin = 12/1000        #[m]
         n_stringers = 6
     else:
         print("The code works :)") 
@@ -83,7 +83,7 @@ def crit_buckling_stress1(nr_ribs, case):
         I_xx, _, _, J = inertia_calculation(y)
         b = (c(y)*0.5 + c(y + a)*0.5)/(n_stringers + 1)/2
         t = t_skin
-        crit_stres = (np.pi*np.pi*k_c_value(a/b)*E/(12*(1-poratio*poratio))*(t/b)*(t/b))
+        crit_stres = np.pi*np.pi*k_c_value(a/b)*E/(12*(1-poratio*poratio))*(t/b)*(t/b)
         z = - 0.0573 * c(y)
         our_sigma = Mx * z / I_xx
         margin_of_safety1.append(crit_stres/our_sigma)
@@ -94,18 +94,19 @@ def crit_buckling_stress1(nr_ribs, case):
 
 def crit_buckling_stress2(nr_ribs, case, initial_spacing):
     ylst2, spacings = rib_places(initial_spacing, 11.89, nr_ribs)
+    print(ylst2)
     margin_of_safety2 = []
     if(case == 1):
         #Wing box design 1 geometry below
-        t_skin = 8/1000      #[m]
-        n_stringers = 8
-    elif(case == 2):  #THIS IS TBD DO NOT USE
+        t_skin = 6/1000      #[m]
+        n_stringers = 12
+    elif(case == 2):
         #Wing box design 2 geometry below
-        t_skin = 1.5/1000      #[m]
+        t_skin = 6/1000      #[m]
         n_stringers = 6
-    elif(case == 3):  #THIS IS TBD DO NOT USE
+    elif(case == 3):
         #Wing box design 3 geometry below
-        t_skin = 3/1000        #[m]
+        t_skin = 12/1000        #[m]
         n_stringers = 6
     else:
         print("The code works :)") 
@@ -128,10 +129,11 @@ a_eq = wingspan / (2 * (nr_ribs - 1))
 ylst1 = np.array([a_eq * i for i in range(nr_ribs - 1)])
 mos1 = crit_buckling_stress1(nr_ribs, case)
 
-ylst2, _ = rib_places(initial_spacing, wingspan, nr_ribs)
+ylst2, _ = rib_places(initial_spacing, wingspan/2, nr_ribs)
 ylst2 = ylst2[:-1]   # last rib has no following spacing
 mos2 = crit_buckling_stress2(nr_ribs, case, initial_spacing)
 
+print(ylst2)
 plt.figure()
 plt.plot(ylst1, mos1, marker='o', label='Equal spacing')
 plt.plot(ylst2, mos2, marker='s', label='Linear spacing')
