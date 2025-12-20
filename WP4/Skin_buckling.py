@@ -131,7 +131,7 @@ ylst1 = np.array([a_eq * i for i in range(nr_ribs - 1)])
 mos1 = crit_buckling_stress1(nr_ribs, case)
 
 ylst2_ribs, _ = rib_places(initial_spacing, wingspan/2, nr_ribs, 0)
-ylst2_bays = ylst2_ribs[:-1]   # one per bay
+ylst2_bays = ylst2_ribs[:-2]   # one per bay
 mos2 = crit_buckling_stress2(nr_ribs, case, initial_spacing)
 
 plt.figure()
