@@ -93,7 +93,7 @@ def crit_buckling_stress1(nr_ribs, case):
 #function for linear spacing diff below:
 
 def crit_buckling_stress2(nr_ribs, case, initial_spacing):
-    ylst2, spacings = rib_places(initial_spacing, 11.89, nr_ribs)
+    ylst2, spacings = rib_places(initial_spacing, 11.89, nr_ribs, 0)
     print(ylst2)
     margin_of_safety2 = []
     if(case == 1):
@@ -111,7 +111,8 @@ def crit_buckling_stress2(nr_ribs, case, initial_spacing):
     else:
         print("The code works :)") 
     i = 0
-    while (i+1<nr_ribs):
+    n_bays = len(spacings) - 1
+    while i < n_bays:
         y = ylst2[i]
         a = spacings[i]
         Mx = M_pos_load(y)
@@ -129,14 +130,14 @@ a_eq = wingspan / (2 * (nr_ribs - 1))
 ylst1 = np.array([a_eq * i for i in range(nr_ribs - 1)])
 mos1 = crit_buckling_stress1(nr_ribs, case)
 
-ylst2, _ = rib_places(initial_spacing, wingspan/2, nr_ribs)
-ylst2 = ylst2[:-1]   # last rib has no following spacing
+ylst2_ribs, _ = rib_places(initial_spacing, wingspan/2, nr_ribs, 0)
+ylst2_bays = ylst2_ribs[:-1]   # one per bay
 mos2 = crit_buckling_stress2(nr_ribs, case, initial_spacing)
 
-print(ylst2)
 plt.figure()
-plt.plot(ylst1, mos1, marker='o', label='Equal spacing')
-plt.plot(ylst2, mos2, marker='s', label='Linear spacing')
+
+plt.step(ylst1, mos1, where='post', label='Equal spacing')
+plt.step(ylst2_bays, mos2, where='post', label='Linear spacing')
 
 plt.xlabel('Spanwise location y [m]')
 plt.ylabel('Margin of Safety')
