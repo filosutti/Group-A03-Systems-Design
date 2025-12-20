@@ -18,9 +18,9 @@ poratio = 0.33
 #Run designs here by changing the 3 params below:
 #------------------------------------------------
 
-nr_ribs = 10
+nr_ribs = 12
 case = 3
-initial_spacing = 1
+initial_spacing = 1.3
 
 #------------------------------------------------
 
