@@ -16,6 +16,7 @@ c_t = c_r * taper
 
 n_ribs = int(input("Enter the number of ribs: "))
 initial_spacing = float(input("Enter the initial rib spacing at the root [m]: "))
+end_space= float(input("Enter the free space at the wingtip [m]: "))
 
 # -------------------------------------------------
 # Spar geometry
@@ -142,7 +143,7 @@ def compute_spar_buckling_from_ribs(rib_positions):
 if __name__ == "__main__":
 
     # -------- Variable spacing
-    ribs_var, _ = rib_places(initial_spacing, half_wing_span, n_ribs)
+    ribs_var, _ = rib_places(initial_spacing, half_wing_span, n_ribs, end_space)
     res_var, y_v, MoS_f_v, MoS_r_v = compute_spar_buckling_from_ribs(ribs_var)
 
     # -------- Equal spacing

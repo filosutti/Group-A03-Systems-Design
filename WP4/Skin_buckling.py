@@ -21,6 +21,7 @@ poratio = 0.33
 nr_ribs = 10
 case = 3
 initial_spacing = 1.3
+end_spacing=2.5
 
 #------------------------------------------------
 
@@ -92,8 +93,8 @@ def crit_buckling_stress1(nr_ribs, case):
 
 #function for linear spacing diff below:
 
-def crit_buckling_stress2(nr_ribs, case, initial_spacing):
-    ylst2, spacings = rib_places(initial_spacing, 11.89, nr_ribs, 2.5)
+def crit_buckling_stress2(nr_ribs, case, initial_spacing, end_spacing):
+    ylst2, spacings = rib_places(initial_spacing, 11.89, nr_ribs, end_spacing)
     print(ylst2)
     margin_of_safety2 = []
     if(case == 1):
@@ -130,7 +131,7 @@ a_eq = wingspan / (2 * (nr_ribs - 1))
 ylst1 = np.array([a_eq * i for i in range(nr_ribs - 1)])
 mos1 = crit_buckling_stress1(nr_ribs, case)
 
-ylst2_ribs, _ = rib_places(initial_spacing, wingspan/2, nr_ribs, 2.5)
+ylst2_ribs, _ = rib_places(initial_spacing, wingspan/2, nr_ribs, end_spacing)
 ylst2_bays = ylst2_ribs[:-2]   # one per bay
 mos2 = crit_buckling_stress2(nr_ribs, case, initial_spacing)
 
