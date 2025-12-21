@@ -112,7 +112,7 @@ def crit_buckling_stress2(nr_ribs, case, initial_spacing, end_spacing):
     else:
         print("The code works :)") 
     i = 0
-    n_bays = len(spacings) - 1
+    n_bays = len(spacings)
     while i < n_bays:
         y = ylst2[i]
         a = spacings[i]
@@ -132,13 +132,20 @@ ylst1 = np.array([a_eq * i for i in range(nr_ribs - 1)])
 mos1 = crit_buckling_stress1(nr_ribs, case)
 
 ylst2_ribs, _ = rib_places(initial_spacing, wingspan/2, nr_ribs, end_spacing)
-ylst2_bays = ylst2_ribs[:-2]   # one per bay
-mos2 = crit_buckling_stress2(nr_ribs, case, initial_spacing)
+ylst2_bays = ylst2_ribs[:-1]   # one per bay
+mos2 = crit_buckling_stress2(nr_ribs, case, initial_spacing, end_spacing)
+
+ylst1_ext = np.append(ylst1, wingspan / 2)
+mos1_ext  = np.append(mos1, mos1[-1])
+
+ylst2_ext = np.append(ylst2_bays, wingspan / 2)
+mos2_ext  = np.append(mos2, mos2[-1])
 
 plt.figure()
 
-plt.step(ylst1, mos1, where='post', label='Equal spacing')
-plt.step(ylst2_bays, mos2, where='post', label='Linear spacing')
+plt.step(ylst1_ext, mos1_ext, where='post', label='Equal spacing')
+plt.step(ylst2_ext, mos2_ext, where='post', label='Linear spacing')
+
 
 plt.xlabel('Spanwise location y [m]')
 plt.ylabel('Margin of Safety')

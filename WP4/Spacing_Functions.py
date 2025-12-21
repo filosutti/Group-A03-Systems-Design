@@ -30,3 +30,4 @@ def spacing_at_position(initial_spacing, total_length, number_of_ribs, position,
     # If position is exactly at the tip
     return spacings[-1]
 
+print(rib_places(1.3, 11.89, 9, 2.15))
