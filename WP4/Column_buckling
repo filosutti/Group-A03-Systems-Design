@@ -154,7 +154,7 @@ def sigma_distribution(y):
 
 number_of_ribs=9
 initial_spacing1=1.3
-free_space_at_tip=2.15
+free_space_at_tip=2.25
 position=0
 positions=[]
 critical_stresses=[]
@@ -252,5 +252,5 @@ plt.show()
 
 #after redesign
 
-#design 1: 1.05, 12
-#design 3: 1.31, 9
+#design 1: 1.05, 11, 1.9
+#design 3: 1.3, 9, 2.25
