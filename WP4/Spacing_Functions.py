@@ -6,22 +6,21 @@ import numpy as np
 def rib_places(initial_spacing, total_length, number_of_ribs, space_free_at_end):
     # number of spacings between ribs
     n = number_of_ribs - 1 if space_free_at_end == 0 else number_of_ribs - 2
-
     delta = 2 * (total_length - space_free_at_end - n * initial_spacing) / (n * (n - 1))
-
     spacings = initial_spacing + delta * np.arange(n)
-
     # rib positions (excluding final free end)
     positions = np.zeros(n + 1)
     positions[1:] = np.cumsum(spacings)
-
     # add final point at total_length
     positions = np.append(positions, total_length)
-
     spacings = np.append(spacings, space_free_at_end)
-
     return positions, spacings
+
+
+places=rib_places(1.3,11.89,9,2.25)
+print(places)
 #include root and tip as ribs
+
 def spacing_at_position(initial_spacing, total_length, number_of_ribs, position, space_free_at_end):
     positions, spacings = rib_places(initial_spacing, total_length, number_of_ribs, space_free_at_end)
     for i in range(len(spacings)):
@@ -30,4 +29,3 @@ def spacing_at_position(initial_spacing, total_length, number_of_ribs, position,
     # If position is exactly at the tip
     return spacings[-1]
 
-print(rib_places(1.3, 11.89, 9, 2.15))
