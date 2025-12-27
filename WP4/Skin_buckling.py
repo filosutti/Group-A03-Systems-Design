@@ -18,10 +18,10 @@ poratio = 0.33
 #Run designs here by changing the 3 params below:
 #------------------------------------------------
 
-nr_ribs = 9
-case = 3
-initial_spacing = 1.3
-end_spacing=2.25
+nr_ribs = 11
+case = 1
+initial_spacing = 1.05
+end_spacing=1.9
 
 #------------------------------------------------
 
@@ -150,7 +150,7 @@ plt.step(ylst2_ext, mos2_ext, where='post', label='Linear spacing')
 plt.xlabel('Spanwise location y [m]')
 plt.ylabel('Margin of Safety')
 plt.title('Buckling Margin of Safety Along the Span')
-plt.ylim(0, 5) 
+plt.ylim(0, 30) 
 plt.grid(True)
 plt.legend()
 plt.show()
