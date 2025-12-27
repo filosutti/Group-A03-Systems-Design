@@ -143,8 +143,8 @@ mos2_ext  = np.append(mos2, mos2[-1])
 
 plt.figure()
 
-plt.step(ylst1_ext, mos1_ext, where='post', label='Equal spacing')
-plt.step(ylst2_ext, mos2_ext, where='post', label='Linear spacing')
+plt.step(ylst1_ext, mos1_ext, where='post', color = 'coral', label='Equal spacing')
+plt.step(ylst2_ext, mos2_ext, where='post', color = 'lightseagreen', label='Linear spacing')
 
 
 plt.xlabel('Spanwise location y [m]')
