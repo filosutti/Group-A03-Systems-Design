@@ -7,6 +7,7 @@ from bendingdiagrampositiveload import M_pos_load
 from Supremely_Ultimate_Julian_code_4 import inertia_calculation
 from Spacing_Functions import rib_places
 import matplotlib.pyplot as plt
+from bendingdiagramnegativeload import M_neg_load
 
 #general geometry and constant parameters
 wingspan = 23.78    #[m]
@@ -15,11 +16,11 @@ poratio = 0.33
 
 
 #------------------------------------------------
-#Run designs here by changing the 3 params below:
+#Run designs here by changing the 4 params below:
 #------------------------------------------------
 
 nr_ribs = 11
-case = 1
+case = 2
 initial_spacing = 1.05
 end_spacing=1.9
 
@@ -60,7 +61,7 @@ def k_c_value(a_b_value):
 
 #function for equal spacing below:
 
-def crit_buckling_stress1(nr_ribs, case):
+def crit_buckling_stress1_pos(nr_ribs, case):
     margin_of_safety1 = []
     if(case == 1):
         #Wing box design 1 geometry below
@@ -85,7 +86,7 @@ def crit_buckling_stress1(nr_ribs, case):
         b = (c(y)*0.5 + c(y + a)*0.5)/(n_stringers + 1)/2
         t = t_skin
         crit_stres = np.pi*np.pi*k_c_value(a/b)*E/(12*(1-poratio*poratio))*(t/b)*(t/b)
-        z = - 0.0573 * c(y)
+        z = - 0.0573 * c(y)                #have to change this implementing coords of centroid from alban, for positive load factor this coord should  be negative, for neg lf it should be positive
         our_sigma = Mx * z / I_xx
         margin_of_safety1.append(crit_stres/our_sigma)
         i = i+1
@@ -93,7 +94,7 @@ def crit_buckling_stress1(nr_ribs, case):
 
 #function for linear spacing diff below:
 
-def crit_buckling_stress2(nr_ribs, case, initial_spacing, end_spacing):
+def crit_buckling_stress2_pos(nr_ribs, case, initial_spacing, end_spacing):
     ylst2, spacings = rib_places(initial_spacing, 11.89, nr_ribs, end_spacing)
     print(ylst2)
     margin_of_safety2 = []
@@ -129,11 +130,11 @@ def crit_buckling_stress2(nr_ribs, case, initial_spacing, end_spacing):
 
 a_eq = wingspan / (2 * (nr_ribs - 1))
 ylst1 = np.array([a_eq * i for i in range(nr_ribs - 1)])
-mos1 = crit_buckling_stress1(nr_ribs, case)
+mos1 = crit_buckling_stress1_pos(nr_ribs, case)
 
 ylst2_ribs, _ = rib_places(initial_spacing, wingspan/2, nr_ribs, end_spacing)
 ylst2_bays = ylst2_ribs[:-1]   # one per bay
-mos2 = crit_buckling_stress2(nr_ribs, case, initial_spacing, end_spacing)
+mos2 = crit_buckling_stress2_pos(nr_ribs, case, initial_spacing, end_spacing)
 
 ylst1_ext = np.append(ylst1, wingspan / 2)
 mos1_ext  = np.append(mos1, mos1[-1])
