@@ -6,6 +6,7 @@ from compressivestrength_and_otherfunctions import get_scaled_corners
 from compressivestrength_and_otherfunctions import calculate_centroid_trapezoid
 from compressivestrength_and_otherfunctions import calculate_stringer_Ixx_local
 from compressivestrength_and_otherfunctions import calculate_Ixx
+from compressivestrength_and_otherfunctions import calculate_centroid_trapezoid
 from bendingdiagrampositiveload import M_pos_load
 from bendingdiagramnegativeload import M_neg_load
 from Spacing_Functions import rib_places
@@ -63,7 +64,8 @@ designs = {
         'scaling_mode': 'width_only' # Only width scales, thickness constant
     },
     "Image Design 1": {
-        'n_str': 12,
+        'n_top': 12,
+        'n_bottom': 6,
         'w_str': 0.015,     # 15 mm * c(y)
         't_str': 0.004,     # 4 mm (constant)
         't_skin': 0.006,    # 6 mm (constant)
@@ -73,7 +75,8 @@ designs = {
     },
 
     "Image Design 2": {
-        'n_str': 6,
+        'n_top': 6,
+        'n_bottom': 6,
         'w_str': 0.020,     # 20 mm * c(y) 
         't_str': 0.008,     # 8 mm
         't_skin': 0.006,    # 6 mm
@@ -83,7 +86,8 @@ designs = {
     },
 
     "Image Design 3": {
-        'n_str': 6,
+        'n_top': 6,
+        'n_bottom': 6,
         'w_str': 0.015,     # 15 mm * c(y)
         't_str': 0.004,     # 4 mm
         't_skin': 0.012,    # 12 mm
@@ -145,6 +149,17 @@ def sigma_crit(y, n, inital_spacing, free_space):
 
 def sigma_distribution(y):
     Ixx = calculate_Ixx(y, designs["Image Design 3"])
+    n_top = designs["Image Design 3"]['n_top']
+    n_bottom = designs["Image Design 3"]['n_bottom']
+    t_skin = designs["Image Design 3"]['t_skin']
+    t_spar = designs["Image Design 3"]['t_spar']
+    w_str = designs["Image Design 3"]['w_str']
+    t_str = designs["Image Design 3"]['t_str']
+    h_max= designs["Image Design 3"]['h_max']
+    c = get_chord(y)
+    A_str = (c*w_str * t_str) + ((c*w_str - t_str) * t_str)
+    L_str_dim=
+    centroid, stringer_coords= calculate_centroid_trapezoid(get_scaled_corners(y), t_skin, n_top, n_bottom, A_str, w_str*c)
     I, A, y_max = calculate_Ixx_str(y, designs["Image Design 3"])
     Mx = M_pos_load(y)
 
