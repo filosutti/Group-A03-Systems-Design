@@ -207,7 +207,7 @@ def calculate_centroid_trapezoid(corners, t_skin, n_top, n_bottom, A_str, L_str_
     
     return (Cx, Cz), str_coords
 
-def calculate_Ixx_and_centroid(y, design_params):
+def calculate_Ixx(y, design_params):
     """
     Calculates Area Moment of Inertia (Ixx) and Centroid coordinates.
     
