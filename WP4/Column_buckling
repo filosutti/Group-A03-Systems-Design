@@ -147,7 +147,7 @@ def sigma_crit(y, n, inital_spacing, free_space):
     sigma_crit = math.pi**2*E*I/((L)**2*A)
     return sigma_crit
 
-def sigma_distribution(y):
+def sigma_distribution(y, positive_or_negative='positive'):
     Ixx = calculate_Ixx(y, designs["Image Design 3"])
     n_top = designs["Image Design 3"]['n_top']
     n_bottom = designs["Image Design 3"]['n_bottom']
@@ -158,10 +158,13 @@ def sigma_distribution(y):
     h_max= designs["Image Design 3"]['h_max']
     c = get_chord(y)
     A_str = (c*w_str * t_str) + ((c*w_str - t_str) * t_str)
-    L_str_dim=
     centroid, stringer_coords= calculate_centroid_trapezoid(get_scaled_corners(y), t_skin, n_top, n_bottom, A_str, w_str*c)
     I, A, y_max = calculate_Ixx_str(y, designs["Image Design 3"])
     Mx = M_pos_load(y)
+    if positive_or_negative=='positive':
+        y_max=y_max-centroid*c
+    else:
+        y_max=centroid*c+y_max
 
     sigma_comp = abs(Mx*y_max/Ixx)
     return sigma_comp
@@ -339,13 +342,26 @@ def sigma_crit_neg(y, n, initial_spacing, free_space):
     return sigma_crit_neg
 
 
-def sigma_distribution_neg(y):
+def sigma_distribution_neg(y, positive_or_negative='positive'):
     Ixx = calculate_Ixx(y, designs["Image Design 3"])
+    n_top = designs["Image Design 3"]['n_top']
+    n_bottom = designs["Image Design 3"]['n_bottom']
+    t_skin = designs["Image Design 3"]['t_skin']
+    t_spar = designs["Image Design 3"]['t_spar']
+    w_str = designs["Image Design 3"]['w_str']
+    t_str = designs["Image Design 3"]['t_str']
+    h_max= designs["Image Design 3"]['h_max']
+    c = get_chord(y)
+    A_str = (c*w_str * t_str) + ((c*w_str - t_str) * t_str)
+    centroid, stringer_coords= calculate_centroid_trapezoid(get_scaled_corners(y), t_skin, n_top, n_bottom, A_str, w_str*c)
     I, A, y_max = calculate_Ixx_str(y, designs["Image Design 3"])
-    Mx = M_neg_load(y)
-
-    sigma_comp_neg = abs(Mx * y_max / Ixx)
-    return sigma_comp_neg
+    Mx = M_pos_load(y)
+    if positive_or_negative=='positive':
+        y_max=y_max+centroid*c
+    else:
+        y_max=centroid*c-y_max
+    sigma_comp = abs(Mx*y_max/Ixx)
+    return sigma_comp
 
 
 
