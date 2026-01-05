@@ -70,7 +70,7 @@ designs = {
         't_str': 0.004,     # 4 mm (constant)
         't_skin': 0.006,    # 6 mm (constant)
         't_spar': 0.009,    # assume same as skin #changed from 0.006
-        'h_max': 0.0820,
+        'h_max': 0.08737,
         'scaling_mode': 'width_only'
     },
 
@@ -81,7 +81,7 @@ designs = {
         't_str': 0.008,     # 8 mm
         't_skin': 0.006,    # 6 mm
         't_spar': 0.006,
-        'h_max': 0.0794,
+        'h_max': 0.08737,
         'scaling_mode': 'width_only'
     },
 
@@ -92,7 +92,7 @@ designs = {
         't_str': 0.004,     # 4 mm
         't_skin': 0.012,    # 12 mm
         't_spar': 0.012, #kept constant
-        'h_max': 0.0807,
+        'h_max': 0.08737,
         'scaling_mode': 'width_only'
     }
 }
@@ -122,7 +122,7 @@ def calculate_Ixx_str(y, design_params):
     c = get_chord(y)
 
     # Design Parameters
-    n_str = design_params['n_str']
+    n_str = design_params['n_top']
     t_skin = design_params['t_skin']
     t_spar = design_params['t_spar']
     w_str = design_params['w_str']
@@ -158,7 +158,7 @@ def sigma_distribution(y, positive_or_negative='positive'):
     h_max= designs["Image Design 3"]['h_max']
     c = get_chord(y)
     A_str = (c*w_str * t_str) + ((c*w_str - t_str) * t_str)
-    centroid, stringer_coords= calculate_centroid_trapezoid(get_scaled_corners(y), t_skin, n_top, n_bottom, A_str, w_str*c)
+    centroid, stringer_coords= calculate_centroid_trapezoid(UNIT_CORNERS, t_skin, n_top, n_bottom, A_str, w_str)
     I, A, y_max = calculate_Ixx_str(y, designs["Image Design 3"])
     Mx = M_pos_load(y)
     if positive_or_negative=='positive':
@@ -353,13 +353,13 @@ def sigma_distribution_neg(y, positive_or_negative='positive'):
     h_max= designs["Image Design 3"]['h_max']
     c = get_chord(y)
     A_str = (c*w_str * t_str) + ((c*w_str - t_str) * t_str)
-    centroid, stringer_coords= calculate_centroid_trapezoid(get_scaled_corners(y), t_skin, n_top, n_bottom, A_str, w_str*c)
-    I, A, y_max = calculate_Ixx_str(y, designs["Image Design 3"])
+    centroid, stringer_coords= calculate_centroid_trapezoid(UNIT_CORNERS, t_skin, n_top, n_bottom, A_str, w_str)
+    I, A, ything = calculate_Ixx_str(y, designs["Image Design 3"])
     Mx = M_pos_load(y)
     if positive_or_negative=='positive':
-        y_max=y_max+centroid*c
+        y_max=c*0.02723+centroid*c
     else:
-        y_max=centroid*c-y_max
+        y_max=centroid*c-c*0.02723
     sigma_comp = abs(Mx*y_max/Ixx)
     return sigma_comp
 
