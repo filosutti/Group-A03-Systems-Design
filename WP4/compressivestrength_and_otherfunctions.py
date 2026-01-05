@@ -111,10 +111,6 @@ def get_local_dims(y, params):
     return w_str, t_str, t_skin, t_spar
 
 def calculate_centroid_trapezoid(corners, t_skin, n_top, n_bottom, A_str, L_str_dim):
-    """
-    Calculates Centroid (Cy) and returns stringer coordinates.
-    Arguments n_top and n_bottom allow different stringer counts.
-    """
     total_mass = 0
     moment_z = 0 
 
