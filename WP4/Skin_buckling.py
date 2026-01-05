@@ -8,6 +8,10 @@ from Supremely_Ultimate_Julian_code_4 import inertia_calculation
 from Spacing_Functions import rib_places
 import matplotlib.pyplot as plt
 from bendingdiagramnegativeload import M_neg_load
+from compressivestrength_and_otherfunctions import calculate_Ixx
+from compressivestrength_and_otherfunctions import calculate_centroid_trapezoid
+from compressivestrength_and_otherfunctions import get_local_dims
+from compressivestrength_and_otherfunctions import get_scaled_corners
 
 #general geometry and constant parameters
 wingspan = 23.78    #[m]
@@ -19,14 +23,45 @@ poratio = 0.33
 #Run designs here by changing the 4 params below:
 #------------------------------------------------
 
-nr_ribs = 11
-case = 2
-initial_spacing = 1.05
-end_spacing=1.9
+nr_ribs = 9
+case = 3
+initial_spacing = 1.3
+end_spacing=2.25
 
 #------------------------------------------------
 
+designs = {
+    "1": {
+        'n_top': 12, 'n_bottom': 6,
+        'w_str': 0.015, 't_str': 0.004, 't_skin': 0.006, 't_spar': 0.006,
+        'scaling_mode': 'width_only'
+    },
+    "2": {
+        'n_top': 6, 'n_bottom': 6,
+        'w_str': 0.020, 't_str': 0.008, 't_skin': 0.006, 't_spar': 0.006,
+        'scaling_mode': 'width_only'
+    },
+    "3": {
+        'n_top': 6, 'n_bottom': 3,
+        'w_str': 0.015, 't_str': 0.004, 't_skin': 0.012, 't_spar': 0.012,
+        'scaling_mode': 'width_only'
+    }
+}
 
+def centroid_at_y(y, design):
+    w_str, t_str, t_skin, _ = get_local_dims(y, design)
+    A_str = (w_str * t_str * 2) - (t_str**2)
+    corners = get_scaled_corners(y)
+
+    c_z, _ = calculate_centroid_trapezoid(
+        corners,
+        t_skin,
+        design['n_top'],
+        design['n_bottom'],
+        A_str,
+        w_str
+    )
+    return c_z
 
 # For test case C as it is the most conservative case
 def k_c_value(a_b_value):
@@ -82,14 +117,16 @@ def crit_buckling_stress1_pos(nr_ribs, case):
     while (i+1<nr_ribs):
         y = a*i
         Mx = M_pos_load(y)
-        I_xx, _, _, J = inertia_calculation(y)
+        c_z = centroid_at_y(y, designs[str(case)])
+        I_xx = calculate_Ixx(y, designs[str(case)])
         b = (c(y)*0.5 + c(y + a)*0.5)/(n_stringers + 1)/2
         t = t_skin
         crit_stres = np.pi*np.pi*k_c_value(a/b)*E/(12*(1-poratio*poratio))*(t/b)*(t/b)
-        z = - 0.0573 * c(y)                #have to change this implementing coords of centroid from alban, for positive load factor this coord should  be negative, for neg lf it should be positive
+        z = - (0.08737 - abs(c_z)/c(y))                #have to change this implementing coords of centroid from alban, for positive load factor this coord should  be negative, for neg lf it should be positive
         our_sigma = Mx * z / I_xx
         margin_of_safety1.append(crit_stres/our_sigma)
         i = i+1
+        print(c_z)
     return margin_of_safety1
 
 #function for linear spacing diff below:
@@ -117,17 +154,98 @@ def crit_buckling_stress2_pos(nr_ribs, case, initial_spacing, end_spacing):
     while i < n_bays:
         y = ylst2[i]
         a = spacings[i]
+        c_z = centroid_at_y(y, designs[str(case)])
         Mx = M_pos_load(y)
-        I_xx, _, _, J = inertia_calculation(y)
+        I_xx = calculate_Ixx(y, designs[str(case)])
         b = (c(y)*0.5 + c(y + a)*0.5)/(n_stringers + 1)/2
         t = t_skin
         crit_stres = (np.pi*np.pi*k_c_value(a/b)*E/(12*(1-poratio*poratio))*(t/b)*(t/b))
-        z = - 0.0573 * c(y)
+        z = - (0.08737 - abs(c_z)/c(y))
         our_sigma = Mx * z / I_xx
         margin_of_safety2.append(crit_stres/our_sigma)
         i = i+1
     return margin_of_safety2
 
+#---------------------------------------
+#    SWITCHING TO NEGATIVE LF
+#---------------------------------------
+
+def crit_buckling_stress1_neg(nr_ribs, case):
+    margin_of_safety3 = []
+    if(case == 1):
+        #Wing box design 1 geometry below
+        t_skin = 6/1000      #[m]
+        n_stringers = 6
+    elif(case == 2):
+        #Wing box design 2 geometry below
+        t_skin = 6/1000      #[m]
+        n_stringers = 6
+    elif(case == 3):
+        #Wing box design 3 geometry below
+        t_skin = 12/1000        #[m]
+        n_stringers = 3
+    else:
+        print("The code works :)") 
+    i = 0
+    a = wingspan/(2*(nr_ribs - 1))
+    while (i+1<nr_ribs):
+        y = a*i
+        Mx = M_neg_load(y)
+        c_z = centroid_at_y(y, designs[str(case)])
+        I_xx = calculate_Ixx(y, designs[str(case)])
+        b = (c(y)*0.5 + c(y + a)*0.5)/(n_stringers + 1)/2
+        t = t_skin
+        crit_stres = np.pi*np.pi*k_c_value(a/b)*E/(12*(1-poratio*poratio))*(t/b)*(t/b)
+        z = (0.02723 + abs(c_z)/c(y))                #have to change this implementing coords of centroid from alban, for positive load factor this coord should  be negative, for neg lf it should be positive
+        our_sigma = Mx * z / I_xx
+        margin_of_safety3.append(crit_stres/our_sigma)
+        i = i+1
+        print(c_z)
+    return margin_of_safety3
+
+#function for linear spacing diff below:
+
+def crit_buckling_stress2_neg(nr_ribs, case, initial_spacing, end_spacing):
+    ylst2, spacings = rib_places(initial_spacing, 11.89, nr_ribs, end_spacing)
+    print(ylst2)
+    margin_of_safety4 = []
+    if(case == 1):
+        #Wing box design 1 geometry below
+        t_skin = 6/1000      #[m]
+        n_stringers = 6
+    elif(case == 2):
+        #Wing box design 2 geometry below
+        t_skin = 6/1000      #[m]
+        n_stringers = 6
+    elif(case == 3):
+        #Wing box design 3 geometry below
+        t_skin = 12/1000        #[m]
+        n_stringers = 3
+    else:
+        print("The code works :)") 
+    i = 0
+    n_bays = len(spacings)
+    while i < n_bays:
+        y = ylst2[i]
+        a = spacings[i]
+        c_z = centroid_at_y(y, designs[str(case)])
+        Mx = M_neg_load(y)
+        I_xx = calculate_Ixx(y, designs[str(case)])
+        b = (c(y)*0.5 + c(y + a)*0.5)/(n_stringers + 1)/2
+        t = t_skin
+        crit_stres = (np.pi*np.pi*k_c_value(a/b)*E/(12*(1-poratio*poratio))*(t/b)*(t/b))
+        z = (0.02723 + abs(c_z)/c(y))
+        our_sigma = Mx * z / I_xx
+        margin_of_safety4.append(crit_stres/our_sigma)
+        i = i+1
+    return margin_of_safety4
+
+
+#---------------------------
+#  PLOTTING POSITIVE + NEGATIVE LOAD
+#---------------------------
+
+# Positive load
 a_eq = wingspan / (2 * (nr_ribs - 1))
 ylst1 = np.array([a_eq * i for i in range(nr_ribs - 1)])
 mos1 = crit_buckling_stress1_pos(nr_ribs, case)
@@ -142,16 +260,28 @@ mos1_ext  = np.append(mos1, mos1[-1])
 ylst2_ext = np.append(ylst2_bays, wingspan / 2)
 mos2_ext  = np.append(mos2, mos2[-1])
 
-plt.figure()
+# Negative load
+mos1_neg = crit_buckling_stress1_neg(nr_ribs, case)
+mos2_neg = crit_buckling_stress2_neg(nr_ribs, case, initial_spacing, end_spacing)
 
-plt.step(ylst1_ext, mos1_ext, where='post', color = 'coral', label='Equal spacing')
-plt.step(ylst2_ext, mos2_ext, where='post', color = 'lightseagreen', label='Linear spacing')
+mos1_neg_ext = np.append(mos1_neg, mos1_neg[-1])
+mos2_neg_ext = np.append(mos2_neg, mos2_neg[-1])
 
+# Plot
+plt.figure(figsize=(10,6))
+
+# Positive
+plt.step(ylst1_ext, mos1_ext, where='post', color='coral', label='Equal spacing (Pos LF)')
+plt.step(ylst2_ext, mos2_ext, where='post', color='lightseagreen', label='Linear spacing (Pos LF)')
+
+# Negative
+plt.step(ylst1_ext, mos1_neg_ext, where='post', color='firebrick', linestyle='--', label='Equal spacing (Neg LF)')
+plt.step(ylst2_ext, mos2_neg_ext, where='post', color='darkgreen', linestyle='--', label='Linear spacing (Neg LF)')
 
 plt.xlabel('Spanwise location y [m]')
 plt.ylabel('Margin of Safety')
-plt.title('Buckling Margin of Safety Along the Span')
-plt.ylim(0, 30) 
+plt.title('Buckling Margin of Safety Along the Span (Pos & Neg Load)')
+plt.ylim(0, 30)
 plt.grid(True)
 plt.legend()
 plt.show()
