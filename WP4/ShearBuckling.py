@@ -177,7 +177,6 @@ if __name__ == "__main__":
     plt.ylabel("Margin of Safety")
     plt.title("Shear Buckling Margin of Safety Comparison")
     plt.grid(True)
-    plt.ylim(0, 5) 
     plt.legend()
     plt.show()
 
