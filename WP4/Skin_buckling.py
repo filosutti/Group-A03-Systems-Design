@@ -42,7 +42,7 @@ designs = {
         'scaling_mode': 'width_only'
     },
     "3": {
-        'n_top': 6, 'n_bottom': 3,
+        'n_top': 6, 'n_bottom': 2,
         'w_str': 0.015, 't_str': 0.004, 't_skin': 0.012, 't_spar': 0.012,
         'scaling_mode': 'width_only'
     }
@@ -146,7 +146,7 @@ def crit_buckling_stress2_pos(nr_ribs, case, initial_spacing, end_spacing):
     elif(case == 3):
         #Wing box design 3 geometry below
         t_skin = 12/1000        #[m]
-        n_stringers = 6
+        n_stringers = 3
     else:
         print("The code works :)") 
     i = 0
@@ -183,7 +183,7 @@ def crit_buckling_stress1_neg(nr_ribs, case):
     elif(case == 3):
         #Wing box design 3 geometry below
         t_skin = 12/1000        #[m]
-        n_stringers = 3
+        n_stringers = 2
     else:
         print("The code works :)") 
     i = 0
