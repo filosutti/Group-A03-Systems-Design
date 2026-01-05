@@ -139,13 +139,13 @@ def calculate_Ixx_str(y, design_params):
 
 def sigma_crit(y, n, inital_spacing, free_space):
     L= spacing_at_position(inital_spacing, half_span, n, y, free_space)
-    I, A, y_max = calculate_Ixx_str(y, designs["Image Design 2"])
+    I, A, y_max = calculate_Ixx_str(y, designs["Image Design 3"])
     sigma_crit = math.pi**2*E*I/((L)**2*A)
     return sigma_crit
 
 def sigma_distribution(y):
-    Ixx = calculate_Ixx(y, designs["Image Design 2"])
-    I, A, y_max = calculate_Ixx_str(y, designs["Image Design 2"])
+    Ixx = calculate_Ixx(y, designs["Image Design 3"])
+    I, A, y_max = calculate_Ixx_str(y, designs["Image Design 3"])
     Mx = M_pos_load(y)
 
     sigma_comp = abs(Mx*y_max/Ixx)
@@ -314,3 +314,155 @@ plt.show()
 
 #design 1: 1.05, 11, 1.9
 #design 3: 1.3, 9, 2.25
+
+# ---------- FUNCTIONS (NEGATIVE LOADING) ----------
+
+def sigma_crit_neg(y, n, initial_spacing, free_space):
+    L = spacing_at_position(initial_spacing, half_span, n, y, free_space)
+    I, A, y_max = calculate_Ixx_str(y, designs["Image Design 3"])
+    sigma_crit_neg = math.pi**2 * E * I / (L**2 * A)
+    return sigma_crit_neg
+
+
+def sigma_distribution_neg(y):
+    Ixx = calculate_Ixx(y, designs["Image Design 3"])
+    I, A, y_max = calculate_Ixx_str(y, designs["Image Design 3"])
+    Mx = M_neg_load(y)
+
+    sigma_comp_neg = abs(Mx * y_max / Ixx)
+    return sigma_comp_neg
+
+
+
+
+# ---------- DATASET 1 (LINEAR SPACING) ----------
+positions_neg = []
+critical_stresses_neg = []
+stresses_neg = []
+margins_of_safety_neg = []
+
+position = 0
+while position <= half_span:
+    sigma_cr = sigma_crit_neg(position, number_of_ribs, initial_spacing1, free_space_at_tip)
+    sigma = sigma_distribution_neg(position)
+    mos = sigma_cr / sigma
+
+    positions_neg.append(position)
+    critical_stresses_neg.append(sigma_cr)
+    stresses_neg.append(sigma)
+    margins_of_safety_neg.append(mos)
+
+    position += 0.01
+
+
+rib_positions_1, rib_spacings_1 = rib_places(
+    initial_spacing1, half_span, number_of_ribs, free_space_at_tip
+)
+
+min_mos_per_bay_neg = []
+bay_centers_neg = []
+
+for i in range(len(rib_positions_1) - 1):
+    y_start = rib_positions_1[i]
+    y_end = rib_positions_1[i + 1]
+
+    indices = [
+        k for k, y in enumerate(positions_neg)
+        if y_start <= y <= y_end
+    ]
+
+    if indices:
+        mos_values = [margins_of_safety_neg[k] for k in indices]
+        min_mos_per_bay_neg.append(min(mos_values))
+        bay_centers_neg.append(0.5 * (y_start + y_end))
+
+
+# ---------- DATASET 2 (EQUAL SPACING) ----------
+positions_neg_2 = []
+critical_stresses_neg_2 = []
+stresses_neg_2 = []
+margins_of_safety_neg_2 = []
+
+position = 0
+while position <= half_span:
+    sigma_cr = sigma_crit_neg(position, number_of_ribs, initial_spacing2, free_space_at_tip2)
+    sigma = sigma_distribution_neg(position)
+    mos = sigma_cr / sigma
+
+    positions_neg_2.append(position)
+    critical_stresses_neg_2.append(sigma_cr)
+    stresses_neg_2.append(sigma)
+    margins_of_safety_neg_2.append(mos)
+
+    position += 0.01
+
+
+rib_positions_2, rib_spacings_2 = rib_places(
+    initial_spacing2, half_span, number_of_ribs, free_space_at_tip2
+)
+
+min_mos_per_bay_neg_2 = []
+bay_centers_neg_2 = []
+
+for i in range(len(rib_positions_2) - 1):
+    y_start = rib_positions_2[i]
+    y_end = rib_positions_2[i + 1]
+
+    indices = [
+        k for k, y in enumerate(positions_neg_2)
+        if y_start <= y <= y_end
+    ]
+
+    if indices:
+        mos_values = [margins_of_safety_neg_2[k] for k in indices]
+        min_mos_per_bay_neg_2.append(min(mos_values))
+        bay_centers_neg_2.append(0.5 * (y_start + y_end))
+
+
+# ---------- PLOTS ----------
+
+# Stress vs Position
+plt.figure(figsize=(10, 6))
+plt.plot(positions_neg, stresses_neg, label="Compressive Stress (negative moment)")
+plt.plot(positions_neg, critical_stresses_neg, "--", label="Critical Stress")
+
+plt.xlabel("Position along span [m]")
+plt.ylabel("Stress [Pa]")
+plt.title("Stress vs. Position (Negative Bending Moment)")
+plt.grid(True)
+plt.legend()
+plt.show()
+
+
+# Margin of Safety vs Position
+plt.figure(figsize=(10, 6))
+plt.plot(positions_neg, margins_of_safety_neg, label="Margin of Safety (negative moment)")
+
+plt.xlabel("Position along span [m]")
+plt.ylabel("Margin of Safety [-]")
+plt.title("Margin of Safety vs. Position (Negative Bending Moment)")
+plt.ylim(0, 5)
+plt.grid(True)
+plt.legend()
+plt.show()
+
+
+# Minimum MoS per Rib Bay
+plt.figure(figsize=(10, 6))
+
+x1 = np.append(rib_positions_1[:-1], half_span)
+y1 = np.append(min_mos_per_bay_neg, min_mos_per_bay_neg[-1])
+
+x2 = np.append(rib_positions_2[:-1], half_span)
+y2 = np.append(min_mos_per_bay_neg_2, min_mos_per_bay_neg_2[-1])
+
+plt.step(x1, y1, where="post", label="Minimum MoS per bay (Linear spacing)")
+plt.step(x2, y2, where="post", label="Minimum MoS per bay (Equal spacing)")
+
+plt.xlabel("Spanwise Position [m]")
+plt.ylabel("Margin of Safety [-]")
+plt.title("Minimum Margin of Safety per Rib Bay (Negative Bending)")
+plt.ylim(0, 5)
+plt.grid(True)
+plt.legend()
+plt.show()
