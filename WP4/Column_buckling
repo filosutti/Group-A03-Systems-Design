@@ -7,6 +7,7 @@ from compressivestrength_and_otherfunctions import calculate_centroid_trapezoid
 from compressivestrength_and_otherfunctions import calculate_stringer_Ixx_local
 from compressivestrength_and_otherfunctions import calculate_Ixx
 from bendingdiagrampositiveload import M_pos_load
+from bendingdiagramnegativeload import M_neg_load
 from Spacing_Functions import rib_places
 from Spacing_Functions import spacing_at_position
 
