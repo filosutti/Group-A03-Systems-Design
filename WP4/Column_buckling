@@ -138,13 +138,13 @@ def calculate_Ixx_str(y, design_params):
 
 def sigma_crit(y, n, inital_spacing, free_space):
     L= spacing_at_position(inital_spacing, half_span, n, y, free_space)
-    I, A, y_max = calculate_Ixx_str(y, designs["Image Design 3"])
+    I, A, y_max = calculate_Ixx_str(y, designs["Image Design 2"])
     sigma_crit = math.pi**2*E*I/((L)**2*A)
     return sigma_crit
 
 def sigma_distribution(y):
-    Ixx = calculate_Ixx(y, designs["Image Design 3"])
-    I, A, y_max = calculate_Ixx_str(y, designs["Image Design 3"])
+    Ixx = calculate_Ixx(y, designs["Image Design 2"])
+    I, A, y_max = calculate_Ixx_str(y, designs["Image Design 2"])
     Mx = M_pos_load(y)
 
     sigma_comp = abs(Mx*y_max/Ixx)
@@ -156,10 +156,23 @@ number_of_ribs=9
 initial_spacing1=1.3
 free_space_at_tip=2.25
 position=0
+
+initial_spacing2=11.89/(number_of_ribs-1)
+free_space_at_tip2=11.89/(number_of_ribs-1)
+
+
 positions=[]
 critical_stresses=[]
 stresses=[]
 margins_of_error=[]
+
+positions_2=[]
+critical_stresses_2=[]
+stresses_2=[]
+margins_of_error_2=[]
+position_2=0
+
+
 i=0
 while position <=half_span:
     stresscr=sigma_crit(position, number_of_ribs, initial_spacing1, free_space_at_tip)
@@ -196,6 +209,40 @@ for i in range(len(rib_positions) - 1):
         bay_centers.append(0.5 * (y_start + y_end))
 
 
+while position_2 <=half_span:
+    stresscr=sigma_crit(position_2, number_of_ribs, initial_spacing2, free_space_at_tip2)
+    stress =sigma_distribution(position_2)
+    margin_of_error=stresscr/stress
+    positions_2.append(position_2)
+    critical_stresses_2.append(stresscr)
+    stresses_2.append(stress)
+    margins_of_error_2.append(margin_of_error)
+    position_2 = position_2 + 0.01
+
+rib_positions, rib_spacings = rib_places(initial_spacing2, half_span, number_of_ribs, free_space_at_tip2)
+
+print(rib_positions, rib_spacings)
+#max actually means min
+max_mos_per_bay_2 = []
+bay_centers_2 = []
+
+for i in range(len(rib_positions) - 1):
+    y_start = rib_positions[i]
+    y_end = rib_positions[i + 1]
+
+    # indices of points inside this rib bay
+    indices_in_bay = [
+        k for k, y in enumerate(positions_2)
+        if y_start <= y <= y_end
+    ]
+
+    if indices_in_bay:
+        mos_values = [margins_of_error_2[k] for k in indices_in_bay]
+        max_mos = min(mos_values)
+
+        max_mos_per_bay_2.append(max_mos)
+        bay_centers_2.append(0.5 * (y_start + y_end))
+
 
 
 
@@ -225,24 +272,36 @@ plt.show()
 
 plt.figure(figsize=(10,6))
 
-# Extend the x-values by adding the tip of the half-span
-x_extended = np.append(rib_positions[:-1], half_span)
-y_extended = np.append(max_mos_per_bay, max_mos_per_bay[-1])  # repeat last MoS
+# --- Dataset 1 ---
+x1 = np.append(rib_positions[:-1], half_span)
+y1 = np.append(max_mos_per_bay, max_mos_per_bay[-1])
 
 plt.step(
-    x_extended,
-    y_extended,
+    x1,
+    y1,
     where="post",
-    label="Max MoS per rib bay"
+    label="Max MoS per rib bay (spacing = 1.3 m)"
+)
+
+# --- Dataset 2 ---
+x2 = np.append(rib_positions[:-1], half_span)
+y2 = np.append(max_mos_per_bay_2, max_mos_per_bay_2[-1])
+
+plt.step(
+    x2,
+    y2,
+    where="post",
+    label="Max MoS per rib bay (uniform spacing)"
 )
 
 plt.xlabel("Spanwise position [m]")
 plt.ylabel("Margin of Safety [-]")
 plt.title("Maximum Margin of Safety per Rib Bay")
-plt.ylim(0, 5) 
+plt.ylim(0, 5)
 plt.grid(True)
 plt.legend()
 plt.show()
+
 
 
 #Optimal design results for just column buckling:
