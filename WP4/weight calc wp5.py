@@ -58,4 +58,4 @@ def wingbox_weight_halfwing(
     }
 
 #change values below to compute weight of any wingbox, they are in order: nr of stringers, skin and spar thickness, stringer thickness, stringer width k factor, multyplied by the chord length to get the stringer width
-print(wingbox_weight_halfwing(16, 0.006, 0.004, 15))
+print(wingbox_weight_halfwing(18, 0.006, 0.004, 15))
