@@ -185,9 +185,13 @@ if __name__ == "__main__":
 
 #DESIGNS THAT WORK:
 
-# DESIGN 1: 12 STRINGERS (per side), w_stringer = 15c, t_stringer = 4 mm, t_skin = 6 mm , t_spar = 9 mm
+# DESIGN 1: 12 STRINGERS (per side), w_stringer = 15c, t_stringer = 4 mm, t_skin = 6 mm , t_spar = 9 mm, 
 # 
 # DESIGN 3: 6 STRINGERS (per side), w_stringer = 15c, t_stringer = 4 mm, t_skin = 12 mm , t_spar = 12 mm
+
+
+#design 1: initial spacing 1.05 m, number of ribs 11, final rib spacing before wing tip      1.9 m
+#design 3: initial spacing 1.3 m,  number of ribs  9,  final rib spacing before wing tip    2.25 m
 
 #DESIGNS THAT DONT WORK:
 
