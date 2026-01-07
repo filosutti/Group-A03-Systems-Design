@@ -173,7 +173,7 @@ def sigma_distribution(y, positive_or_negative='positive'):
 
 number_of_ribs=11
 initial_spacing1=1.05
-free_space_at_tip=1.9
+free_space_at_tip=1.8
 position=0
 
 initial_spacing2=11.89/(number_of_ribs-1)
