@@ -151,18 +151,25 @@ if __name__ == "__main__":
     res_eq, y_e, MoS_f_e, MoS_r_e = compute_spar_buckling_from_ribs(ribs_eq)
 
     # -------- Plot MoS comparison (REAR SPAR ONLY)
+        # -------- Plot MoS comparison (REAR SPAR ONLY) with MoS capped at 30
     plt.figure(figsize=(10, 5))
 
-    plt.plot(y_v, MoS_r_v, 'r-', label="Variable spacing")
-    plt.plot(y_e, MoS_r_e, 'r--', label="Equal spacing")
+    MoS_cap = 30.0
+    MoS_r_v_clip = np.clip(MoS_r_v, 0, MoS_cap)
+    MoS_r_e_clip = np.clip(MoS_r_e, 0, MoS_cap)
+
+    plt.plot(y_v, MoS_r_v_clip, 'r-', label="Variable spacing")
+    plt.plot(y_e, MoS_r_e_clip, 'r--', label="Equal spacing")
 
     plt.axhline(0, color='k', linestyle='--')
+    plt.ylim(0, MoS_cap)  # keeps graph limit below 30
     plt.xlabel("Spanwise Position y [m]")
     plt.ylabel("Margin of Safety")
-    plt.title("Spar Shear Buckling Margin of Safety Comparison")
+    plt.title("Spar Shear Buckling Margin of Safety Comparison (Rear Spar)")
     plt.grid(True)
     plt.legend()
     plt.show()
+
 
 
 
