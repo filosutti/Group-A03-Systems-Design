@@ -150,36 +150,19 @@ if __name__ == "__main__":
     ribs_eq = np.linspace(0, half_wing_span, n_ribs)
     res_eq, y_e, MoS_f_e, MoS_r_e = compute_spar_buckling_from_ribs(ribs_eq)
 
-    # -------- Print panel results
-    print("\nVARIABLE (ROOT-BASED) SPACING RESULTS")
-    for r in res_var:
-        print(f" Panel {r['panel']:2d} | "
-              f"util_f = {r['util_front']:.2f} | "
-              f"util_r = {r['util_rear']:.2f} | {r['status']}")
+    # -------- Plot MoS comparison (REAR SPAR ONLY)
+    plt.figure(figsize=(10, 5))
 
-    print("\nEQUAL SPACING RESULTS")
-    for r in res_eq:
-        print(f" Panel {r['panel']:2d} | "
-              f"util_f = {r['util_front']:.2f} | "
-              f"util_r = {r['util_rear']:.2f} | {r['status']}")
-
-    # -------- Plot MoS comparison
-    plt.figure(figsize=(10,5))
-
-    plt.plot(y_v, MoS_f_v, 'b-', label="Front – Variable spacing")
-    plt.plot(y_v, MoS_r_v, 'r-', label="Rear – Variable spacing")
-
-    plt.plot(y_e, MoS_f_e, 'b--', label="Front – Equal spacing")
-    plt.plot(y_e, MoS_r_e, 'r--', label="Rear – Equal spacing")
+    plt.plot(y_v, MoS_r_v, 'r-', label="Variable spacing")
+    plt.plot(y_e, MoS_r_e, 'r--', label="Equal spacing")
 
     plt.axhline(0, color='k', linestyle='--')
     plt.xlabel("Spanwise Position y [m]")
     plt.ylabel("Margin of Safety")
-    plt.title("Shear Buckling Margin of Safety Comparison")
+    plt.title("Spar Shear Buckling Margin of Safety Comparison")
     plt.grid(True)
     plt.legend()
     plt.show()
-
 
 
 
