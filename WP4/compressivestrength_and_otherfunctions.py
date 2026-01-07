@@ -29,27 +29,36 @@ UNIT_CORNERS = [
 ]
 
 # --- DESIGNS DICTIONARY ---
-# UPDATED: 'n_str' replaced by 'n_top' and 'n_bottom'
 designs = {
-    "Design 1": {
-        'n_top': 12, 'n_bottom': 12, 
-        'w_str': 0.015, 't_str': 0.001, 't_skin': 0.0015, 't_spar': 0.0015, 
-        'scaling_mode': 'full' 
+    "1 min tens": {
+        'n_top': 3, 'n_bottom': 12,
+        'w_str': 0.015, 't_str': 0.004, 't_skin': 0.006, 't_spar': 0.006,
+        'scaling_mode': 'width_only'
     },
-    "Design 2": {
-        'n_top': 6, 'n_bottom': 6,
-        'w_str': 0.020, 't_str': 0.002, 't_skin': 0.0015, 't_spar': 0.0015, 
-        'scaling_mode': 'full'
+    "2 min tens": {
+        'n_top': 1, 'n_bottom': 6,
+        'w_str': 0.020, 't_str': 0.008, 't_skin': 0.006, 't_spar': 0.006,
+        'scaling_mode': 'width_only'
     },
-    "Design 3 (Asymmetric)": {
-        'n_top': 14, 'n_bottom': 8,  # Example of asymmetry
-        'w_str': 0.015, 't_str': 0.001, 't_skin': 0.0030, 't_spar': 0.0030, 
-        'scaling_mode': 'full'
+    "3 min tens": {
+        'n_top': 0, 'n_bottom': 6,
+        'w_str': 0.015, 't_str': 0.004, 't_skin': 0.012, 't_spar': 0.012,
+        'scaling_mode': 'width_only'
     },
-    "Design 4": {
-        'n_top': 12, 'n_bottom': 12,
-        'w_str': 0.020, 't_str': 0.008, 't_skin': 0.0120, 't_spar': 0.0120, 
-        'scaling_mode': 'width_only' 
+    "1 min comp": {
+        'n_top': 12, 'n_bottom': 1,
+        'w_str': 0.015, 't_str': 0.004, 't_skin': 0.006, 't_spar': 0.006,
+        'scaling_mode': 'width_only'
+    },
+    "2 min comp": {
+        'n_top': 6, 'n_bottom': 0,
+        'w_str': 0.020, 't_str': 0.008, 't_skin': 0.006, 't_spar': 0.006,
+        'scaling_mode': 'width_only'
+    },
+    "3 min comp": {
+        'n_top': 6, 'n_bottom': 0,
+        'w_str': 0.015, 't_str': 0.004, 't_skin': 0.012, 't_spar': 0.012,
+        'scaling_mode': 'width_only'
     },
     "Image Design 1": {
         'n_top': 12, 'n_bottom': 12,
