@@ -146,7 +146,7 @@ def crit_buckling_stress2_pos(nr_ribs, case, initial_spacing, end_spacing):
     elif(case == 3):
         #Wing box design 3 geometry below
         t_skin = 12/1000        #[m]
-        n_stringers = 3
+        n_stringers = 6
     else:
         print("The code works :)") 
     i = 0
