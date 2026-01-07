@@ -146,7 +146,7 @@ def crit_buckling_stress2_pos(nr_ribs, case, initial_spacing, end_spacing):
     elif(case == 3):
         #Wing box design 3 geometry below
         t_skin = 12/1000        #[m]
-        n_stringers = 3
+        n_stringers = 6
     else:
         print("The code works :)") 
     i = 0
@@ -220,7 +220,7 @@ def crit_buckling_stress2_neg(nr_ribs, case, initial_spacing, end_spacing):
     elif(case == 3):
         #Wing box design 3 geometry below
         t_skin = 12/1000        #[m]
-        n_stringers = 3
+        n_stringers = 2
     else:
         print("The code works :)") 
     i = 0
@@ -267,20 +267,32 @@ mos2_neg = crit_buckling_stress2_neg(nr_ribs, case, initial_spacing, end_spacing
 mos1_neg_ext = np.append(mos1_neg, mos1_neg[-1])
 mos2_neg_ext = np.append(mos2_neg, mos2_neg[-1])
 
-# Plot
 plt.figure(figsize=(10,6))
 
-# Positive
-plt.step(ylst1_ext, mos1_ext, where='post', color='coral', label='Equal spacing (Pos LF)')
-plt.step(ylst2_ext, mos2_ext, where='post', color='lightseagreen', label='Linear spacing (Pos LF)')
-
-# Negative
-plt.step(ylst1_ext, mos1_neg_ext, where='post', color='firebrick', linestyle='--', label='Equal spacing (Neg LF)')
-plt.step(ylst2_ext, mos2_neg_ext, where='post', color='darkgreen', linestyle='--', label='Linear spacing (Neg LF)')
+plt.step(ylst1_ext, mos1_ext, where='post',
+         color='coral', label='Equal spacing (Pos LF)')
+plt.step(ylst2_ext, mos2_ext, where='post',
+         color='lightseagreen', label='Linear spacing (Pos LF)')
 
 plt.xlabel('Spanwise location y [m]')
 plt.ylabel('Margin of Safety')
-plt.title('Buckling Margin of Safety Along the Span (Pos & Neg Load)')
+plt.title('Buckling Margin of Safety Along the Span (Positive Load)')
+plt.ylim(0, 30)
+plt.grid(True)
+plt.legend()
+
+plt.figure(figsize=(10,6))
+
+plt.step(ylst1_ext, mos1_neg_ext, where='post',
+         color='firebrick', linestyle='--',
+         label='Equal spacing (Neg LF)')
+plt.step(ylst2_ext, mos2_neg_ext, where='post',
+         color='darkgreen', linestyle='--',
+         label='Linear spacing (Neg LF)')
+
+plt.xlabel('Spanwise location y [m]')
+plt.ylabel('Margin of Safety')
+plt.title('Buckling Margin of Safety Along the Span (Negative Load)')
 plt.ylim(0, 30)
 plt.grid(True)
 plt.legend()
