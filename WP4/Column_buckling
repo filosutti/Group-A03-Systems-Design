@@ -143,23 +143,23 @@ def calculate_Ixx_str(y, design_params):
 
 def sigma_crit(y, n, inital_spacing, free_space):
     L= spacing_at_position(inital_spacing, half_span, n, y, free_space)
-    I, A, y_max = calculate_Ixx_str(y, designs["Image Design 1"])
+    I, A, y_max = calculate_Ixx_str(y, designs["Image Design 3"])
     sigma_crit = math.pi**2*E*I/((L)**2*A)
     return sigma_crit
 
 def sigma_distribution(y, positive_or_negative='positive'):
-    Ixx = calculate_Ixx(y, designs["Image Design 1"])
-    n_top = designs["Image Design 1"]['n_top']
-    n_bottom = designs["Image Design 1"]['n_bottom']
-    t_skin = designs["Image Design 1"]['t_skin']
-    t_spar = designs["Image Design 1"]['t_spar']
-    w_str = designs["Image Design 1"]['w_str']
-    t_str = designs["Image Design 1"]['t_str']
-    h_max= designs["Image Design 1"]['h_max']
+    Ixx = calculate_Ixx(y, designs["Image Design 3"])
+    n_top = designs["Image Design 3"]['n_top']
+    n_bottom = designs["Image Design 3"]['n_bottom']
+    t_skin = designs["Image Design 3"]['t_skin']
+    t_spar = designs["Image Design 3"]['t_spar']
+    w_str = designs["Image Design 3"]['w_str']
+    t_str = designs["Image Design 3"]['t_str']
+    h_max= designs["Image Design 3"]['h_max']
     c = get_chord(y)
     A_str = (c*w_str * t_str) + ((c*w_str - t_str) * t_str)
     centroid, stringer_coords= calculate_centroid_trapezoid(UNIT_CORNERS, t_skin, n_top, n_bottom, A_str, w_str)
-    I, A, y_max = calculate_Ixx_str(y, designs["Image Design 1"])
+    I, A, y_max = calculate_Ixx_str(y, designs["Image Design 3"])
     Mx = M_pos_load(y)
     if positive_or_negative=='positive':
         y_max=y_max-centroid*c
@@ -171,9 +171,9 @@ def sigma_distribution(y, positive_or_negative='positive'):
 
 
 
-number_of_ribs=11
-initial_spacing1=1.05
-free_space_at_tip=1.8
+number_of_ribs=9
+initial_spacing1=1.3
+free_space_at_tip=2.25
 position=0
 
 initial_spacing2=11.89/(number_of_ribs-1)
@@ -337,24 +337,24 @@ plt.show()
 
 def sigma_crit_neg(y, n, initial_spacing, free_space):
     L = spacing_at_position(initial_spacing, half_span, n, y, free_space)
-    I, A, y_max = calculate_Ixx_str(y, designs["Image Design 1"])
+    I, A, y_max = calculate_Ixx_str(y, designs["Image Design 3"])
     sigma_crit_neg = math.pi**2 * E * I / (L**2 * A)
     return sigma_crit_neg
 
 
 def sigma_distribution_neg(y, positive_or_negative='positive'):
-    Ixx = calculate_Ixx(y, designs["Image Design 1"])
-    n_top = designs["Image Design 1"]['n_top']
-    n_bottom = designs["Image Design 1"]['n_bottom']
-    t_skin = designs["Image Design 1"]['t_skin']
-    t_spar = designs["Image Design 1"]['t_spar']
-    w_str = designs["Image Design 1"]['w_str']
-    t_str = designs["Image Design 1"]['t_str']
-    h_max= designs["Image Design 1"]['h_max']
+    Ixx = calculate_Ixx(y, designs["Image Design 3"])
+    n_top = designs["Image Design 3"]['n_top']
+    n_bottom = designs["Image Design 3"]['n_bottom']
+    t_skin = designs["Image Design 3"]['t_skin']
+    t_spar = designs["Image Design 3"]['t_spar']
+    w_str = designs["Image Design 3"]['w_str']
+    t_str = designs["Image Design 3"]['t_str']
+    h_max= designs["Image Design 3"]['h_max']
     c = get_chord(y)
     A_str = (c*w_str * t_str) + ((c*w_str - t_str) * t_str)
     centroid, stringer_coords= calculate_centroid_trapezoid(UNIT_CORNERS, t_skin, n_top, n_bottom, A_str, w_str)
-    I, A, ything = calculate_Ixx_str(y, designs["Image Design 1"])
+    I, A, ything = calculate_Ixx_str(y, designs["Image Design 3"])
     Mx = M_neg_load(y)
     if positive_or_negative=='positive':
         y_max=c*0.02723+centroid*c
