@@ -30,51 +30,26 @@ UNIT_CORNERS = [
 
 # --- DESIGNS DICTIONARY ---
 designs = {
-    "1 min tens": {
-        'n_top': 3, 'n_bottom': 12,
-        'w_str': 0.015, 't_str': 0.004, 't_skin': 0.006, 't_spar': 0.006,
+    "Design 1 compressive": {
+        'n_top': 12, 'n_bottom': 6,
+        'w_str': 0.015, 't_str': 0.004, 't_skin': 0.006, 't_spar': 0.009,
         'scaling_mode': 'width_only'
     },
-    "2 min tens": {
-        'n_top': 1, 'n_bottom': 6,
-        'w_str': 0.020, 't_str': 0.008, 't_skin': 0.006, 't_spar': 0.006,
-        'scaling_mode': 'width_only'
-    },
-    "3 min tens": {
-        'n_top': 0, 'n_bottom': 6,
+    "Design 3 compressive": {
+        'n_top': 6, 'n_bottom': 2,
         'w_str': 0.015, 't_str': 0.004, 't_skin': 0.012, 't_spar': 0.012,
         'scaling_mode': 'width_only'
     },
-    "1 min comp": {
-        'n_top': 12, 'n_bottom': 1,
-        'w_str': 0.015, 't_str': 0.004, 't_skin': 0.006, 't_spar': 0.006,
+    "Design 1 tensile": {
+        'n_top': 6, 'n_bottom': 12,
+        'w_str': 0.015, 't_str': 0.004, 't_skin': 0.006, 't_spar': 0.009,
         'scaling_mode': 'width_only'
     },
-    "2 min comp": {
-        'n_top': 6, 'n_bottom': 0,
-        'w_str': 0.020, 't_str': 0.008, 't_skin': 0.006, 't_spar': 0.006,
-        'scaling_mode': 'width_only'
-    },
-    "3 min comp": {
-        'n_top': 6, 'n_bottom': 0,
+    "Design 3 tensile": {
+        'n_top': 2, 'n_bottom': 6,
         'w_str': 0.015, 't_str': 0.004, 't_skin': 0.012, 't_spar': 0.012,
         'scaling_mode': 'width_only'
     },
-    "Image Design 1": {
-        'n_top': 12, 'n_bottom': 12,
-        'w_str': 0.015, 't_str': 0.004, 't_skin': 0.006, 't_spar': 0.006,
-        'scaling_mode': 'width_only'
-    },
-    "Image Design 2": {
-        'n_top': 6, 'n_bottom': 6,
-        'w_str': 0.020, 't_str': 0.008, 't_skin': 0.006, 't_spar': 0.006,
-        'scaling_mode': 'width_only'
-    },
-    "Image Design 3": {
-        'n_top': 6, 'n_bottom': 6,
-        'w_str': 0.015, 't_str': 0.004, 't_skin': 0.012, 't_spar': 0.012,
-        'scaling_mode': 'width_only'
-    }
 }
 
 # ==========================================
@@ -279,11 +254,11 @@ for name, params in designs.items():
     idx_worst = np.argmin(res['min_mos'])
     print(f"{name} Min Safety Factor: {res['min_mos'][idx_worst]:.2f} at y={res['y'][idx_worst]:.2f}m")
 
-plt.axhline(1.0, color='r', linestyle='--', label='Failure Threshold (SF = 1.0)')
+plt.axhline(1.0, color='r', linestyle='--', label='Failure Threshold (1.0)')
 plt.ylim(0, 10) 
 plt.xlabel('Distance from Wing Root [m]')
-plt.ylabel('Safety Factor (Yield Strength / Applied Stress)')
-plt.title('Compressive Strength Validation (Positive Load Case)')
+plt.ylabel('Yield Strength / Applied Stress')
+plt.title('Compressive/Tensile Strength Validation (Positive Load Case)')
 plt.legend()
 plt.grid(True)
 plt.show()
